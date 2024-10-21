@@ -1,0 +1,35 @@
+{# templates/quinquenio_solicitud/show.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Quinquenio Solicitud Details{% endblock %}
+
+{% block body %}
+    <h1>Quinquenio Solicitud Details</h1>
+
+    <h2>Quinquenio Meritos</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Organismo</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for merito in quinquenioMeritos %}
+                <tr>
+                    <td>{{ merito.id }}</td>
+                    <td>{{ merito.organismo }}</td>
+                    <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
+                    <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
+                    <td>{{ merito.estado }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# <a href="{{ path('quinquenio_solicitud_index') }}" class="btn btn-secondary">Back to list</a> #}
+{% endblock %}
