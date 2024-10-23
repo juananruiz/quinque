@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/persona')]
 final class PersonaController extends AbstractController
 {
-    #[Route(name: 'app_persona_index', methods: ['GET'])]
+    #[Route(name: 'persona_index', methods: ['GET'])]
     public function index(PersonaRepository $personaRepository): Response
     {
         return $this->render('persona/index.html.twig', [
@@ -22,7 +22,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_persona_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'persona_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $persona = new Persona();
@@ -33,7 +33,7 @@ final class PersonaController extends AbstractController
             $entityManager->persist($persona);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_persona_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('persona_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('persona/new.html.twig', [
@@ -42,7 +42,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_persona_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'persona_show', methods: ['GET'])]
     public function show(Persona $persona): Response
     {
         return $this->render('persona/show.html.twig', [
@@ -51,7 +51,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_persona_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'persona_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PersonaType::class, $persona);
@@ -60,7 +60,7 @@ final class PersonaController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_persona_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('persona_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('persona/edit.html.twig', [
@@ -69,7 +69,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_persona_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'persona_delete', methods: ['POST'])]
     public function delete(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$persona->getId(), $request->getPayload()->getString('_token'))) {
@@ -77,6 +77,6 @@ final class PersonaController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_persona_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('persona_index', [], Response::HTTP_SEE_OTHER);
     }
 }

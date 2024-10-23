@@ -20,6 +20,9 @@
                 <tr>
                     <td>{{ solicitud.id }}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d H:i') }}</td>
+                    <td>
+                        <a href="{{ path('quinquenio_solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

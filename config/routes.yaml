@@ -14,6 +14,14 @@ persona_index:
     path: /personas
     controller: App\Controller\PersonaController::index
 
-solicitud_show:
+quinquenio_solicitud_show:
     path: /solicitud/{id}
     controller: App\Controller\QuinquenioSolicitudController::show
+
+quinquenio_merito_add:
+    path: /merito/add
+    controller: App\Controller\QuinquenioMeritoController::add
+
+merito_add:
+    path: /merito/add
+    controller: App\Controller\QuinquenioMeritoController::add

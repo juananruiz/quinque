@@ -31,5 +31,57 @@
         </tbody>
     </table>
 
-    {# <a href="{{ path('quinquenio_solicitud_index') }}" class="btn btn-secondary">Back to list</a> #}
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal">
+        Agregar Mérito
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addMeritoModal" tabindex="-1" aria-labelledby="addMeritoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMeritoModalLabel">Agregar Quinquenio Merito</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form, {'attr': {'id': 'meritoForm'}}) }}
+                        {{ form_widget(form) }}
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('meritoForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                fetch('{{ path('merito_save') }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert(data.message);
+                        window.location.href = data.redirect;
+                    } else {
+                        alert(data.message);
+                        console.error(data.errors);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
 {% endblock %}
