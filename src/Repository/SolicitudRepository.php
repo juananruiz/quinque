@@ -2,22 +2,23 @@
 
 namespace App\Repository;
 
-use App\Entity\QuinquenioSolicitud;
+use App\Entity\Solicitud;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<QuinquenioSolicitud>
+ * @extends ServiceEntityRepository<Solicitud>
  */
-class QuinquenioSolicitudRepository extends ServiceEntityRepository
+#[ORM\Table(name: 'quinquenio_solicitud')]
+class SolicitudRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, QuinquenioSolicitud::class);
+        parent::__construct($registry, Solicitud::class);
     }
 
     //    /**
-    //     * @return QuinquenioSolicitud[] Returns an array of QuinquenioSolicitud objects
+    //     * @return Solicitud[] Returns an array of Solicitud objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +32,7 @@ class QuinquenioSolicitudRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?QuinquenioSolicitud
+    //    public function findOneBySomeField($value): ?Solicitud
     //    {
     //        return $this->createQueryBuilder('q')
     //            ->andWhere('q.exampleField = :val')

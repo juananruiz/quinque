@@ -9,6 +9,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Persona>
  */
+#[ORM\Table(name: 'persona')]
+
 class PersonaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

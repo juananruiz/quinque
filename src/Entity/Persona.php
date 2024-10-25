@@ -31,12 +31,12 @@ class Persona
     #[ORM\Column(length: 25)]
     private ?string $dni = null;
 
-    #[ORM\OneToMany(mappedBy: 'persona', targetEntity: QuinquenioSolicitud::class, orphanRemoval: true)]
-    private Collection $quinquenioSolicitudes;
+    #[ORM\OneToMany(mappedBy: 'persona', targetEntity: Solicitud::class, orphanRemoval: true)]
+    private Collection $solicitudes;
 
     public function __construct()
     {
-        $this->quinquenioSolicitudes = new ArrayCollection();
+        $this->solicitudes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,29 +105,29 @@ class Persona
     }
 
     /**
-     * @return Collection<int, QuinquenioSolicitud>
+     * @return Collection<int, Solicitud>
      */
-    public function getQuinquenioSolicitudes(): Collection
+    public function getSolicitudes(): Collection
     {
-        return $this->quinquenioSolicitudes;
+        return $this->solicitudes;
     }
 
-    public function addQuinquenioSolicitud(QuinquenioSolicitud $quinquenioSolicitud): static
+    public function addSolicitud(Solicitud $solicitud): static
     {
-        if (!$this->quinquenioSolicitudes->contains($quinquenioSolicitud)) {
-            $this->quinquenioSolicitudes->add($quinquenioSolicitud);
-            $quinquenioSolicitud->setPersona($this);
+        if (!$this->solicitudes->contains($solicitud)) {
+            $this->solicitudes->add($solicitud);
+            $solicitud->setPersona($this);
         }
 
         return $this;
     }
 
-    public function removeQuinquenioSolicitud(QuinquenioSolicitud $quinquenioSolicitud): static
+    public function removeSolicitud(Solicitud $solicitud): static
     {
-        if ($this->quinquenioSolicitudes->removeElement($quinquenioSolicitud)) {
+        if ($this->solicitudes->removeElement($solicitud)) {
             // set the owning side to null (unless already changed)
-            if ($quinquenioSolicitud->getPersona() === $this) {
-                $quinquenioSolicitud->setPersona(null);
+            if ($solicitud->getPersona() === $this) {
+                $solicitud->setPersona(null);
             }
         }
 

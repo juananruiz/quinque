@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Persona;
 use App\Form\PersonaType;
 use App\Repository\PersonaRepository;
+use App\Repository\SolicitudRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,7 +48,7 @@ final class PersonaController extends AbstractController
     {
         return $this->render('persona/show.html.twig', [
             'persona' => $persona,
-            'quinquenioSolicitudes' => $persona->getQuinquenioSolicitudes(),
+            'solicitudes' => $persona->getSolicitudes(),
         ]);
     }
 

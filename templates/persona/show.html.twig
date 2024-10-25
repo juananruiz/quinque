@@ -2,10 +2,10 @@
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Persona Details{% endblock %}
+{% block title %}Solicitante {{ persona.nombre }} {{ persona.apellidos }}{% endblock %}
 
 {% block body %}
-    <h1>{{ persona.nombre }} {{ persona.apellidos }}</h1>
+    <h1>Solicitante: {{ persona.nombre }} {{ persona.apellidos }}</h1>
 
     <h2>Quinquenio Solicitudes</h2>
     <table class="table table-striped">
@@ -16,12 +16,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for solicitud in quinquenioSolicitudes %}
+            {% for solicitud in solicitudes %}
                 <tr>
                     <td>{{ solicitud.id }}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d H:i') }}</td>
                     <td>
-                        <a href="{{ path('quinquenio_solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
+                        <a href="{{ path('solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
                     </td>
                 </tr>
             {% endfor %}

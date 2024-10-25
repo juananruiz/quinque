@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\QuinquenioSolicitudRepository;
+use App\Repository\SolicitudRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: QuinquenioSolicitudRepository::class)]
-class QuinquenioSolicitud
+#[ORM\Entity(repositoryClass: SolicitudRepository::class)]
+class Solicitud
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,16 +19,17 @@ class QuinquenioSolicitud
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaEntrada = null;
 
-    #[ORM\ManyToOne(targetEntity: Persona::class, inversedBy: 'quinquenioSolicitudes')]
+    #[ORM\ManyToOne(targetEntity: Persona::class, inversedBy: 'solicitudes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Persona $persona = null;
 
-    #[ORM\OneToMany(mappedBy: 'quinquenioSolicitud', targetEntity: QuinquenioMerito::class, orphanRemoval: true)]
-    private Collection $quinquenioMeritos;
+    #[ORM\OneToMany(mappedBy: 'solicitud',
+        targetEntity: Merito::class, orphanRemoval: true)]
+    private Collection $meritos;
 
     public function __construct()
     {
-        $this->quinquenioMeritos = new ArrayCollection();
+        $this->meritos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -61,29 +62,29 @@ class QuinquenioSolicitud
     }
 
     /**
-     * @return Collection<int, QuinquenioMerito>
+     * @return Collection<int, Merito>
      */
-    public function getQuinquenioMeritos(): Collection
+    public function getMeritos(): Collection
     {
-        return $this->quinquenioMeritos;
+        return $this->meritos;
     }
 
-    public function addQuinquenioMerito(QuinquenioMerito $quinquenioMerito): static
+    public function addMerito(Merito $merito): static
     {
-        if (!$this->quinquenioMeritos->contains($quinquenioMerito)) {
-            $this->quinquenioMeritos->add($quinquenioMerito);
-            $quinquenioMerito->setQuinquenioSolicitud($this);
+        if (!$this->meritos->contains($merito)) {
+            $this->meritos->add($merito);
+            $merito->setSolicitud($this);
         }
 
         return $this;
     }
 
-    public function removeQuinquenioMerito(QuinquenioMerito $quinquenioMerito): static
+    public function removeMerito(Merito $merito): static
     {
-        if ($this->quinquenioMeritos->removeElement($quinquenioMerito)) {
+        if ($this->meritos->removeElement($merito)) {
             // set the owning side to null (unless already changed)
-            if ($quinquenioMerito->getQuinquenioSolicitud() === $this) {
-                $quinquenioMerito->setQuinquenioSolicitud(null);
+            if ($merito->getSolicitud() === $this) {
+                $merito->setSolicitud(null);
             }
         }
 

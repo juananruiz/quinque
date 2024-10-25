@@ -14,14 +14,14 @@ persona_index:
     path: /personas
     controller: App\Controller\PersonaController::index
 
-quinquenio_solicitud_show:
+solicitud_show:
     path: /solicitud/{id}
-    controller: App\Controller\QuinquenioSolicitudController::show
-
-quinquenio_merito_add:
-    path: /merito/add
-    controller: App\Controller\QuinquenioMeritoController::add
+    controller: App\Controller\SolicitudController::show
 
 merito_add:
     path: /merito/add
-    controller: App\Controller\QuinquenioMeritoController::add
+    controller: App\Controller\MeritoController::add
+
+merito_save:
+    path: /merito/save
+    controller: App\Controller\MeritoController::save

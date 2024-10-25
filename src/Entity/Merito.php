@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\QuinquenioMeritoRepository;
+use App\Repository\MeritoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: QuinquenioMeritoRepository::class)]
-class QuinquenioMerito
+#[ORM\Entity(repositoryClass: MeritoRepository::class)]
+class Merito
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -32,9 +32,9 @@ class QuinquenioMerito
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: QuinquenioSolicitud::class, inversedBy: 'quinquenioMeritos')]
+    #[ORM\ManyToOne(targetEntity: Solicitud::class, inversedBy: 'meritos')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?QuinquenioSolicitud $quinquenioSolicitud = null;
+    private ?Solicitud $solicitud = null;
 
     public function getId(): ?int
     {
@@ -113,14 +113,14 @@ class QuinquenioMerito
         return $this;
     }
 
-    public function getQuinquenioSolicitud(): ?QuinquenioSolicitud
+    public function getSolicitud(): ?Solicitud
     {
-        return $this->quinquenioSolicitud;
+        return $this->solicitud;
     }
 
-    public function setQuinquenioSolicitud(?QuinquenioSolicitud $quinquenioSolicitud): static
+    public function setSolicitud(?Solicitud $solicitud): static
     {
-        $this->quinquenioSolicitud = $quinquenioSolicitud;
+        $this->solicitud = $solicitud;
 
         return $this;
     }

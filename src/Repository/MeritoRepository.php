@@ -2,22 +2,24 @@
 
 namespace App\Repository;
 
-use App\Entity\QuinquenioMerito;
+use App\Entity\Merito;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<QuinquenioMerito>
+ * @extends ServiceEntityRepository<Merito>
  */
-class QuinquenioMeritoRepository extends ServiceEntityRepository
+#[ORM\Table(name: 'quinquenio_merito')]
+class MeritoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, QuinquenioMerito::class);
+        parent::__construct($registry, Merito::class);
     }
 
 //    /**
-//     * @return QuinquenioMerito[] Returns an array of QuinquenioMerito objects
+//     * @return Merito[] Returns an array of Merito objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -31,7 +33,7 @@ class QuinquenioMeritoRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?QuinquenioMerito
+//    public function findOneBySomeField($value): ?Merito
 //    {
 //        return $this->createQueryBuilder('q')
 //            ->andWhere('q.exampleField = :val')
