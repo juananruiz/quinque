@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     {{ form_start(form, {'attr': {'id': 'meritoForm', 'action': path('merito_save')}}) }}
                         <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
-                        <input type="hidden" name="created_at" value="2024-10-10">
+                        <input type="hidden" name="created_at" value="2024-10-10 10:00:00">
                         <div class="mb-3">
                             {{ form_label(form.organismo, null, {'label_attr': {'class': 'form-label'}}) }}
                             {{ form_widget(form.organismo, {'attr': {'class': 'form-control'}}) }}
