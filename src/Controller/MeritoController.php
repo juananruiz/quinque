@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Abbreviation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Controller for managing Merito entities.
+ */
 class MeritoController extends AbstractController
 {
     private $solicitudRepository;
@@ -54,17 +57,28 @@ class MeritoController extends AbstractController
     public function save(Request $request): Response
     {
         $merito = new Merito();
-        $form = $this->createForm(MeritoType::class, $merito);
-        $form->handleRequest($request);
+        
+        // Establecer los datos manualmente
+        $merito->setOrganismo($request->request->get('organismo'));
+        $merito->setCategoriaId($request->request->get('categoriaId'));
+        $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
+        $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
+        $merito->setEstado($request->request->get('estado'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $solicitudId = $request->get('solicitud_id');
-            $solicitud = $this->solicitudRepository->find($solicitudId);
+        // Establecer la solicitud
+        $solicitudId = $request->request->get('solicitud_id');
+        $solicitud = $this->solicitudRepository->find($solicitudId);
 
-            if ($solicitud) {
-                $merito->setSolicitud($solicitud);
-            }
+        if (!$solicitud) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Solicitud no encontrada',
+            ]);
+        }
 
+        $merito->setSolicitud($solicitud);
+
+        try {
             $this->entityManager->persist($merito);
             $this->entityManager->flush();
 
@@ -73,29 +87,50 @@ class MeritoController extends AbstractController
                 'message' => 'Mérito guardado correctamente',
                 'redirect' => $this->generateUrl('solicitud_show', ['id' => $merito->getSolicitud()->getId()])
             ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Error al guardar el mérito: ' . $e->getMessage(),
+            ]);
         }
-
-        return new JsonResponse([
-            'status' => 'error',
-            'message' => 'Error al guardar el merito',
-            'errors' => (string) $form->getErrors(true, false)
-        ]);
     }
 
-    #[Route('/merito/edit/{id}', name: 'merito_edit')]
+    #[Route('/merito/edit/{id}', name: 'merito_edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): Response
     {
-        $form = $this->createForm(MeritoType::class, $merito);
-        $form->handleRequest($request);
+        try {
+            // Actualizar los datos manualmente
+            $merito->setOrganismo($request->request->get('organismo'));
+            $merito->setCategoriaId($request->request->get('categoriaId'));
+            $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
+            $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
+            $merito->setEstado($request->request->get('estado'));
 
-        if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('solicitud_show', ['id' => $merito->getSolicitud()->getId()]);
+            return new JsonResponse([
+                'status' => 'success',
+                'message' => 'Mérito actualizado correctamente',
+                'redirect' => $this->generateUrl('solicitud_show', ['id' => $merito->getSolicitud()->getId()])
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Error al actualizar el mérito: ' . $e->getMessage()
+            ]);
         }
+    }
 
-        return $this->render('merito/edit.html.twig', [
-            'form' => $form->createView(),
+    #[Route('/merito/{id}/edit', name: 'merito_edit_data', methods: ['GET'])]
+    public function getEditData(Merito $merito): JsonResponse
+    {
+        return new JsonResponse([
+            'id' => $merito->getId(),
+            'organismo' => $merito->getOrganismo(),
+            'categoriaId' => $merito->getCategoriaId(),
+            'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
+            'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
+            'estado' => $merito->getEstado(),
         ]);
     }
 }

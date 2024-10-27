@@ -16,6 +16,7 @@
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -26,12 +27,15 @@
                     <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
                     <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
                     <td>{{ merito.estado }}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
         Agregar Mérito
     </button>
 
@@ -44,36 +48,30 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {{ form_start(form, {'attr': {'id': 'meritoForm', 'action': path('merito_save')}}) }}
+                    <form id="meritoForm" method="post">
                         <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
-                        <input type="hidden" name="created_at" value="2024-10-10 10:00:00">
                         <div class="mb-3">
-                            {{ form_label(form.organismo, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.organismo, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.organismo, {'attr': {'class': 'text-danger'}}) }}
+                            <label for="organismo" class="form-label">Organismo</label>
+                            <input type="text" class="form-control" id="organismo" name="organismo">
                         </div>
                         <div class="mb-3">
-                            {{ form_label(form.categoriaId, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.categoriaId, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.categoriaId, {'attr': {'class': 'text-danger'}}) }}
+                            <label for="categoriaId" class="form-label">Categoría ID</label>
+                            <input type="number" class="form-control" id="categoriaId" name="categoriaId">
                         </div>
                         <div class="mb-3">
-                            {{ form_label(form.fechaInicio, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.fechaInicio, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.fechaInicio, {'attr': {'class': 'text-danger'}}) }}
+                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
                         </div>
                         <div class="mb-3">
-                            {{ form_label(form.fechaFin, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.fechaFin, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.fechaFin, {'attr': {'class': 'text-danger'}}) }}
+                            <label for="fechaFin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fechaFin" name="fechaFin">
                         </div>
                         <div class="mb-3">
-                            {{ form_label(form.estado, null, {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(form.estado, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.estado, {'attr': {'class': 'text-danger'}}) }}
+                            <label for="estado" class="form-label">Estado</label>
+                            <input type="number" class="form-control" id="estado" name="estado">
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>
-                    {{ form_end(form) }}
+                    </form>
                 </div>
             </div>
         </div>
@@ -82,33 +80,66 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('addMeritoModal');
             const form = document.getElementById('meritoForm');
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
 
+            modal.addEventListener('show.bs.modal', async function(event) {
+                const button = event.relatedTarget;
+                const action = button.dataset.action;
+                const modalTitle = modal.querySelector('.modal-title');
+
+                if (action === 'edit') {
+                    const meritoId = button.dataset.id;
+                    modalTitle.textContent = 'Editar Mérito';
+                    form.setAttribute('action', `/merito/edit/${meritoId}`);
+
+                    const response = await fetch(`/merito/${meritoId}/edit`);
+                    const data = await response.json();
+                    
+                    // Rellenar el formulario con los datos
+                    document.getElementById('organismo').value = data.organismo;
+                    document.getElementById('categoriaId').value = data.categoriaId;
+                    document.getElementById('fechaInicio').value = data.fechaInicio;
+                    document.getElementById('fechaFin').value = data.fechaFin;
+                    document.getElementById('estado').value = data.estado;
+                } else {
+                    modalTitle.textContent = 'Agregar Mérito';
+                    form.setAttribute('action', '/merito/save');
+                    form.reset();
+                }
+            });
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
                 const formData = new FormData(form);
-                fetch('{{ path('merito_save') }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
+                const method = form.getAttribute('method');
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST', // Siempre usamos POST por simplicidad
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
                     if (data.status === 'success') {
-                        alert(data.message);
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
                         window.location.href = data.redirect;
                     } else {
                         alert(data.message);
                         console.error(data.errors);
                     }
-                })
-                .catch(error => console.error('Error:', formData));
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Ha ocurrido un error al procesar la solicitud');
+                }
             });
         });
     </script>

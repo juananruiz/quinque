@@ -25,3 +25,13 @@ merito_add:
 merito_save:
     path: /merito/save
     controller: App\Controller\MeritoController::save
+    methods: [POST]
+
+merito_edit:
+    path: /merito/edit/{id}
+    controller: App\Controller\MeritoController::edit
+
+merito_edit_data:
+    path: /merito/{id}/edit
+    controller: App\Controller\MeritoController::getEditData
+    methods: [GET]
