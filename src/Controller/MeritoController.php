@@ -45,12 +45,16 @@ class MeritoController extends AbstractController
             $this->entityManager->persist($merito);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('solicitud_show', ['id' => $merito->getSolicitud()->getId()]);
+            return $this->redirectToRoute(
+                'solicitud_show', 
+                ['id' => $merito->getSolicitud()->getId()]
+            );
         }
 
-        return $this->render('merito/add.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'merito/add.html.twig', 
+            ['form' => $form->createView(),]
+        );
     }
 
     #[Route('/merito/save', name: 'merito_save', methods: ['POST'])]
@@ -61,19 +65,23 @@ class MeritoController extends AbstractController
         // Establecer los datos manualmente
         $merito->setOrganismo($request->request->get('organismo'));
         $merito->setCategoriaId($request->request->get('categoriaId'));
-        $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
+        $merito->setFechaInicio(
+            new \DateTime($request->request->get('fechaInicio'))
+        );
         $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
         $merito->setEstado($request->request->get('estado'));
 
-        // Establecer la solicitud
+        // Recupera la solicitud
         $solicitudId = $request->request->get('solicitud_id');
         $solicitud = $this->solicitudRepository->find($solicitudId);
 
         if (!$solicitud) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'status' => 'error',
                 'message' => 'Solicitud no encontrada',
-            ]);
+                ]
+            );
         }
 
         $merito->setSolicitud($solicitud);
@@ -82,16 +90,23 @@ class MeritoController extends AbstractController
             $this->entityManager->persist($merito);
             $this->entityManager->flush();
 
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'status' => 'success',
                 'message' => 'Mérito guardado correctamente',
-                'redirect' => $this->generateUrl('solicitud_show', ['id' => $merito->getSolicitud()->getId()])
-            ]);
+                'redirect' => $this->generateUrl(
+                    'solicitud_show', 
+                    ['id' => $merito->getSolicitud()->getId()]
+                )
+                ]
+            );
         } catch (\Exception $e) {
-            return new JsonResponse([
+            return new JsonResponse(
+                [
                 'status' => 'error',
                 'message' => 'Error al guardar el mérito: ' . $e->getMessage(),
-            ]);
+                ]
+            );
         }
     }
 
