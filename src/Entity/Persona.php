@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PersonaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PersonaRepository::class)]
@@ -23,6 +24,12 @@ class Persona
 
     #[ORM\Column(length: 25, nullable: true)]
     private ?string $telefono = null;
+
+    #[ORM\Column(length: 25, nullable: true)]
+    private ?string $dni = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $fechaNacimiento = null;
 
     #[ORM\OneToMany(mappedBy: 'persona', targetEntity: Solicitud::class, orphanRemoval: true)]
     private Collection $solicitudes;

@@ -7,6 +7,30 @@
 {% block body %}
     <h1>Solicitud Quinquenio</h1>
 
+    <h2>Datos del Solicitante</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Nombre</th>
+            <td>{{ persona.nombre }}</td>
+        </tr>
+        <tr>
+            <th>Apellidos</th>
+            <td>{{ persona.apellidos }}</td>
+        </tr>
+        <tr>
+            <th>Teléfono</th>
+            <td>{{ persona.telefono }}</td>
+        </tr>
+        <tr>
+            <th>Fecha de Nacimiento</th>
+            <td>{{ persona.fechaNacimiento|date('Y-m-d') }}</td>
+        </tr>
+        <tr>
+            <th>DNI</th>
+            <td>{{ persona.dni }}</td>
+        </tr>
+    </table>
+    
     <h2>Méritos aportados</h2>
     <table class="table table-striped">
         <thead>
@@ -29,7 +53,9 @@
                     <td>{{ merito.estado }}</td>
                     <td>
                         <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-id="{{ merito.id }}" class="delete-merito">Borrar</button>
                     </td>
+                    
                 </tr>
             {% endfor %}
         </tbody>
@@ -139,6 +165,38 @@
                 } catch (error) {
                     console.error('Error:', error);
                     alert('Ha ocurrido un error al procesar la solicitud');
+                }
+            });
+        });
+
+        // Escuchar el evento de clic en los botones de borrar
+        document.querySelectorAll('.delete-merito').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const meritoId = this.getAttribute('data-id');
+                const confirmation = confirm('¿Estás seguro de que deseas borrar este mérito?');
+
+                if (confirmation) {
+                    fetch(`/merito/delete/${meritoId}`, {
+                        method: 'DELETE', // Usar el método DELETE
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            // Opcional: Recargar la página o eliminar la fila de la tabla
+                            location.reload(); // Recargar la página
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ocurrió un error al intentar borrar el mérito.');
+                    });
                 }
             });
         });

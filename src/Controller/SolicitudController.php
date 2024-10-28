@@ -3,8 +3,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Solicitud;
 use App\Entity\Merito;
+use App\Entity\Solicitud;
 use App\Form\MeritoType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +21,7 @@ class SolicitudController extends AbstractController
         return $this->render('solicitud/show.html.twig', [
             'solicitud' => $solicitud,
             'meritos' => $solicitud->getMeritos(),
+            'persona' => $solicitud->getPersona(),
             'form' => $form->createView(),
         ]);
     }

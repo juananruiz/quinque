@@ -148,4 +148,32 @@ class MeritoController extends AbstractController
             'estado' => $merito->getEstado(),
         ]);
     }
+
+    #[Route('/merito/delete/{id}', name: 'merito_delete')]
+    public function delete($id): Response
+    {
+        // Lógica para eliminar el mérito por ID
+        $merito = $this->getDoctrine()->getRepository(Merito::class)->find($id);
+        
+        if ($merito) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($merito);
+            $entityManager->flush();
+            
+            return $this->json(
+                [
+                'status' => 'success', 
+                'message' => 'Mérito eliminado correctamente.'
+                ]
+            );
+        }
+
+        return $this->json(
+            [
+                'status' => 'error', 
+                'message' => 'Mérito no encontrado.'
+            ], 
+            404
+        );
+    }
 }
