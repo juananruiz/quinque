@@ -1,0 +1,15 @@
+{# templates/solicitud/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Crear Nueva Solicitud</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Crear</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('persona_index') }}" class="btn btn-secondary">Volver 
+	a la lista</a>
+{% endblock %}

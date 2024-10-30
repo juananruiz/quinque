@@ -27,6 +27,6 @@
             {% endfor %}
         </tbody>
     </table>
-
+    <a href="{{ path('solicitud_new', {personaId: persona.id}) }}" class="btn btn-primary">Agregar Nueva Solicitud</a>
     <a href="{{ path('persona_index') }}" class="btn btn-secondary">Back to list</a>
 {% endblock %}

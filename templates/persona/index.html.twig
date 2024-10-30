@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container mt-5">
         <h1>Lista de solicitantes</h1>
-        <p><a href="{{ path('app_persona_new') }}" class="btn btn-primary">Agregar solicitante</a></p>
+        <p><a href="{{ path('persona_new') }}" class="btn btn-primary">Agregar solicitante</a></p>
         <table  id="solicitantes" class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
@@ -28,8 +28,8 @@
                     <td>{{ persona.telefono }}</td>
                     <td>{{ persona.fechaNacimiento ? persona.fechaNacimiento|date('Y-m-d') : '' }}</td>
                     <td>
-                        <a href="{{ path('app_persona_show', {'id': persona.id}) }}">show</a>
-                        <a href="{{ path('app_persona_edit', {'id': persona.id}) }}">edit</a>
+                        <a href="{{ path('persona_show', {'id': persona.id}) }}">show</a>
+                        <a href="{{ path('persona_edit', {'id': persona.id}) }}">edit</a>
                     </td>
                 </tr>
             {% else %}

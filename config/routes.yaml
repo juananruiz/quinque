@@ -10,8 +10,12 @@ persona_show:
     path: /persona/{id}
     controller: App\Controller\PersonaController::show
 
+persona_new:
+    path: /persona/new
+    controller: App\Controller\PersonaController::new
+
 persona_index:
-    path: /personas
+    path: /persona
     controller: App\Controller\PersonaController::index
 
 solicitud_show:

@@ -73,10 +73,12 @@ final class PersonaController extends AbstractController
     #[Route('/{id}', name: 'persona_delete', methods: ['POST'])]
     public function delete(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
+        // TODO: No permitir si la persona tienes solicitudes asociadas, 
+        // primero habría que borrar aquellas
         if ($this->isCsrfTokenValid(
             'delete'.$persona->getId(), 
             $request->getPayload()->getString('_token')
-            )
+        )
         ) {
             $entityManager->remove($persona);
             $entityManager->flush();

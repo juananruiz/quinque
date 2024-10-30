@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Persona{% endblock %}
+{% block title %}Editar datos personales{% endblock %}
 
 {% block body %}
-    <h1>Edit Persona</h1>
+    <h1>Editar datos personales</h1>
 
-    {{ include('persona/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('persona/_form.html.twig', {'button_label': 'Actualizar'}) }}
 
-    <a href="{{ path('app_persona_index') }}">back to list</a>
+    <a href="{{ path('persona_index') }}">Volver a la lista de personas</a>
 
     {{ include('persona/_delete_form.html.twig') }}
 {% endblock %}
