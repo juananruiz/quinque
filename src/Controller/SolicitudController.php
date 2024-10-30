@@ -1,51 +1,71 @@
 <?php
 /** 
- * src/Controller/SolicitudController.php 
+ * Src/Controller/SolicitudController.php 
  */
 
 namespace App\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Merito;
 use App\Entity\Solicitud;
 use App\Form\MeritoType;
 use App\Form\SolicitudType;
+use App\Repository\PersonaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Persona;
 
+/**
+ * Controller for handling Solicitud related actions.
+ */
 class SolicitudController extends AbstractController
 {
+    private $_personaRepository;
+    private $_entityManager;
+
+    public function __construct(PersonaRepository $personaRepository, EntityManagerInterface $entityManager)
+    {
+        $this->_personaRepository = $personaRepository;
+        $this->_entityManager = $entityManager;
+    }
+    
     #[Route('/solicitud/{id}', name: 'solicitud_show')]
     public function show(Solicitud $solicitud): Response
     {
         $merito = new Merito();
         $form = $this->createForm(MeritoType::class, $merito);
 
-        return $this->render('solicitud/show.html.twig', [
-            'solicitud' => $solicitud,
-            'meritos' => $solicitud->getMeritos(),
-            'persona' => $solicitud->getPersona(),
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'solicitud/show.html.twig', 
+            [
+                'solicitud' => $solicitud,
+                'meritos' => $solicitud->getMeritos(),
+                'persona' => $solicitud->getPersona(),
+                'form' => $form->createView(),
+            ]
+        );
     }
 
-    #[Route('/solicitud/new/{personaId}', name: 'solicitud_new')]
+    #[Route('/solicitud/{personaId}/new', name: 'solicitud_new')]
     public function new(Request $request, $personaId): Response
     {
         $solicitud = new Solicitud();
+        
+        // Set the persona associated with the solicitud
+        $persona = $this->_personaRepository->find($personaId);
+        $solicitud->setPersona($persona);
+
         $form = $this->createForm(SolicitudType::class, $solicitud);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // Aquí puedes establecer la persona asociada a la solicitud
-            $persona = $this->getDoctrine()->getRepository(Persona::class)->find($personaId);
+            $persona = $this->_personaRepository->find($personaId);
             $solicitud->setPersona($persona);
 
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($solicitud);
-            $entityManager->flush();
+            $this->_entityManager->persist($solicitud);
+            $this->_entityManager->flush();
 
             return $this->redirectToRoute('solicitud_show', ['id' => $solicitud->getId()]);
         }

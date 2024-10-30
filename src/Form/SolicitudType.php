@@ -17,18 +17,24 @@ class SolicitudType extends AbstractType
         $builder
             ->add(
                 'fechaEntrada', DateType::class, 
-				[
+                [
                     'widget' => 'single_text',
                     'attr' => ['class' => 'form-control'],
                     'label' => 'Fecha entrada'
                 ]
-			)
-            ->add('personaId', IntegerType::class, [
-                'attr' => ['class' => 'form-control']
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Crear Solicitud',
-            ]);
+            )
+            ->add(
+                'personaId', IntegerType::class, 
+                [
+                    'attr' => ['class' => 'form-control']
+                ]
+            )
+            ->add(
+                'save', SubmitType::class, 
+                [
+                    'label' => 'Crear Solicitud',
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)

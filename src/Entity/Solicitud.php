@@ -9,6 +9,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SolicitudRepository::class)]
+/**
+ * Class Solicitud
+ * 
+ * Represents a request entity with associated merits and a person.
+ */
 class Solicitud
 {
     #[ORM\Id]
@@ -59,6 +64,11 @@ class Solicitud
         $this->persona = $persona;
 
         return $this;
+    }
+
+    public function getPersonaId(): ?int
+    {
+        return $this->persona ? $this->persona->getId() : null;
     }
 
     /**
