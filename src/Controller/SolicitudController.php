@@ -50,8 +50,11 @@ class SolicitudController extends AbstractController
             return $this->redirectToRoute('solicitud_show', ['id' => $solicitud->getId()]);
         }
 
-        return $this->render('solicitud/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'solicitud/new.html.twig', 
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 }

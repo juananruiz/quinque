@@ -7,7 +7,7 @@
 {% block body %}
     <h1>Solicitante: {{ persona.nombre }} {{ persona.apellidos }}</h1>
 
-    <h2>Quinquenio Solicitudes</h2>
+    <h2>Solicitudes de Quinquenios</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -28,5 +28,6 @@
         </tbody>
     </table>
     <a href="{{ path('solicitud_new', {personaId: persona.id}) }}" class="btn btn-primary">Agregar Nueva Solicitud</a>
-    <a href="{{ path('persona_index') }}" class="btn btn-secondary">Back to list</a>
+    
+    <a href="{{ path('persona_index') }}" class="btn btn-secondary">Volver al listado</a>
 {% endblock %}

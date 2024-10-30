@@ -15,17 +15,12 @@ class PersonaType extends AbstractType
             ->add('nombre')
             ->add('apellidos')
             ->add('telefono')
-            ->add('fechaNacimiento', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('dni')
-        ;
+            ->add('fechaNacimiento', null, ['widget' => 'single_text', ])
+            ->add('dni');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Persona::class,
-        ]);
+        $resolver->setDefaults(['data_class' => Persona::class,]);
     }
 }

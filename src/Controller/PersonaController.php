@@ -1,11 +1,18 @@
 <?php
+/**
+ * PersonaController.php
+ *
+ * This file contains the PersonaController class, which manages Persona entities.
+ *
+ * @package App\Controller
+ * @author  Juanan Ruiz <juananruiz@icloud.com>
+ */
 
 namespace App\Controller;
 
 use App\Entity\Persona;
 use App\Form\PersonaType;
 use App\Repository\PersonaRepository;
-use App\Repository\SolicitudRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,14 +20,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/persona')]
+/**
+ * Controller for managing Persona entities.
+ */
 final class PersonaController extends AbstractController
 {
+    /**
+     * Displays a list of Persona entities.
+     *
+     * @param  PersonaRepository $personaRepository
+     * @return Response
+     */
     #[Route(name: 'persona_index', methods: ['GET'])]
     public function index(PersonaRepository $personaRepository): Response
     {
-        return $this->render('persona/index.html.twig', [
-            'personas' => $personaRepository->findAll(),
-        ]);
+        return $this->render(
+            'persona/index.html.twig',
+            [
+                'personas' => $personaRepository->findAll(),
+            ]
+        );
     }
 
     #[Route('/new', name: 'persona_new', methods: ['GET', 'POST'])]
@@ -34,16 +53,23 @@ final class PersonaController extends AbstractController
             $entityManager->persist($persona);
             $entityManager->flush();
 
-            return $this->redirectToRoute('persona_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute(
+                'persona_index',
+                [],
+                Response::HTTP_SEE_OTHER
+            );
         }
 
-        return $this->render('persona/new.html.twig', [
-            'persona' => $persona,
-            'form' => $form,
-        ]);
+        return $this->render(
+            'persona/new.html.twig',
+            [
+                'persona' => $persona,
+                'form' => $form,
+            ]
+        );
     }
 
-    #[Route('/{id}', name: 'persona_show', methods: ['GET'])]
+    #[Route('/{id}/show', name: 'persona_show', methods: ['GET'])]
     public function show(Persona $persona): Response
     {
         return $this->render('persona/show.html.twig', [
@@ -70,14 +96,18 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'persona_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'persona_delete', methods: ['POST'])]
     public function delete(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
-        // TODO: No permitir si la persona tienes solicitudes asociadas, 
+        // No permitir si la persona tienes solicitudes asociadas,
         // primero habría que borrar aquellas
+        if ($persona->getSolicitudes()->count() > 0) {
+            $this->addFlash('error', 'No se puede eliminar una persona con solicitudes asociadas');
+            return $this->redirectToRoute('persona_index', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid(
-            'delete'.$persona->getId(), 
-            $request->getPayload()->getString('_token')
+            'delete' . $persona->getId(),
+            $request->get('_token')
         )
         ) {
             $entityManager->remove($persona);

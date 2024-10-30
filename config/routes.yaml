@@ -7,8 +7,16 @@ controllers:
     type: attribute
 
 persona_show:
-    path: /persona/{id}
+    path: /persona/{id}/show
     controller: App\Controller\PersonaController::show
+
+persona_delete:
+    path: /persona/{id}/delete
+    controller: App\Controller\PersonaController::delete
+
+persona_edit:
+    path: /persona/{id}/edit
+    controller: App\Controller\PersonaController::edit
 
 persona_new:
     path: /persona/new
