@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Abbreviation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -61,8 +61,7 @@ class MeritoController extends AbstractController
     public function save(Request $request): Response
     {
         $merito = new Merito();
-        
-        // Establecer los datos manualmente
+        // Recojo los datos "a mano"
         $merito->setOrganismo($request->request->get('organismo'));
         $merito->setCategoriaId($request->request->get('categoriaId'));
         $merito->setFechaInicio(
@@ -110,6 +109,14 @@ class MeritoController extends AbstractController
         }
     }
 
+    /**
+     * Updates a Merito entity.
+     * 
+     * @param Merito  $merito  The Merito entity to update.
+     * @param Request $request The HTTP request object.
+     * 
+     * @return Response The JSON response indicating success or failure.
+     */
     #[Route('/merito/edit/{id}', name: 'merito_edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): Response
     {
@@ -135,26 +142,39 @@ class MeritoController extends AbstractController
             ]);
         }
     }
-
+    /**
+     * Retrieves the edit data for a given Merito entity.
+     * 
+     * @param Merito $merito The Merito entity to retrieve data for.
+     * 
+     * @return JsonResponse The JSON response containing the Merito data.
+     */
     #[Route('/merito/{id}/edit', name: 'merito_edit_data', methods: ['GET'])]
     public function getEditData(Merito $merito): JsonResponse
     {
-        return new JsonResponse([
-            'id' => $merito->getId(),
-            'organismo' => $merito->getOrganismo(),
-            'categoriaId' => $merito->getCategoriaId(),
-            'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
-            'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
-            'estado' => $merito->getEstado(),
-        ]);
+        return new JsonResponse(
+            [
+                'id' => $merito->getId(),
+                'organismo' => $merito->getOrganismo(),
+                'categoriaId' => $merito->getCategoriaId(),
+                'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
+                'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
+                'estado' => $merito->getEstado(),
+            ]
+        );
     }
-
-    #[Route('/merito/delete/{id}', name: 'merito_delete')]
+    /**
+     * Deletes a Merito entity by its ID.
+     * 
+     * @param int $id The ID of the Merito entity to delete.
+     *
+     * @return JsonResponse
+     */
+    #[Route('/merito/{id}/delete', name: 'merito_delete')]
     public function delete($id): Response
     {
         // Lógica para eliminar el mérito por ID
         $merito = $this->getDoctrine()->getRepository(Merito::class)->find($id);
-        
         if ($merito) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($merito);

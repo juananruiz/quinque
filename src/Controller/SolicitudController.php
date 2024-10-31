@@ -5,12 +5,12 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Merito;
 use App\Entity\Solicitud;
 use App\Form\MeritoType;
 use App\Form\SolicitudType;
 use App\Repository\PersonaRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
