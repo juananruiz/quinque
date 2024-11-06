@@ -26,7 +26,17 @@ class SolicitudType extends AbstractType
             ->add(
                 'personaId', IntegerType::class, 
                 [
-                    'attr' => ['class' => 'form-control']
+                    'attr' => [
+                        'class' => 'form-control', 
+                        'style' => 'display:none;'],
+                    'label' => false
+                ]
+            )
+            ->add(
+                'convocatoria', null,
+                [
+                    'attr' => ['class' => 'form-control'],
+                    'label' => 'Convocatoria'
                 ]
             )
             ->add(
@@ -37,10 +47,17 @@ class SolicitudType extends AbstractType
             );
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param OptionsResolver $resolver The resolver for the options.
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Solicitud::class,
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => Solicitud::class,
+            ]
+        );
     }
 }

@@ -7,8 +7,9 @@
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <button class="btn">Crear</button>
     {{ form_end(form) }}
 
-    <a href="{{ path('persona_index') }}" class="btn btn-secondary">Volver al listado</a>
+    <div class="d-flex justify-content-end">
+        <a href="{{ path('persona_index') }}" class="btn btn-secondary">Volver al listado</a>
+    </div>
 {% endblock %}

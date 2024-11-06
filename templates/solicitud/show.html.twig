@@ -5,10 +5,13 @@
 {% block title %}Solicitud Quinquenio{% endblock %}
 
 {% block body %}
-    <h1>Solicitud Quinquenio</h1>
-
-    <h2>Datos del Solicitante</h2>
+    <h2>Solicitud quinquenio convocatoria {{ solicitud.convocatoria }}</h2>
+    <h3>Datos del Solicitante</h3>
     <table class="table table-striped">
+        <tr>
+            <th>DNI</th>
+            <td>{{ persona.dni }}</td>
+        </tr>
         <tr>
             <th>Nombre</th>
             <td>{{ persona.nombre }}</td>
@@ -18,20 +21,22 @@
             <td>{{ persona.apellidos }}</td>
         </tr>
         <tr>
-            <th>Teléfono</th>
-            <td>{{ persona.telefono }}</td>
-        </tr>
-        <tr>
             <th>Fecha de Nacimiento</th>
             <td>{{ persona.fechaNacimiento|date('Y-m-d') }}</td>
         </tr>
         <tr>
-            <th>DNI</th>
-            <td>{{ persona.dni }}</td>
+            <th>Teléfono</th>
+            <td>{{ persona.telefono }}</td>
         </tr>
+        <tr>
+            <th>Fecha de Solicitud</th>
+            <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
+        </tr>
+        
     </table>
     
-    <h2>Méritos aportados</h2>
+    <h3>Méritos</h3>
+    <p><strong>Total de días computados:</strong> {{ totalDiasComputados }}</p>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -39,6 +44,7 @@
                 <th>Organismo</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
+                <th>Días</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -50,10 +56,12 @@
                     <td>{{ merito.organismo }}</td>
                     <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
                     <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
+                    <td>{{ merito.diasTranscurridos }}</td>                
                     <td>{{ merito.estado }}</td>
                     <td>
                         <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
-                        <button type="button" class="btn btn-danger btn-sm" data-id="{{ merito.id }}" class="delete-merito">Borrar</button>
+                        <button type="button" class="btn btn-danger btn-sm delete-merito" 
+                        data-id="{{ merito.id }}">Borrar</button>
                     </td>
                     
                 </tr>
@@ -92,6 +100,23 @@
                             <label for="fechaFin" class="form-label">Fecha Fin</label>
                             <input type="date" class="form-control" id="fechaFin" name="fechaFin">
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Días</label>
+                            <input type="text" class="form-control" id="duracion" readonly>
+                        </div>
+                        <script>
+                            document.getElementById('fechaInicio').addEventListener('change', calcularDuracion);
+                            document.getElementById('fechaFin').addEventListener('change', calcularDuracion);
+                            
+                            function calcularDuracion() {
+                                const inicio = new Date(document.getElementById('fechaInicio').value);
+                                const fin = new Date(document.getElementById('fechaFin').value);
+                                if (inicio && fin) {
+                                    const diferencia = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+                                    document.getElementById('duracion').value = diferencia;
+                                }
+                            }
+                        </script>
                         <div class="mb-3">
                             <label for="estado" class="form-label">Estado</label>
                             <input type="number" class="form-control" id="estado" name="estado">
@@ -167,37 +192,33 @@
                     alert('Ha ocurrido un error al procesar la solicitud');
                 }
             });
-        });
 
-        // Escuchar el evento de clic en los botones de borrar
-        document.querySelectorAll('.delete-merito').forEach(function (button) {
-            button.addEventListener('click', function () {
-                const meritoId = this.getAttribute('data-id');
-                const confirmation = confirm('¿Estás seguro de que deseas borrar este mérito?');
-
-                if (confirmation) {
-                    fetch(`/merito/delete/${meritoId}`, {
-                        method: 'DELETE', // Usar el método DELETE
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            alert(data.message);
-                            // Opcional: Recargar la página o eliminar la fila de la tabla
-                            location.reload(); // Recargar la página
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Ocurrió un error al intentar borrar el mérito.');
-                    });
-                }
+            // Delete merit functionality
+            document.querySelectorAll('.delete-merito').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (confirm('¿Estás seguro de que quieres borrar este mérito?')) {
+                        const meritoId = this.getAttribute('data-id');
+                        fetch(`/merito/delete/${meritoId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remove the row from the table
+                                this.closest('tr').remove();
+                            } else {
+                                alert('Error al borrar el mérito');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error al borrar el mérito');
+                        });
+                    }
+                });
             });
         });
     </script>
