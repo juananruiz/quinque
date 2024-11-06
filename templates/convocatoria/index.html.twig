@@ -1,0 +1,36 @@
+{# templates/convocatoria/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Convocatorias{% endblock %}
+
+{% block body %}
+    <h1>Listado de Convocatorias</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for convocatoria in convocatorias %}
+                <tr>
+                    <td>{{ convocatoria.id }}</td>
+                    <td>{{ convocatoria.nombre }}</td>
+                    <td>{{ convocatoria.fechaInicioSolicitud|date('Y-m-d') }}</td>
+                    <td>{{ convocatoria.fechaFinSolicitud|date('Y-m-d') }}</td>
+                    <td>
+                        <a href="{{ path('convocatoria_show', {'id': convocatoria.id}) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ path('convocatoria_edit', {'id': convocatoria.id}) }}" class="btn btn-warning btn-sm">Editar</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('convocatoria_new') }}" class="btn btn-primary">Nueva Convocatoria</a>
+{% endblock %}
