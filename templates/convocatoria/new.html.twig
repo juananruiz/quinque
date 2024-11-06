@@ -1,0 +1,12 @@
+{# templates/convocatoria/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nueva Convocatoria{% endblock %}
+
+{% block body %}
+    <h1>Nueva Convocatoria</h1>
+
+    {{ include('convocatoria/_form.html.twig') }}
+
+    <a href="{{ path('convocatoria_index') }}" class="btn btn-secondary">Volver</a>
+{% endblock %}
