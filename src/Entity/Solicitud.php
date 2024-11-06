@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Convocatoria;
 
 #[ORM\Entity(repositoryClass: SolicitudRepository::class)]
 /**
@@ -24,12 +25,13 @@ class Solicitud
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaEntrada = null;
 
-    #[ORM\Column(type: Types::STRING, length: 25)]
-    private ?string $convocatoria = null;
-
     #[ORM\ManyToOne(targetEntity: Persona::class, inversedBy: 'solicitudes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Persona $persona = null;
+
+    #[ORM\ManyToOne(inversedBy: 'solicitudes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Convocatoria $convocatoria = null;
 
     #[
         ORM\OneToMany(
@@ -110,12 +112,12 @@ class Solicitud
         return $this;
     }
 
-    public function getConvocatoria(): ?string
+    public function getConvocatoria(): ?Convocatoria
     {
         return $this->convocatoria;
     }
 
-    public function setConvocatoria(?string $convocatoria): static
+    public function setConvocatoria(?Convocatoria $convocatoria): static
     {
         $this->convocatoria = $convocatoria;
 
