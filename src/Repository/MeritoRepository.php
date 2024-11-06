@@ -10,7 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Merito>
  */
-#[ORM\Table(name: 'quinquenio_merito')]
+#[ORM\Table(name: 'merito')]
 class MeritoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

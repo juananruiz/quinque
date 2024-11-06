@@ -29,6 +29,7 @@ class Merito
     #[ORM\Column]
     private ?int $estado = 0;
 
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
     private ?\DateTimeInterface $createdAt = null;
 
@@ -128,5 +129,19 @@ class Merito
         $this->solicitud = $solicitud;
 
         return $this;
+    }
+
+    /**
+     * Calculate the number of days between fechaInicio and fechaFin (inclusive)
+     */
+    public function getDiasTranscurridos(): ?int
+    {
+        if (!$this->fechaInicio || !$this->fechaFin) {
+            return null;
+        }
+
+        $diff = $this->fechaFin->diff($this->fechaInicio);
+        // Add 1 to include both start and end dates
+        return $diff->days + 1;
     }
 }

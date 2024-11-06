@@ -1,5 +1,11 @@
 <?php
-// src/Controller/MeritoController.php
+
+/**
+ * Controller for managing Merito entities.
+ *
+ * path: src/Controller/MeritoController.php 
+ **/
+
 namespace App\Controller;
 
 use App\Entity\Merito;
@@ -46,13 +52,13 @@ class MeritoController extends AbstractController
             $this->entityManager->flush();
 
             return $this->redirectToRoute(
-                'solicitud_show', 
+                'solicitud_show',
                 ['id' => $merito->getSolicitud()->getId()]
             );
         }
 
         return $this->render(
-            'merito/add.html.twig', 
+            'merito/add.html.twig',
             ['form' => $form->createView(),]
         );
     }
@@ -77,8 +83,8 @@ class MeritoController extends AbstractController
         if (!$solicitud) {
             return new JsonResponse(
                 [
-                'status' => 'error',
-                'message' => 'Solicitud no encontrada',
+                    'status' => 'error',
+                    'message' => 'Solicitud no encontrada',
                 ]
             );
         }
@@ -91,19 +97,19 @@ class MeritoController extends AbstractController
 
             return new JsonResponse(
                 [
-                'status' => 'success',
-                'message' => 'Mérito guardado correctamente',
-                'redirect' => $this->generateUrl(
-                    'solicitud_show', 
-                    ['id' => $merito->getSolicitud()->getId()]
-                )
+                    'status' => 'success',
+                    'message' => 'Mérito guardado correctamente',
+                    'redirect' => $this->generateUrl(
+                        'solicitud_show',
+                        ['id' => $merito->getSolicitud()->getId()]
+                    )
                 ]
             );
         } catch (\Exception $e) {
             return new JsonResponse(
                 [
-                'status' => 'error',
-                'message' => 'Error al guardar el mérito: ' . $e->getMessage(),
+                    'status' => 'error',
+                    'message' => 'Error al guardar el mérito: ' . $e->getMessage(),
                 ]
             );
         }
@@ -170,30 +176,28 @@ class MeritoController extends AbstractController
      *
      * @return JsonResponse
      */
-    #[Route('/merito/{id}/delete', name: 'merito_delete')]
-    public function delete($id): Response
+    #[Route('/merito/delete/{id}', name: 'merito_delete', methods: ['POST'])]
+    public function delete(Merito $merito): JsonResponse
     {
-        // Lógica para eliminar el mérito por ID
-        $merito = $this->getDoctrine()->getRepository(Merito::class)->find($id);
-        if ($merito) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($merito);
-            $entityManager->flush();
-            
-            return $this->json(
+        try {
+            $solicitudId = $merito->getSolicitud()->getId();
+            $this->entityManager->remove($merito);
+            $this->entityManager->flush();
+
+            return new JsonResponse(
                 [
-                'status' => 'success', 
-                'message' => 'Mérito eliminado correctamente.'
+                    'success' => true,
+                    'message' => 'Mérito borrado correctamente'
                 ]
             );
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                [
+                    'success' => false,
+                    'message' => 'Error al borrar el mérito'
+                ],
+                500
+            );
         }
-
-        return $this->json(
-            [
-                'status' => 'error', 
-                'message' => 'Mérito no encontrado.'
-            ], 
-            404
-        );
     }
 }
