@@ -5,7 +5,7 @@
 {% block title %}Solicitud Quinquenio{% endblock %}
 
 {% block body %}
-    <h2>Solicitud quinquenio convocatoria {{ solicitud.convocatoria.nombre }}</h2>
+    <h2><i class="fas fa-paper-plane"></i> Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}</h2>
     <h3>Datos del Solicitante</h3>
     <table class="table table-striped">
         <tr>
@@ -34,8 +34,8 @@
         </tr>
     </table>
 	<a href="{{ path('persona_show', {'id': persona.id}) }}" class="btn btn-secondary mb-3"><i class="fas fa-user"></i> Ver solicitante</a>
-	<a href="{{ path('convocatoria_show', {'id': solicitud.convocatoria.id}) }}" class="btn btn-secondary mb-3"><i class="fas fa-bullorn"></i> Ver convocatoria</a>
-    <h3>Méritos</h3>
+	<a href="{{ path('convocatoria_show', {'id': solicitud.convocatoria.id}) }}" class="btn btn-secondary mb-3"><i class="fas fa-bullhorn"></i> Ver convocatoria</a>
+    <h3><i class="fas fa-star"></i> Méritos</h3>
     <p><strong>Total de días computados:</strong> {{ totalDiasComputados }}</p>
     <table class="table table-striped">
         <thead>
@@ -70,7 +70,7 @@
     </table>
 
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
-        Agregar Mérito
+        <i class="fas fa-plus"></i> Agregar Mérito
     </button>
 
     <!-- Modal -->
