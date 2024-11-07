@@ -19,6 +19,9 @@ class Convocatoria
     #[ORM\Column(length: 255)]
     private ?string $nombre = null;
 
+    #[ORM\Column]
+    private ?int $activa = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaInicioSolicitud = null;
 
@@ -46,6 +49,18 @@ class Convocatoria
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    public function getActiva(): ?int
+    {
+        return $this->activa;
+    }
+
+    public function setActiva(int $activa): static
+    {
+        $this->activa = $activa;
 
         return $this;
     }
