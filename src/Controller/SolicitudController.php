@@ -1,7 +1,7 @@
 <?php
 
-/** 
- * Src/Controller/SolicitudController.php 
+/**
+ * Src/Controller/SolicitudController.php
  */
 
 namespace App\Controller;
@@ -13,9 +13,9 @@ use App\Form\SolicitudType;
 use App\Repository\PersonaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller for handling Solicitud related actions.
@@ -41,7 +41,7 @@ class SolicitudController extends AbstractController
      * Displays a Solicitud entity.
      *
      * @param Solicitud $solicitud The Solicitud entity
-     * 
+     *
      * @return Response The response object
      */
     #[Route('/solicitud/{id}', name: 'solicitud_show')]
@@ -80,9 +80,6 @@ class SolicitudController extends AbstractController
 
         $solicitud = new Solicitud();
         $solicitud->setPersona($persona);
-        // Set default convocatoria value as current year
-        $solicitud->setConvocatoria((new \DateTime())->format('Y'));
-
         $form = $this->createForm(SolicitudType::class, $solicitud);
         $form->handleRequest($request);
 
