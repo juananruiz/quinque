@@ -17,6 +17,12 @@
         {{ form_widget(form.fechaFinSolicitud, {'attr': {'class': 'form-control'}}) }}
         {{ form_errors(form.fechaFinSolicitud) }}
     </div>
+    
+    <div class="mb-3">
+        {{ form_label(form.activa) }}
+        {{ form_widget(form.activa, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.activa) }}
+    </div>
 
     <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
 {{ form_end(form) }}

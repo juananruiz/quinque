@@ -19,6 +19,10 @@ class ConvocatoriaType extends AbstractType
             ->add('fechaFinSolicitud', null, [
                 'widget' => 'single_text',
             ])
+			->add('activa', null, [
+				'label' => 'Activa',
+				'required' => true,
+			])
         ;
     }
 
