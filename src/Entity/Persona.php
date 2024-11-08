@@ -38,6 +38,10 @@ class Persona
     #[ORM\JoinColumn(nullable: true)]
     private ?Categoria $categoria = null;
 
+    #[ORM\ManyToOne(inversedBy: 'personas')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Departamento $departamento = null;
+
     public function __construct()
     {
         $this->solicitudes = new ArrayCollection();
@@ -146,6 +150,17 @@ class Persona
     public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
+        return $this;
+    }
+
+    public function getDepartamento(): ?Departamento
+    {
+        return $this->departamento;
+    }
+
+    public function setDepartamento(?Departamento $departamento): static
+    {
+        $this->departamento = $departamento;
         return $this;
     }
 }
