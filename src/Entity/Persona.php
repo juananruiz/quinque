@@ -34,6 +34,10 @@ class Persona
     #[ORM\OneToMany(mappedBy: 'persona', targetEntity: Solicitud::class, orphanRemoval: true)]
     private Collection $solicitudes;
 
+    #[ORM\ManyToOne(inversedBy: 'personas')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Categoria $categoria = null;
+
     public function __construct()
     {
         $this->solicitudes = new ArrayCollection();
@@ -131,6 +135,17 @@ class Persona
             }
         }
 
+        return $this;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
         return $this;
     }
 }

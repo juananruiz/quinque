@@ -5,128 +5,181 @@
 {% block title %}Solicitud Quinquenio{% endblock %}
 
 {% block body %}
-    <h2><i class="fas fa-paper-plane"></i> Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}</h2>
-    <h3>Datos del Solicitante</h3>
-    <table class="table table-striped">
-        <tr>
-            <th>DNI</th>
-            <td>{{ persona.dni }}</td>
-        </tr>
-        <tr>
-            <th>Nombre</th>
-            <td>{{ persona.nombre }}</td>
-        </tr>
-        <tr>
-            <th>Apellidos</th>
-            <td>{{ persona.apellidos }}</td>
-        </tr>
-        <tr>
-            <th>Fecha de Nacimiento</th>
-            <td>{{ persona.fechaNacimiento|date('Y-m-d') }}</td>
-        </tr>
-        <tr>
-            <th>Teléfono</th>
-            <td>{{ persona.telefono }}</td>
-        </tr>
-        <tr>
-            <th>Fecha de Solicitud</th>
-            <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
-        </tr>
-    </table>
-	<a href="{{ path('persona_show', {'id': persona.id}) }}" class="btn btn-secondary mb-3"><i class="fas fa-user"></i> Ver solicitante</a>
-	<a href="{{ path('convocatoria_show', {'id': solicitud.convocatoria.id}) }}" class="btn btn-secondary mb-3"><i class="fas fa-bullhorn"></i> Ver convocatoria</a>
-    <h3><i class="fas fa-star"></i> Méritos</h3>
-    <p><strong>Total de días computados:</strong> {{ totalDiasComputados }}</p>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Organismo</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
-                <th>Días</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for merito in meritos %}
+    {# Header Section #}
+    <h1 class="mb-4">
+        <i class="fas fa-paper-plane" aria-hidden="true"></i> 
+        Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}
+    </h1>
+
+    {# Solicitante Information Section #}
+    <section aria-labelledby="datos-solicitante">
+        <h2 id="datos-solicitante">Datos del Solicitante</h2>
+        <table class="table table-striped">
+            <tbody>
                 <tr>
-                    <td>{{ merito.id }}</td>
-                    <td>{{ merito.organismo }}</td>
-                    <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
-                    <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
-                    <td>{{ merito.diasTranscurridos }}</td>                
-                    <td>{{ merito.estado }}</td>
-                    <td>
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
-                        <button type="button" class="btn btn-danger btn-sm delete-merito" 
-                        data-id="{{ merito.id }}">Borrar</button>
-                    </td>
-                    
+                    <th scope="row">DNI</th>
+                    <td>{{ persona.dni }}</td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                <tr>
+                    <th scope="row">Nombre</th>
+                    <td>{{ persona.nombre }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Apellidos</th>
+                    <td>{{ persona.apellidos }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Fecha de Nacimiento</th>
+                    <td>{{ persona.fechaNacimiento|date('Y-m-d') }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Teléfono</th>
+                    <td>{{ persona.telefono }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Fecha de Solicitud</th>
+                    <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
-        <i class="fas fa-plus"></i> Agregar Mérito
-    </button>
+        <div class="btn-group mb-4">
+            <a href="{{ path('persona_show', {'id': persona.id}) }}" 
+               class="btn btn-secondary" 
+               aria-label="Ver detalles del solicitante">
+                <i class="fas fa-user" aria-hidden="true"></i> Ver solicitante
+            </a>
+            <a href="{{ path('convocatoria_show', {'id': solicitud.convocatoria.id}) }}" 
+               class="btn btn-secondary"
+               aria-label="Ver detalles de la convocatoria">
+                <i class="fas fa-bullhorn" aria-hidden="true"></i> Ver convocatoria
+            </a>
+        </div>
+    </section>
 
-    <!-- Modal -->
-    <div class="modal fade" id="addMeritoModal" tabindex="-1" aria-labelledby="addMeritoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addMeritoModalLabel">Agregar Mérito</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="meritoForm" method="post">
-                        <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
-                        <div class="mb-3">
-                            <label for="organismo" class="form-label">Organismo</label>
-                            <input type="text" class="form-control" id="organismo" name="organismo">
-                        </div>
-                        <div class="mb-3">
-                            <label for="categoriaId" class="form-label">Categoría ID</label>
-                            <input type="number" class="form-control" id="categoriaId" name="categoriaId">
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
-                            <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
-                        </div>
-                        <div class="mb-3">
-                            <label for="fechaFin" class="form-label">Fecha Fin</label>
-                            <input type="date" class="form-control" id="fechaFin" name="fechaFin">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Días</label>
-                            <input type="text" class="form-control" id="duracion" readonly>
-                        </div>
-                        <script>
-                            document.getElementById('fechaInicio').addEventListener('change', calcularDuracion);
-                            document.getElementById('fechaFin').addEventListener('change', calcularDuracion);
-                            
-                            function calcularDuracion() {
-                                const inicio = new Date(document.getElementById('fechaInicio').value);
-                                const fin = new Date(document.getElementById('fechaFin').value);
-                                if (inicio && fin) {
-                                    const diferencia = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
-                                    document.getElementById('duracion').value = diferencia;
+    {# Meritos Section #}
+    <section aria-labelledby="meritos-section">
+                    <td>
+                        {% set badgeClasses = {
+                            0: 'badge bg-secondary',
+                            1: 'badge bg-success',
+                            2: 'badge bg-danger',
+                            3: 'badge bg-warning'
+                        } %}
+                        <span class="{{ badgeClasses[merito.estado] }}">
+                            {% if merito.estado == 0 %}
+                                Pendiente
+                            {% elseif merito.estado == 1 %}
+                                Admitido
+                            {% elseif merito.estado == 2 %}
+                                Denegado
+                            {% elseif merito.estado == 3 %}
+                                Parcial
+                            {% endif %}
+                        </span>
+                    </td>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Fecha Inicio</th>
+                    <th scope="col">Fecha Fin</th>
+                    <th scope="col">Días</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for merito in meritos %}
+                    <tr>
+                        <td>{{ merito.id }}</td>
+                        <td>{{ merito.organismo }}</td>
+                        <td>{{ merito.categoriaId }}</td>
+                        <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
+                        <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
+                        <td>{{ merito.diasTranscurridos }}</td>                
+                        <td>{% if merito.estado == 0 %}
+                                <span class="badge bg-secondary">Pendiente</span>
+                            {% elseif merito.estado == 1 %}
+                                <span class="badge bg-success">Admitido</span>
+                            {% elseif merito.estado == 2 %}
+                                <span class="badge bg-danger">Denegado</span>
+                            {% elseif merito.estado == 3 %}
+                                <span class="badge bg-warning">Parcial</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
+                            <button type="button" class="btn btn-danger btn-sm delete-merito" 
+                            data-id="{{ merito.id }}">Borrar</button>
+                        </td>
+                        
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
+            <i class="fas fa-plus"></i> Agregar Mérito
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addMeritoModal" tabindex="-1" aria-labelledby="addMeritoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addMeritoModalLabel">Agregar Mérito</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="meritoForm" method="post">
+                            <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
+                            <div class="mb-3">
+                                <label for="organismo" class="form-label">Organismo</label>
+                                <input type="text" class="form-control" id="organismo" name="organismo">
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoriaId" class="form-label">Categoría ID</label>
+                                <input type="number" class="form-control" id="categoriaId" name="categoriaId">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechaFin" class="form-label">Fecha Fin</label>
+                                <input type="date" class="form-control" id="fechaFin" name="fechaFin">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Días</label>
+                                <input type="text" class="form-control" id="duracion" readonly>
+                            </div>
+                            <script>
+                                document.getElementById('fechaInicio').addEventListener('change', calcularDuracion);
+                                document.getElementById('fechaFin').addEventListener('change', calcularDuracion);
+                                
+                                function calcularDuracion() {
+                                    const inicio = new Date(document.getElementById('fechaInicio').value);
+                                    const fin = new Date(document.getElementById('fechaFin').value);
+                                    if (inicio && fin) {
+                                        const diferencia = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+                                        document.getElementById('duracion').value = diferencia;
+                                    }
                                 }
-                            }
-                        </script>
-                        <div class="mb-3">
-                            <label for="estado" class="form-label">Estado</label>
-                            <input type="number" class="form-control" id="estado" name="estado">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </form>
+                            </script>
+                            <div class="mb-3">
+                                <label for="estado" class="form-label">Estado</label>
+                                <select class="form-select" id="estado" name="estado">
+                                    <option value="0">Pendiente</option>
+                                    <option value="1">Admitido</option>
+                                    <option value="2">Denegado</option>
+                                    <option value="3">Parcial</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block javascripts %}
