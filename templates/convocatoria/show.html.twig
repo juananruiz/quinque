@@ -41,7 +41,7 @@
 					<td>{{ solicitud.persona.nombre}} {{ solicitud.persona.apellidos}}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
                     <td>
-                        <a href="{{ path('solicitud_show', {'id': solicitud.id}) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ path('solicitud_show', {'id': solicitud.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
                     </td>
                 </tr>
             {% endfor %}
