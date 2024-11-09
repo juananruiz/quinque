@@ -1,0 +1,17 @@
+{# templates/departamento/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Departamento{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Editar Departamento</h1>
+
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn-primary">Guardar</button>
+        {{ form_end(form) }}
+
+        <a href="{{ path('departamento_index') }}" class="btn btn-secondary mt-3">Volver a la lista de departamentos</a>
+    </div>
+{% endblock %}

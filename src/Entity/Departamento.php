@@ -13,8 +13,8 @@ class Departamento
     #[ORM\Column]
     private ?int $id = null;
 
-	#[ORM\OneToMany(mappedBy: 'departamento', targetEntity: Persona::class)]
-    private Collection $personas;
+	//#[ORM\OneToMany(mappedBy: 'departamento', targetEntity: Persona::class)]
+    //private Collection $personas;
 
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $codigoRpt = null;
