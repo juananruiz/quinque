@@ -59,62 +59,54 @@
 
     {# Meritos Section #}
     <section aria-labelledby="meritos-section">
-                    <td>
-                        {% set badgeClasses = {
-                            0: 'badge bg-secondary',
-                            1: 'badge bg-success',
-                            2: 'badge bg-danger',
-                            3: 'badge bg-warning'
-                        } %}
-                        <span class="{{ badgeClasses[merito.estado] }}">
-                            {% if merito.estado == 0 %}
-                                Pendiente
-                            {% elseif merito.estado == 1 %}
-                                Admitido
-                            {% elseif merito.estado == 2 %}
-                                Denegado
-                            {% elseif merito.estado == 3 %}
-                                Parcial
-                            {% endif %}
-                        </span>
-                    </td>
-                    <th scope="col">Categoría</th>
-                    <th scope="col">Fecha Inicio</th>
-                    <th scope="col">Fecha Fin</th>
-                    <th scope="col">Días</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for merito in meritos %}
+        {% if meritos is defined and meritos|length > 0 %}
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ merito.id }}</td>
-                        <td>{{ merito.organismo }}</td>
-                        <td>{{ merito.categoriaId }}</td>
-                        <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
-                        <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
-                        <td>{{ merito.diasTranscurridos }}</td>                
-                        <td>{% if merito.estado == 0 %}
-                                <span class="badge bg-secondary">Pendiente</span>
-                            {% elseif merito.estado == 1 %}
-                                <span class="badge bg-success">Admitido</span>
-                            {% elseif merito.estado == 2 %}
-                                <span class="badge bg-danger">Denegado</span>
-                            {% elseif merito.estado == 3 %}
-                                <span class="badge bg-warning">Parcial</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">Editar</button>
-                            <button type="button" class="btn btn-danger btn-sm delete-merito" 
-                            data-id="{{ merito.id }}">Borrar</button>
-                        </td>
-                        
+                        <th scope="col">ID</th>
+                        <th scope="col">Organismo</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Fecha Inicio</th>
+                        <th scope="col">Fecha Fin</th>
+                        <th scope="col">Días</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for merito in meritos %}
+                        <tr>
+                            <td>{{ merito.id }}</td>
+                            <td>{{ merito.organismo }}</td>
+                            <td>{{ merito.categoriaId }}</td>
+                            <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
+                            <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
+                            <td>{{ merito.diasTranscurridos }}</td>                
+                            <td>
+                                {% if merito.estado == 0 %}
+                                    <span class="badge bg-secondary">Pendiente</span>
+                                {% elseif merito.estado == 1 %}
+                                    <span class="badge bg-success">Admitido</span>
+                                {% elseif merito.estado == 2 %}
+                                    <span class="badge bg-danger">Denegado</span>
+                                {% elseif merito.estado == 3 %}
+                                    <span class="badge bg-warning">Parcial</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}"><i class="fas fa-edit"></i> Editar</button>
+                                <button type="button" class="btn btn-danger btn-sm delete-merito" 
+                                data-id="{{ merito.id }}"><i class="fas fa-trash"></i> Borrar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">
+                No hay méritos registrados todavía.
+            </div>
+        {% endif %}
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
             <i class="fas fa-plus"></i> Agregar Mérito
