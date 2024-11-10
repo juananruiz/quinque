@@ -17,27 +17,22 @@
         <table class="table table-striped">
             <tbody>
                 <tr>
-                    <th scope="row">DNI</th>
+                    <th>DNI</th>
                     <td>{{ persona.dni }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Nombre</th>
-                    <td>{{ persona.nombre }}</td>
+                    <th>Nombre completo</th>
+                    <td>{{ persona.nombre }} {{ persona.apellidos }}</td>
+                </tr>
+				<tr>
+					<th>Departamento</th>
+					<td>{{ persona.departamento.nombre }}</td>
+                <tr>
+                    <th>Correo</th>
+                    <td>{{ persona.email }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Apellidos</th>
-                    <td>{{ persona.apellidos }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Fecha de Nacimiento</th>
-                    <td>{{ persona.fechaNacimiento|date('Y-m-d') }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Teléfono</th>
-                    <td>{{ persona.telefono }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Fecha de Solicitud</th>
+                    <th>Fecha de Solicitud</th>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
                 </tr>
             </tbody>

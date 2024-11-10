@@ -42,6 +42,9 @@ class Persona
     #[ORM\JoinColumn(nullable: true)]
     private ?Departamento $departamento = null;
 
+    #[ORM\Column(length: 180, nullable: true)]
+    private ?string $email = null;
+
     public function __construct()
     {
         $this->solicitudes = new ArrayCollection();
@@ -109,6 +112,17 @@ class Persona
     {
         $this->dni = $dni;
 
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
         return $this;
     }
 

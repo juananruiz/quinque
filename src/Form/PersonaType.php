@@ -21,6 +21,13 @@ class PersonaType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('dni')
+            ->add('email', null, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'ejemplo@dominio.com'
+                ],
+                'required' => false
+            ])
             ->add('departamento', EntityType::class, [
                 'class' => Departamento::class,
                 'choice_label' => 'nombre',
