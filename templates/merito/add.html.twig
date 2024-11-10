@@ -8,11 +8,4 @@
         <button class="btn btn-primary">Guardar</button>
     {{ form_end(form) }}
 
-    {% for label, messages in app.flashes %}
-        <div class="alert alert-{{ label }}">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endfor %}
 {% endblock %}
