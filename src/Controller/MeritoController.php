@@ -140,6 +140,13 @@ class MeritoController extends AbstractController
             $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
             $merito->setEstado($request->request->get('estado'));
 
+            // Check for overlapping date ranges
+            $solicitud = $merito->getSolicitud();
+            if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
+                $merito->setEstado(4);
+                $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
+            }
+
             $this->entityManager->flush();
 
             return new JsonResponse([
