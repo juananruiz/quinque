@@ -1,3 +1,8 @@
 {
-	"phpcs.standard": ""
+	"phpcs.standard": "",
+	"cSpell.words": [
+		"categoria",
+		"duracion",
+		"Duracion"
+	]
 }
