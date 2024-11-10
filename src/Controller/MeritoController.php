@@ -142,7 +142,7 @@ class MeritoController extends AbstractController
 
             // Check for overlapping date ranges
             $solicitud = $merito->getSolicitud();
-            if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
+            if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
                 $merito->setEstado(4);
                 $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
             }
@@ -223,9 +223,12 @@ class MeritoController extends AbstractController
      *
      * @return bool True if the date range overlaps, false otherwise.
      */
-    private function isDateRangeOverlapping(Solicitud $solicitud, \DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin): bool
+    private function isDateRangeOverlapping(Solicitud $solicitud, \DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, ?Merito $currentMerito = null): bool
     {
         foreach ($solicitud->getMeritos() as $existingMerito) {
+            if ($currentMerito && $existingMerito->getId() === $currentMerito->getId()) {
+                continue;
+            }
             if (
                 ($fechaInicio >= $existingMerito->getFechaInicio() && $fechaInicio <= $existingMerito->getFechaFin()) ||
                 ($fechaFin >= $existingMerito->getFechaInicio() && $fechaFin <= $existingMerito->getFechaFin()) ||
