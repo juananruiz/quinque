@@ -6,6 +6,7 @@ use App\Entity\Convocatoria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ConvocatoriaType extends AbstractType
 {
@@ -13,16 +14,18 @@ class ConvocatoriaType extends AbstractType
     {
         $builder
             ->add('nombre')
-            ->add('fechaInicioSolicitud', null, [
-                'widget' => 'single_text',
+            ->add('fechaInicioSolicitud')
+            ->add('fechaFinSolicitud')
+            ->add('activa', ChoiceType::class, [
+                'label' => 'Estado',
+                'choices' => [
+                    'Inactiva' => 0,
+                    'Activa' => 1
+                ],
+                'expanded' => false,
+                'multiple' => false,
+                'attr' => ['class' => 'form-control']
             ])
-            ->add('fechaFinSolicitud', null, [
-                'widget' => 'single_text',
-            ])
-			->add('activa', null, [
-				'label' => 'Activa',
-				'required' => true,
-			])
         ;
     }
 
