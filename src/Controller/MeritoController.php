@@ -91,6 +91,12 @@ class MeritoController extends AbstractController
 
         $merito->setSolicitud($solicitud);
 
+        // Check for overlapping date ranges
+        if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
+            $merito->setEstado(4);
+            $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
+        }
+
         try {
             $this->entityManager->persist($merito);
             $this->entityManager->flush();
@@ -199,5 +205,29 @@ class MeritoController extends AbstractController
                 500
             );
         }
+    }
+
+    /**
+     * Checks if the given date range overlaps with any existing merits in the solicitud.
+     *
+     * @param Solicitud $solicitud The solicitud entity.
+     * @param \DateTimeInterface $fechaInicio The start date of the new merit.
+     * @param \DateTimeInterface $fechaFin The end date of the new merit.
+     *
+     * @return bool True if the date range overlaps, false otherwise.
+     */
+    private function isDateRangeOverlapping(Solicitud $solicitud, \DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin): bool
+    {
+        foreach ($solicitud->getMeritos() as $existingMerito) {
+            if (
+                ($fechaInicio >= $existingMerito->getFechaInicio() && $fechaInicio <= $existingMerito->getFechaFin()) ||
+                ($fechaFin >= $existingMerito->getFechaInicio() && $fechaFin <= $existingMerito->getFechaFin()) ||
+                ($fechaInicio <= $existingMerito->getFechaInicio() && $fechaFin >= $existingMerito->getFechaFin())
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
