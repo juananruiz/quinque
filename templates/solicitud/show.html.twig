@@ -124,19 +124,19 @@
                             <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
                             <div class="mb-3">
                                 <label for="organismo" class="form-label">Organismo</label>
-                                <input type="text" class="form-control" id="organismo" name="organismo">
+                                <input type="text" required class="form-control" id="organismo" name="organismo">
                             </div>
                             <div class="mb-3">
                                 <label for="categoriaId" class="form-label">Categoría ID</label>
-                                <input type="number" class="form-control" id="categoriaId" name="categoriaId">
+                                <input type="number" required class="form-control" id="categoriaId" name="categoriaId">
                             </div>
                             <div class="mb-3">
                                 <label for="fechaInicio" class="form-label">Fecha Inicio</label>
-                                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+                                <input type="date" required class="form-control" id="fechaInicio" name="fechaInicio">
                             </div>
                             <div class="mb-3">
                                 <label for="fechaFin" class="form-label">Fecha Fin</label>
-                                <input type="date" class="form-control" id="fechaFin" name="fechaFin">
+                                <input type="date" required class="form-control" id="fechaFin" name="fechaFin">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Días</label>
@@ -147,10 +147,10 @@
                                 document.getElementById('fechaFin').addEventListener('change', calcularDuracion);
                                 
                                 function calcularDuracion() {
-                                    const inicio = new Date(document.getElementById('fechaInicio').value);
-                                    const fin = new Date(document.getElementById('fechaFin').value);
-                                    if (inicio && fin) {
-                                        const diferencia = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+                                    const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+                                    const fechaFin = new Date(document.getElementById('fechaFin').value);
+                                    if (fechaInicio && fechaFin) {
+                                        const diferencia = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
                                         document.getElementById('duracion').value = diferencia;
                                     }
                                 }
@@ -158,7 +158,7 @@
                             <div class="mb-3">
                                 <label for="estado" class="form-label">Estado</label>
                                 <select class="form-select" id="estado" name="estado">
-                                    <option value="0">Pendiente</option>
+                                    <option value="0" default>Pendiente</option>
                                     <option value="1">Admitido</option>
                                     <option value="2">Denegado</option>
                                     <option value="3">Parcial</option>
