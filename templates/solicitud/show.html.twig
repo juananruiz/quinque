@@ -24,9 +24,9 @@
                     <th>Nombre completo</th>
                     <td>{{ persona.nombre }} {{ persona.apellidos }}</td>
                 </tr>
-				<tr>
-					<th>Departamento</th>
-					<td>{{ persona.departamento.nombre }}</td>
+                <tr>
+                    <th>Departamento</th>
+                    <td>{{ persona.departamento.nombre }}</td>
                 <tr>
                     <th>Correo</th>
                     <td>{{ persona.email }}</td>
@@ -54,8 +54,21 @@
 
     {# Meritos Section #}
     <section aria-labelledby="meritos-section">
-		<h2 id="meritos-section">Méritos</h2>
-		<p><strong>Total de días computados:</strong> {{ totalDiasComputados }}</p>
+        <h2 id="meritos-section">Méritos</h2>
+        <div id="requisitos" class="row">
+            <div class="col-md-6">
+                <strong>Total de días computados:</strong> {{ totalDiasComputados }}
+            </div>
+            <div class="col-md-6 text-end">
+            {% if totalDiasComputados >= 1825 %}
+                <button type="button" class="btn btn-primary me-2" data-action="imprimir">
+                <i class="fas fa-file-pdf"></i> Generar resolución 
+                </button>
+            {% else %}
+                <p class="badge bg-danger">No cumple los requisitos para el quinquenio</p>
+            {% endif %}
+            </div>
+        </div>
         {% if meritos is defined and meritos|length > 0 %}
             <table class="table table-striped">
                 <thead>
@@ -88,8 +101,8 @@
                                     <span class="badge bg-danger">Denegado</span>
                                 {% elseif merito.estado == 3 %}
                                     <span class="badge bg-warning">Parcial</span>
-								{% elseif merito.estado == 4 %}
-									<span class="badge bg-info">Solapado</span>
+                                {% elseif merito.estado == 4 %}
+                                    <span class="badge bg-info">Solapado</span>
                                 {% endif %}
                             </td>
                             <td>
