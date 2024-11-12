@@ -17,6 +17,10 @@ class CategoriaType extends AbstractType
                 'label' => 'Nombre',
                 'attr' => ['class' => 'form-control']
             ])
+			->add('abreviatura', TextType::class, [
+                'label' => 'Abreviatura',
+                'attr' => ['class' => 'form-control']
+            ])
         ;
     }
 

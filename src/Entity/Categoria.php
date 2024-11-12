@@ -18,6 +18,9 @@ class Categoria
     #[ORM\Column(length: 255)]
     private ?string $nombre = null;
 
+    #[ORM\Column(length: 6)]
+    private ?string $abreviatura = null;
+
     #[ORM\OneToMany(mappedBy: 'categoria', targetEntity: Persona::class)]
     private Collection $personas;
 
@@ -41,4 +44,16 @@ class Categoria
         $this->nombre = $nombre;
         return $this;
     }
+
+	public function getAbreviatura(): ?string
+    {
+        return $this->abreviatura;
+    }
+
+	public function setAbreviatura(string $abreviatura): static
+	{
+		$this->abreviatura = $abreviatura;
+		return $this;
+
+	}
 }

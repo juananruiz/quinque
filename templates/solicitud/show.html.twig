@@ -7,7 +7,7 @@
 {% block body %}
     {# Header Section #}
     <h1 class="mb-4">
-        <i class="fas fa-paper-plane" aria-hidden="true"></i> 
+        <i class="fas fa-paper-plane text-warning" aria-hidden="true"></i> 
         Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}
     </h1>
 
@@ -133,52 +133,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="meritoForm" method="post">
-                            <input type="hidden" name="solicitud_id" value="{{ solicitud.id }}">
-                            <div class="mb-3">
-                                <label for="organismo" class="form-label">Organismo</label>
-                                <input type="text" required class="form-control" id="organismo" name="organismo">
-                            </div>
-                            <div class="mb-3">
-                                <label for="categoriaId" class="form-label">Categoría ID</label>
-                                <input type="number" required class="form-control" id="categoriaId" name="categoriaId">
-                            </div>
-                            <div class="mb-3">
-                                <label for="fechaInicio" class="form-label">Fecha Inicio</label>
-                                <input type="date" required class="form-control" id="fechaInicio" name="fechaInicio">
-                            </div>
-                            <div class="mb-3">
-                                <label for="fechaFin" class="form-label">Fecha Fin</label>
-                                <input type="date" required class="form-control" id="fechaFin" name="fechaFin">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Días</label>
-                                <input type="text" class="form-control" id="duracion" readonly>
-                            </div>
-                            <script>
-                                document.getElementById('fechaInicio').addEventListener('change', calcularDuracion);
-                                document.getElementById('fechaFin').addEventListener('change', calcularDuracion);
-                                
-                                function calcularDuracion() {
-                                    const fechaInicio = new Date(document.getElementById('fechaInicio').value);
-                                    const fechaFin = new Date(document.getElementById('fechaFin').value);
-                                    if (fechaInicio && fechaFin) {
-                                        const diferencia = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
-                                        document.getElementById('duracion').value = diferencia;
-                                    }
-                                }
-                            </script>
-                            <div class="mb-3">
-                                <label for="estado" class="form-label">Estado</label>
-                                <select class="form-select" id="estado" name="estado">
-                                    <option value="0" default>Pendiente</option>
-                                    <option value="1">Admitido</option>
-                                    <option value="2">Denegado</option>
-                                    <option value="3">Parcial</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                        </form>
+                        {{ include('merito/_form.html.twig') }}
                     </div>
                 </div>
             </div>
