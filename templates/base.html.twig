@@ -34,8 +34,21 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/persona">Solicitantes</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/admin">Administración</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Administración
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('categoria_index') }}">Categorías</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('departamento_index') }}">Departamentos</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('convocatoria_index') }}">Convocatorias</a>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </div>
