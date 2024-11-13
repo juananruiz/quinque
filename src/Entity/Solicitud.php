@@ -129,19 +129,19 @@ class Solicitud
      *
      * @return int Suma total de días.
      */
-    public function getTotalDiasComputados(): int
+    public function getMeritosComputados(): int
     {
-        $totalDias = 0;
+        $diasComputados = 0;
 
         foreach ($this->getMeritos() as $merito) {
+			// Suma solo los días de los méritos cuyo estado sea 1 (admitido).
             if ($merito->getEstado() === 1) {
                 $dias = $merito->getDiasTranscurridos();
                 if ($dias !== null) {
-                    $totalDias += $dias;
+                    $diasComputados += $dias;
                 }
             }
         }
-
-        return $totalDias;
+        return $diasComputados;
     }
 }

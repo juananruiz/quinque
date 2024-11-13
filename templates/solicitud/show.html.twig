@@ -57,10 +57,11 @@
         <h2 id="meritos-section">Méritos</h2>
         <div id="requisitos" class="row">
             <div class="col-md-6">
-                <strong>Total de días computados:</strong> {{ totalDiasComputados }}
+                <strong>Meritos computados:</strong> 
+                {{ meritosComputados|dias_a_periodo }}
             </div>
             <div class="col-md-6 text-end">
-            {% if totalDiasComputados >= 1825 %}
+            {% if meritosComputados >= 1825 %}
                 <button type="button" class="btn btn-primary me-2" data-action="imprimir">
                 <i class="fas fa-file-pdf"></i> Generar resolución 
                 </button>

@@ -61,7 +61,7 @@ class SolicitudController extends AbstractController
                 'meritos' => $solicitud->getMeritos(),
                 'categorias' => $this->_categoriaRepository->findAll(),
                 'persona' => $solicitud->getPersona(),
-                'totalDiasComputados' => $solicitud->getTotalDiasComputados(),
+                'meritosComputados' => $solicitud->getMeritosComputados(),
                 'form' => $form->createView(),
             ]
         );
