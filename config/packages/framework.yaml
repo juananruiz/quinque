@@ -1,21 +1,20 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-    #csrf_protection: true
-
-    # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    csrf_protection: true
+    #http_cache: true
+    http_method_override: false
+    annotations: false
+    handle_all_throwables: true
+    # error_controller: App\Controller\ErrorController::show
     error_controller: Symfony\Component\HttpKernel\Controller\ErrorController::show
 
-    #esi: true
-    #fragments: true
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session: true
 
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
-
-when@dev:
-    framework:
-        error_controller: Symfony\Component\HttpKernel\Controller\ErrorController::show
