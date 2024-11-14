@@ -17,8 +17,9 @@ class Merito
     #[ORM\Column(length: 255)]
     private ?string $organismo = null;
 
-    #[ORM\Column]
-    private ?int $categoriaId = null;
+    #[ORM\ManyToOne(targetEntity: Categoria::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categoria $categoria = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $fechaInicio = null;
@@ -26,8 +27,9 @@ class Merito
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $fechaFin = null;
 
-    #[ORM\Column]
-    private ?int $estado = 0;
+    #[ORM\ManyToOne(inversedBy: 'meritos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Estado $estado = null;
 
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ["default" => "CURRENT_TIMESTAMP"])]
@@ -59,15 +61,26 @@ class Merito
         return $this;
     }
 
-    public function getCategoriaId(): ?int
+    public function getCategoria(): ?Categoria
     {
-        return $this->categoriaId;
+        return $this->categoria;
     }
 
-    public function setCategoriaId(int $categoriaId): static
+    public function setCategoria(?Categoria $categoria): self
     {
-        $this->categoriaId = $categoriaId;
+        $this->categoria = $categoria;
 
+        return $this;
+    }
+
+    public function getEstado(): ?Estado
+    {
+        return $this->estado;
+    }
+    
+    public function setEstado(?Estado $estado): self
+    {
+        $this->estado = $estado;
         return $this;
     }
 
@@ -91,18 +104,6 @@ class Merito
     public function setFechaFin(\DateTimeInterface $fechaFin): static
     {
         $this->fechaFin = $fechaFin;
-
-        return $this;
-    }
-
-    public function getEstado(): ?int
-    {
-        return $this->estado;
-    }
-
-    public function setEstado(int $estado): static
-    {
-        $this->estado = $estado;
 
         return $this;
     }
@@ -132,7 +133,7 @@ class Merito
     }
 
     /**
-     * Calculate the number of days between fechaInicio and fechaFin (inclusive)
+     * Calculate the number of days between fechaInicio and fechaFin (ambas inclusive)
      */
     public function getDiasTranscurridos(): ?int
     {

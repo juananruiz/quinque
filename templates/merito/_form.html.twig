@@ -40,13 +40,12 @@
         }
     </script>
     <div class="mb-3">
-        <label for="estado" class="form-label">Estado</label>
-        <select class="form-select" id="estado" name="estado">
-            <option value="0" default>Pendiente</option>
-            <option value="1">Admitido</option>
-            <option value="2">Denegado</option>
-            <option value="3">Parcial</option>
-        </select>
-    </div>
+    <label for="estadoId" class="form-label">Estado</label>
+    <select class="form-select" id="estadoId" name="estadoId">
+        {% for estado in estados %}
+            <option value="{{ estado.id }}">{{ estado.nombre }}</option>
+        {% endfor %}
+    </select>
+</div>
     <button type="submit" class="btn btn-primary">Guardar</button>
 </form>

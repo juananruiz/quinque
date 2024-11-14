@@ -4,8 +4,8 @@
  *
  * This file contains the PersonaController class, which manages Persona entities.
  *
- * @package App\Controller
- * @author  Juanan Ruiz <juananruiz@icloud.com>
+ * @package Quinque
+ * @author  Juanan Ruiz <juanan@us.es>
  */
 
 namespace App\Controller;

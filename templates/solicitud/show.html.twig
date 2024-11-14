@@ -89,23 +89,15 @@
                         <tr>
                             <td>{{ merito.id }}</td>
                             <td>{{ merito.organismo }}</td>
-                            <td>{{ merito.categoriaId }}</td>
+                            <td>{{ merito.categoria.abreviatura }}</td>
                             <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
                             <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
-                            <td>{{ merito.diasTranscurridos }}</td>                
-                            <td>
-                                {% if merito.estado == 0 %}
-                                    <span class="badge bg-secondary">Pendiente</span>
-                                {% elseif merito.estado == 1 %}
-                                    <span class="badge bg-success">Admitido</span>
-                                {% elseif merito.estado == 2 %}
-                                    <span class="badge bg-danger">Denegado</span>
-                                {% elseif merito.estado == 3 %}
-                                    <span class="badge bg-warning">Parcial</span>
-                                {% elseif merito.estado == 4 %}
-                                    <span class="badge bg-info">Solapado</span>
-                                {% endif %}
-                            </td>
+							<td>{{ merito.diasTranscurridos }}</td>
+							<td>
+								<span class="badge" style="background-color: {{ merito.estado.color }}">
+									{{ merito.estado.nombre }}
+								</span>
+							</td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}"><i class="fas fa-edit"></i> Editar</button>
                                 <button type="button" class="btn btn-danger btn-sm delete-merito" 
@@ -157,14 +149,15 @@
                 if (action === 'edit') {
                     const meritoId = button.dataset.id;
                     modalTitle.textContent = 'Editar Mérito';
+					// Establece la acción con la ruta del controlador para grabar los cambios
                     form.setAttribute('action', `/merito/edit/${meritoId}`);
-
+					// Llama a la API del controlador que devuelve los datos del mérito
                     const response = await fetch(`/merito/${meritoId}/edit`);
                     const data = await response.json();
                     
-                    // Rellenar el formulario con los datos
+                    // Rellena el formulario con los datos
                     document.getElementById('organismo').value = data.organismo;
-                    document.getElementById('categoriaId').value = data.categoriaId;
+                    document.getElementById('categoria').value = data.categoria;
                     document.getElementById('fechaInicio').value = data.fechaInicio;
                     document.getElementById('fechaFin').value = data.fechaFin;
                     document.getElementById('estado').value = data.estado;

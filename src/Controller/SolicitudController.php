@@ -10,8 +10,9 @@ use App\Entity\Merito;
 use App\Entity\Solicitud;
 use App\Form\MeritoType;
 use App\Form\SolicitudType;
-use App\Repository\PersonaRepository;
 use App\Repository\CategoriaRepository;
+use App\Repository\EstadoRepository;
+use App\Repository\PersonaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,21 +24,28 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class SolicitudController extends AbstractController
 {
+    private CategoriaRepository $_categoriaRepository;
+    private EstadoRepository $_estadoRepository;
     private $_personaRepository;
-    private $_categoriaRepository;
     private $_entityManager;
 
     /**
      * Constructor for SolicitudController.
      *
-     * @param PersonaRepository $personaRepository The persona repository
      * @param CategoriaRepository $categoriaRepository The categoria repository
+     * @param EstadoRepository $estadoRepository The estado repository
+     * @param PersonaRepository $personaRepository The persona repository
      * @param EntityManagerInterface $entityManager The entity manager
      */
-    public function __construct(PersonaRepository $personaRepository, CategoriaRepository $categoriaRepository, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        CategoriaRepository $categoriaRepository,
+        EstadoRepository $estadoRepository,
+        PersonaRepository $personaRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->_categoriaRepository = $categoriaRepository;
+        $this->_estadoRepository = $estadoRepository;
         $this->_personaRepository = $personaRepository;
-        $this->_categoriaRepository= $categoriaRepository;
         $this->_entityManager = $entityManager;
     }
 
@@ -60,6 +68,7 @@ class SolicitudController extends AbstractController
                 'solicitud' => $solicitud,
                 'meritos' => $solicitud->getMeritos(),
                 'categorias' => $this->_categoriaRepository->findAll(),
+                'estados' => $this->_estadoRepository->findAll(),
                 'persona' => $solicitud->getPersona(),
                 'meritosComputados' => $solicitud->getMeritosComputados(),
                 'form' => $form->createView(),

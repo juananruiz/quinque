@@ -8,10 +8,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Estado;
+use App\Entity\Categoria;
 use App\Entity\Merito;
 use App\Entity\Solicitud;
 use App\Form\MeritoType;
 use App\Repository\SolicitudRepository;
+use App\Repository\EstadoRepository;
+use App\Repository\CategoriaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,11 +30,19 @@ class MeritoController extends AbstractController
 {
     private $solicitudRepository;
     private $entityManager;
+    private EstadoRepository $estadoRepository;
+	private CategoriaRepository $categoriaRepository;
 
-    public function __construct(SolicitudRepository $solicitudRepository, EntityManagerInterface $entityManager)
-    {
-        $this->solicitudRepository = $solicitudRepository;
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        SolicitudRepository $solicitudRepository,
+        EstadoRepository $estadoRepository,
+		CategoriaRepository $categoriaRepository
+    ) {
         $this->entityManager = $entityManager;
+        $this->solicitudRepository = $solicitudRepository;
+        $this->estadoRepository = $estadoRepository;
+		$this->categoriaRepository = $categoriaRepository;
     }
 
     #[Route('/merito/add', name: 'merito_add')]
@@ -69,17 +81,28 @@ class MeritoController extends AbstractController
         $merito = new Merito();
         // Recojo los datos "a mano"
         $merito->setOrganismo($request->request->get('organismo'));
-        $merito->setCategoriaId($request->request->get('categoriaId'));
-        $merito->setFechaInicio(
+        $categoria = $this->entityManager->getRepository(Categoria::class)->find($request->request->get('categoriaId'));
+		if (!$categoria) {
+			return new JsonResponse([
+				'status' => 'error',
+				'message' => 'Categoría no encontrada'
+			], 404);
+		}
+		$merito->setFechaInicio(
             new \DateTime($request->request->get('fechaInicio'))
         );
         $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-        $merito->setEstado($request->request->get('estado'));
-
+		$estado = $this->entityManager->getRepository(Estado::class)->find($request->request->get('estadoId'));
+		if (!$estado) {
+			return new JsonResponse([
+				'status' => 'error',
+				'message' => 'Estado no encontrado'
+			], 404);
+		}
+		$merito->setEstado($estado);
         // Recupera la solicitud
         $solicitudId = $request->request->get('solicitud_id');
         $solicitud = $this->solicitudRepository->find($solicitudId);
-
         if (!$solicitud) {
             return new JsonResponse(
                 [
@@ -88,12 +111,12 @@ class MeritoController extends AbstractController
                 ]
             );
         }
-
         $merito->setSolicitud($solicitud);
 
         // Check for overlapping date ranges
         if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
-            $merito->setEstado(4);
+            $estado = $this->entityManager->getRepository(Estado::class)->find(5);
+            $merito->setEstado($estado);
             $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
         }
 
@@ -135,15 +158,16 @@ class MeritoController extends AbstractController
         try {
             // Actualizar los datos manualmente
             $merito->setOrganismo($request->request->get('organismo'));
-            $merito->setCategoriaId($request->request->get('categoriaId'));
+            $merito->setCategoria($request->request->get('categoriaId'));
             $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
             $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-            $merito->setEstado($request->request->get('estado'));
+            $merito->setEstado($request->request->get('estadoId'));
 
             // Check for overlapping date ranges
             $solicitud = $merito->getSolicitud();
             if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
-                $merito->setEstado(4);
+                $estado = $this->entityManager->getRepository(Estado::class)->find(5);
+                $merito->setEstado($estado);
                 $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
             }
 
@@ -175,10 +199,10 @@ class MeritoController extends AbstractController
             [
                 'id' => $merito->getId(),
                 'organismo' => $merito->getOrganismo(),
-                'categoriaId' => $merito->getCategoriaId(),
+                'categoria' => $merito->getCategoria()->getId(),
                 'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
                 'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
-                'estado' => $merito->getEstado(),
+                'estado' => $merito->getEstado()->getId(),
             ]
         );
     }

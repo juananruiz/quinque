@@ -135,12 +135,13 @@ class Solicitud
 
         foreach ($this->getMeritos() as $merito) {
 			// Suma solo los días de los méritos cuyo estado sea 1 (admitido).
-            if ($merito->getEstado() === 1) {
-                $dias = $merito->getDiasTranscurridos();
-                if ($dias !== null) {
-                    $diasComputados += $dias;
-                }
-            }
+			// TODO: ver si esto funciona
+			if ($merito->getEstado()?->getId() === 2) {
+				$dias = $merito->getDiasTranscurridos();
+				if ($dias !== null) {
+					$diasComputados += $dias;
+				}
+			}
         }
         return $diasComputados;
     }
