@@ -1,0 +1,49 @@
+{# templates/intranet/quinque/admin/convocatoria/index.html.twig #}
+{% extends 'intranet/quinque/admin/base.html.twig' %}
+
+{% block title %}Convocatorias{% endblock %}
+
+{% block body %}
+    <h1><i class="fas fa-bullhorn"></i> Lista de Convocatorias</h1>
+    {% if convocatorias is defined and convocatorias|length > 0 %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for convocatoria in convocatorias %}
+                    <tr class="{{ convocatoria.activa == 1 ? 'table-success' : '' }}">
+                        <td>{{ convocatoria.id }}</td>
+                        <td>{{ convocatoria.nombre }}</td>
+                        <td>{{ convocatoria.fechaInicioSolicitud|date('Y-m-d') }}</td>
+                        <td>{{ convocatoria.fechaFinSolicitud|date('Y-m-d') }}</td>
+                        <td>
+                            {% if convocatoria.activa == 1 %}
+                                <span class="badge bg-success">Activa</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactiva</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('quinque_convocatoria_show', {'id': convocatoria.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
+                            <a href="{{ path('quinque_convocatoria_edit', {'id': convocatoria.id}) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+            <div class="alert alert-info">
+                No hay convocatorias todavía.
+            </div>
+    {% endif %}
+
+    <a href="{{ path('quinque_convocatoria_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Nueva Convocatoria</a>
+{% endblock %}
