@@ -6,12 +6,9 @@
 {% block body %}
     <div class="container">
         <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-
-            <h1><i class="fas fa-bullhorn"></i> Editar Convocatoria</h1>
-
+            <div class="container mt-4">
+            <h1><i class="fas fa-bullhorn text-warning"></i> Editar Convocatoria</h1>
             {{ include('intranet/quinque/admin/convocatoria/_form.html.twig') }}
-
             <div class="text-end">
                 <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Volver al listado de convocatorias</a>
             </div>

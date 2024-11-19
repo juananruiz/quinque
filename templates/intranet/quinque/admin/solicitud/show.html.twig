@@ -6,7 +6,7 @@
 
 {% block body %}
     {# Header Section #}
-    <h1 class="mb-4">
+    <h1 class="mb-3">
         <i class="fas fa-paper-plane text-warning" aria-hidden="true"></i> 
         Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}
     </h1>
@@ -93,12 +93,12 @@
                             <td>{{ merito.categoria.abreviatura }}</td>
                             <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
                             <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
-							<td>{{ merito.diasTranscurridos }}</td>
-							<td>
-								<span class="badge" style="background-color: {{ merito.estado.color }}">
-									{{ merito.estado.nombre }}
-								</span>
-							</td>
+                            <td>{{ merito.diasTranscurridos }}</td>
+                            <td>
+                                <span class="badge" style="background-color: {{ merito.estado.color }}">
+                                    {{ merito.estado.nombre }}
+                                </span>
+                            </td>
                             <td>
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}"><i class="fas fa-edit"></i> Editar</button>
                                 <button type="button" class="btn btn-danger btn-sm delete-merito" 
@@ -146,25 +146,28 @@
                 const button = event.relatedTarget;
                 const action = button.dataset.action;
                 const modalTitle = modal.querySelector('.modal-title');
+                const meritoId = button.dataset.id;
 
                 if (action === 'edit') {
                     const meritoId = button.dataset.id;
                     modalTitle.textContent = 'Editar Mérito';
-					// Establece la acción con la ruta del controlador para grabar los cambios
-                    form.setAttribute('action', `intranet/quinque/admin/merito/edit/${meritoId}`);
-					// Llama a la API del controlador que devuelve los datos del mérito
-                    const response = await fetch(`intranet/quinque/admin/merito/${meritoId}/edit`);
-                    const data = await response.json();
+                    // Establece la acción con la ruta del controlador para grabar los cambios
+                    form.setAttribute('action', '{{ path("quinque_merito_save", {"id": ":meritoId"}) }}');
+                    form.setAttribute('action', form.getAttribute('action').replace(':meritoId', meritoId));
+
+                    // Llama a la API del controlador que devuelve los datos del mérito
+                   const response = await fetch(`{{ path("quinque_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
+                    const data = await response.json();	
                     
                     // Rellena el formulario con los datos
                     document.getElementById('organismo').value = data.organismo;
-                    document.getElementById('categoria').value = data.categoria;
+                    document.getElementById('categoriaId').value = data.categoriaId;
                     document.getElementById('fechaInicio').value = data.fechaInicio;
                     document.getElementById('fechaFin').value = data.fechaFin;
-                    document.getElementById('estado').value = data.estado;
+                    document.getElementById('estadoId').value = data.estadoId;
                 } else {
                     modalTitle.textContent = 'Agregar Mérito';
-                    form.setAttribute('action', 'intranet/quinque/admin/merito/save');
+                    form.setAttribute('action', '{{ path("quinque_merito_save") }}');
                     form.reset();
                 }
             });
@@ -205,12 +208,15 @@
                 button.addEventListener('click', function() {
                     if (confirm('¿Estás seguro de que quieres borrar este mérito?')) {
                         const meritoId = this.getAttribute('data-id');
-                        fetch(`intranet/quinque/admin/merito/delete/${meritoId}`, {
-                            method: 'POST',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
+                        fetch(
+                            '{{ path("quinque_merito_delete", {"id": ":meritoId"}) }}'.replace(':meritoId', meritoId), 
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
                             }
-                        })
+                        )
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {

@@ -1,16 +1,17 @@
 {# templates/intranet/quinque/admin/categoria/new.html.twig #}
+
 {% extends 'intranet/quinque/admin/base.html.twig' %}
 
 {% block title %}Nueva Categoría{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
-        <h1><i class="fas fa-plus"></i> Nueva Categoría</h1>
-
+        <h1><i class="fas fa-tags text-warning"></i> Nueva Categoría</h1>
         {{ include('intranet/quinque/admin/categoria/_form.html.twig') }}
-
-        <a href="{{ path('quinque_categoria_index') }}" class="btn btn-secondary mt-3">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
+        <div class="d-flex justify-content-end mt-3">
+            <a href="{{ path('quinque_categoria_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
     </div>
 {% endblock %}

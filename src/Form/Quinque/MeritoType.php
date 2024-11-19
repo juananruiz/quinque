@@ -49,8 +49,14 @@ class MeritoType extends AbstractType
                 'label' => 'Estado',
                 'attr' => ['class' => 'form-control'],
             ])
-            // Otros campos...
-        ;
+            ->add('dedicacion', TextType::class, [
+                'label' => 'Dedicación',
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('observaciones', TextType::class, [
+                'label' => 'Observaciones',
+                'attr' => ['class' => 'form-control'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

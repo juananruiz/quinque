@@ -88,6 +88,7 @@ class MeritoController extends AbstractController
                 'message' => 'Categoría no encontrada',
             ], 404);
         }
+		$merito->setCategoria($categoria);
         $merito->setFechaInicio(
             new \DateTime($request->request->get('fechaInicio'))
         );
@@ -129,7 +130,7 @@ class MeritoController extends AbstractController
                     'status' => 'success',
                     'message' => 'Mérito guardado correctamente',
                     'redirect' => $this->generateUrl(
-                        'solicitud_show',
+                        'quinque_solicitud_show',
                         ['id' => $merito->getSolicitud()->getId()]
                     ),
                 ]
@@ -200,10 +201,10 @@ class MeritoController extends AbstractController
             [
                 'id' => $merito->getId(),
                 'organismo' => $merito->getOrganismo(),
-                'categoria' => $merito->getCategoria()->getId(),
+                'categoriaId' => $merito->getCategoria()->getId(),
                 'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
                 'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
-                'estado' => $merito->getEstado()->getId(),
+                'estadoId' => $merito->getEstado()->getId(),
             ]
         );
     }

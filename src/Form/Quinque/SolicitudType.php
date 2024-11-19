@@ -72,13 +72,6 @@ class SolicitudType extends AbstractType
                     ],
                     'label' => false,
                 ]
-            )
-            ->add(
-                'save',
-                SubmitType::class,
-                [
-                    'label' => 'Crear Solicitud',
-                ]
             );
     }
 

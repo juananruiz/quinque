@@ -5,8 +5,7 @@
 
 {% block body %}
 
-    <h1><i class="fas fa-bullhorn"></i> Convocatoria: {{ convocatoria.nombre }}</h1>
-
+    <h1><i class="fas fa-bullhorn" style="color: #ffc107;"></i> Convocatoria: {{ convocatoria.nombre }}</h1>
     <table class="table table-striped">
         <tbody>
             <tr>
@@ -29,7 +28,7 @@
         <thead>
             <tr>
                 <th>ID</th>
-				<th>Solicitante</th>
+                <th>Solicitante</th>
                 <th>Fecha Entrada</th>
                 <th>Acciones</th>
             </tr>
@@ -38,7 +37,7 @@
             {% for solicitud in convocatoria.solicitudes %}
                 <tr>
                     <td>{{ solicitud.id }}</td>
-					<td>{{ solicitud.persona.nombre}} {{ solicitud.persona.apellidos}}</td>
+                    <td>{{ solicitud.persona.nombre}} {{ solicitud.persona.apellidos}}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
                     <td>
                         <a href="{{ path('quinque_solicitud_show', {'id': solicitud.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>

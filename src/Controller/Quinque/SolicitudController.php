@@ -23,10 +23,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/solicitud')]
 /**
  * Controller for handling Solicitud related actions.
  */
-class SolicitudController extends AbstractController
+final class SolicitudController extends AbstractController
 {
     private CategoriaRepository $_categoriaRepository;
     private EstadoRepository $_estadoRepository;
@@ -60,7 +61,7 @@ class SolicitudController extends AbstractController
      *
      * @return Response The response object
      */
-    #[Route('/solicitud/{id}', name: 'quinque_solicitud_show')]
+    #[Route('/{id}', name: 'quinque_solicitud_show')]
     public function show(Solicitud $solicitud): Response
     {
         $merito = new Merito();
@@ -88,7 +89,7 @@ class SolicitudController extends AbstractController
      *
      * @return Response The response object
      */
-    #[Route('/solicitud/new/{personaId}', name: 'quinque_solicitud_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{personaId}', name: 'quinque_solicitud_new', methods: ['GET', 'POST'])]
     public function new(Request $request, int $personaId): Response
     {
         $persona = $this->_personaRepository->find($personaId);

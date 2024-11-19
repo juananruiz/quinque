@@ -28,6 +28,12 @@ class Merito
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $fechaFin = null;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $dedicacion = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $observaciones = null;
+
     #[ORM\ManyToOne(inversedBy: 'meritos')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Estado $estado = null;
@@ -69,6 +75,18 @@ class Merito
     public function setCategoria(?Categoria $categoria): self
     {
         $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    public function getDedicacion(): ?int
+    {
+        return $this->dedicacion;
+    }
+
+    public function setDedicacion(int $dedicacion): static
+    {
+        $this->dedicacion = $dedicacion;
 
         return $this;
     }
@@ -117,6 +135,18 @@ class Merito
     public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getObservaciones(): ?string
+    {
+        return $this->observaciones;
+    }
+
+    public function setObservaciones(?string $observaciones): static
+    {
+        $this->observaciones = $observaciones;
 
         return $this;
     }

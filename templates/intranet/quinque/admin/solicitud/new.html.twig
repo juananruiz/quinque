@@ -1,19 +1,20 @@
-{# templates/solicitud/new.html.twig #}
+{# templates/intranet/quinque/admin/solicitud/new.html.twig #}
 
-{% extends '../../../../base.html.twig' %}
+{% extends 'intranet/quinque/admin/base.html.twig' %}
 
 {% block body %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <h1 class="text-center mb-4"><i class="fas fa-paper-plane"></i> 
-                <span class="d-none d-sm-inline">Agregar solicitud</span></h1>
-            <div class="col-md-8 col-lg-6">
-                {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                {{ form_end(form) }}
-
+    <div class="row justify-content-center">
+        <h1 class="text-center mt-3"><i class="fas fa-paper-plane"></i> 
+            <span class="d-none d-sm-inline">Agregar solicitud</span></h1>
+        <div class="container mt-3">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <div class="mt-3">
+                    <button class="btn btn-primary">Guardar</button>
+                </div>
+            {{ form_end(form) }}
             <div class="d-flex justify-content-end">
-            <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary">Volver al listado</a>
+                <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary">Volver al listado</a>
             </div>
         </div>
     </div>

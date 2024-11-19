@@ -4,5 +4,6 @@
 		"categoria",
 		"duracion",
 		"Duracion"
-	]
+	],
+	"editor.detectIndentation": false
 }
