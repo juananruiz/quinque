@@ -1,23 +1,18 @@
 {# templates/intranet/quinque/admin/convocatoria/new.html.twig #}
+
 {% extends 'intranet/quinque/admin/base.html.twig' %}
 
 {% block title %}Nueva Convocatoria{% endblock %}
 
 {% block body %}
-
-<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <h1><i class="fas fa-bullhorn"></i> Nueva Convocatoria</h1>
+		<h1 class="mt-3 col-md-8"><i class="fas fa-bullhorn text-warning"></i> Nueva Convocatoria</h1>
 
-            {{ include('intranet/quinque/admin/convocatoria/_form.html.twig') }}
+		{{ include('intranet/quinque/admin/convocatoria/_form.html.twig') }}
 
-            <div class="text-end">
-                <a href="{{ path('quinque_convocatoria_index') }}"
-                    class="btn btn-secondary">Volver al listado de convocatorias</a>
-            </div>
-        </div>
+		<div class="text-end mb-3">
+			<a href="{{ path('quinque_convocatoria_index') }}"
+				class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+		</div>
     </div>
-</div>
-
 {% endblock %}

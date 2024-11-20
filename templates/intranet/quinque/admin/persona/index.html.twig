@@ -1,12 +1,18 @@
 {# templates/intranet/quinque/admin/persona/index.html.twig #}
 {% extends 'intranet/quinque/admin/base.html.twig' %}
 
-{% block title %}Lista de solicitantes{% endblock %}
+{% block title %}Solicitantes{% endblock %}
 
 {% block body %}
-    <h1>Lista de solicitantes</h1>
-    <p><a href="{{ path('quinque_persona_new') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar solicitante</a></p>
-    <table  id="solicitantes" class="table table-striped table-bordered" style="width:100%">
+    <div class="row mb-3">
+        <div class="col-6"><h1 class=""><i class="fas fa-person text-warning"></i> Solicitantes</h1>
+        </div>
+        <div class="col-6 text-end">
+            <a href="{{ path('quinque_persona_new') }}" class="btn btn-primary mt-3"><i class="fas fa-plus"></i> Agregar solicitante</a>
+        </div>
+    </div>
+    <div class="container mb-3">
+    <table id="solicitantes" class="table table-striped table-bordered mb-3">
         <thead>
             <tr>
                 <th>Id</th>
@@ -37,6 +43,7 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
 
 {% block javascripts %}

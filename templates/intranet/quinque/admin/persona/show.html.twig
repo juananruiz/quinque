@@ -5,8 +5,8 @@
 {% block title %}Solicitante {{ persona.nombre }} {{ persona.apellidos }}{% endblock %}
 
 {% block body %}
-    <h1><i class="fas fa-user"></i> Solicitante: {{ persona.nombre }} {{ persona.apellidos }}</h1>
-    <section aria-labelledby="datos-personal">
+    <h1 class="mb-3"><i class="fas fa-person text-warning"></i> Solicitante: {{ persona.nombre }} {{ persona.apellidos }}</h1>
+    <section aria-labelledby="datos-personalES">
         <h2 id="datos-solicitante">Datos personales</h2>
         <table class="table table-striped">
             <tbody>
@@ -35,7 +35,7 @@
                 </tr>
             </tbody>
         </table>
-    <h2>Solicitudes de quinquenios</h2>
+    <h2 class="mt-6 mb-3">Solicitudes de quinquenios</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -52,13 +52,15 @@
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d H:i') }}</td>
                     <td>
                         <a href="{{ path('quinque_solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
+                        <a href="{{ path('quinque_solicitud_show', {id: solicitud.id}) }}" class="btn btn-warning">Editar Solicitud</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('quinque_solicitud_new', {personaId: persona.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Nueva Solicitud</a>
-    
-    <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary">Ver solicitantes</a>
-    <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Ver convocatorias</a>
+    <div class="mb-3">
+        <a href="{{ path('quinque_solicitud_new', {personaId: persona.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Nueva Solicitud</a>
+        <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary">Ver solicitantes</a>
+        <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Ver convocatorias</a>
+    </div>
 {% endblock %}
