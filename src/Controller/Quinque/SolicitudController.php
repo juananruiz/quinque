@@ -17,6 +17,7 @@ use App\Form\Quinque\SolicitudType;
 use App\Repository\Quinque\CategoriaRepository;
 use App\Repository\Quinque\EstadoRepository;
 use App\Repository\Quinque\PersonaRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -120,4 +121,49 @@ final class SolicitudController extends AbstractController
             ]
         );
     }
+    #[Route('/edit/{id}', name: 'quinque_solicitud_edit')]
+	public function edit(Solicitud $solicitud): Response
+	{
+		$form = $this->createForm(SolicitudType::class, $solicitud);
+
+		return $this->render(
+			'intranet/quinque/admin/solicitud/edit.html.twig',
+            [
+                'solicitud' => $solicitud,
+                'form' => $form->createView(),
+            ]
+        );  
+	}
+
+    #[Route('/{id}/delete', name: 'quinque_solicitud_delete', methods: ['POST'])]
+    public function delete(Request $request, Solicitud $solicitud, EntityManagerInterface $entityManager): Response
+    {
+        // No permitir si la persona tienes solicitudes asociadas,
+        // primero habría que borrar aquellas
+        if ($solicitud->getMeritos()->count() > 0) {
+            $this->addFlash('error', 'No se puede eliminar una solicitud con meritos asociadas');
+
+            return $this->redirectToRoute(
+                'quinque_solicitud_show', 
+                ['id' => $solicitud->getId()], Response::HTTP_SEE_OTHER
+            );
+        }
+
+        if ($this->isCsrfTokenValid(
+            'delete'.$solicitud->getId(),
+            $request->get('_token')
+        )
+        ) {
+            $entityManager->remove($solicitud);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute(
+            'quinque_persona_show',
+            [
+                'id' => $solicitud->getPersona()->getId(),
+            ], 
+            Response::HTTP_SEE_OTHER);
+    }
+
 }

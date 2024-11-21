@@ -1,0 +1,22 @@
+{# templates/intranet/quinque/admin/solicitud/edit.html.twig #}
+
+{% extends 'intranet/quinque/admin/base.html.twig' %}
+
+{% block title %}Editar Solicitud{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center"> 
+        <div class="mt-3 col-md-8">
+        <h1><i class="fas fa-edit text-warning"></i> Editar Solicitud</h1>
+        {{ include('intranet/quinque/admin/solicitud/_form.html.twig', {'button_label': 'Actualizar'}) }}
+        
+        <div class="text-end">
+            <a href="{{ path('quinque_persona_show', {'id': solicitud.persona.id}) }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        
+        {{ include('intranet/quinque/admin/solicitud/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}
