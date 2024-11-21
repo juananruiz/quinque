@@ -4,8 +4,18 @@
 {% block title %}Convocatoria{% endblock %}
 
 {% block body %}
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			<h1><i class="fas fa-bullhorn" style="color: #ffc107;"></i> Convocatoria: {{ convocatoria.nombre }}</h1>
+		</div>
+		<div class="col-md-6 text-end">
+		<div class="btn-group">
+			<a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Listar convocatorias</a>
+			<a href="{{ path('quinque_convocatoria_edit', {'id': convocatoria.id}) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar convocatoria</a>
+		</div>
+		</div>
+	</div>
 
-    <h1><i class="fas fa-bullhorn" style="color: #ffc107;"></i> Convocatoria: {{ convocatoria.nombre }}</h1>
     <table class="table table-striped">
         <tbody>
             <tr>
@@ -23,8 +33,8 @@
         </tbody>
     </table>
 
-    <h2>Solicitudes</h2>
-    <table class="table table-striped">
+    <h2 class="mt-3 mb-3">Solicitudes convocatoria</h2>
+    <table id="convocatorias" class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -46,9 +56,17 @@
             {% endfor %}
         </tbody>
     </table>
+{% endblock %}
 
-    <div class="btn-group">
-        <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Lista convocatorias</a>
-        <a href="{{ path('quinque_convocatoria_edit', {'id': convocatoria.id}) }}" class="btn btn-warning">Editar convocatoria</a>
-    </div>
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+		$('#convocatorias').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                }
+            });
+        });
+    </script>
 {% endblock %}

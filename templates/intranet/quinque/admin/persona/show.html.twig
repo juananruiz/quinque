@@ -52,7 +52,7 @@
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d H:i') }}</td>
                     <td>
                         <a href="{{ path('quinque_solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
-                        <a href="{{ path('quinque_solicitud_show', {id: solicitud.id}) }}" class="btn btn-warning">Editar Solicitud</a>
+                        <a href="{{ path('quinque_solicitud_edit', {id: solicitud.id}) }}" class="btn btn-warning">Editar Solicitud</a>
                     </td>
                 </tr>
             {% endfor %}
