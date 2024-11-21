@@ -4,17 +4,13 @@
 {% block title %}Agregar Solicitante{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="container col-md-8">
-            <h1 class="mb-3"><i class="fas fa-person text-warning"></i> 
-                <span class="d-none d-sm-inline">Agregar Solicitante</span></h1>
-                 
-                {{ include('intranet/quinque/admin/persona/_form.html.twig') }}
+    <div class="container col-md-8">
+        <h1 class="mb-3"><i class="fas fa-person text-warning"></i> Agregar Solicitante</h1>
+                
+        {{ include('intranet/quinque/admin/persona/_form.html.twig') }}
 
-                <div class="text-end mb-3">
-                    <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
-                </div>
-            </div>
+        <div class="text-end mb-3">
+            <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
     </div>
 {% endblock %}

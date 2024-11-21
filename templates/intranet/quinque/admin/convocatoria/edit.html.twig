@@ -5,12 +5,12 @@
 {% block title %}Editar Convocatoria{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        <h1 class="container mt-3 col-md-8"><i class="fas fa-bullhorn text-warning"></i> Editar Convocatoria</h1>
+    <div class="container col-md-8">
+        <h1 class="mb-3"><i class="fas fa-bullhorn text-warning"></i> Editar Convocatoria</h1>
 
         {{ include('intranet/quinque/admin/convocatoria/_form.html.twig') }}
         
-        <div class="text-end mb-3">
+        <div class="mb-3 text-end">
             <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
     </div>
