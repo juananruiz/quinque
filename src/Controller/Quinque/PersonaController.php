@@ -111,6 +111,9 @@ final class PersonaController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('quinque_persona_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute(
+            'quinque_persona_show',
+            ['id' => $persona->getId()],
+            Response::HTTP_SEE_OTHER);
     }
 }
