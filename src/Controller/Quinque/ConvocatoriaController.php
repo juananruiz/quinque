@@ -5,35 +5,41 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Convocatoria;
 use App\Form\Quinque\ConvocatoriaType;
 use App\Repository\Quinque\ConvocatoriaRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/convocatoria')]
+#[Route('/convocatoria', name: 'intranet_quinque_admin_convocatoria_')]
 class ConvocatoriaController extends AbstractController
 {
-    #[Route('/', name: 'quinque_convocatoria_index', methods: ['GET'])]
-    public function index(ConvocatoriaRepository $convocatoriaRepository): Response
+    public function __construct(
+        private readonly ConvocatoriaRepository $convocatoriaRepository,
+    ) {
+    }
+
+    #[Route('/', name: 'index', methods: ['GET'])]
+    public function index(): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/convocatoria/index.html.twig', [
-            'convocatorias' => $convocatoriaRepository->findAll(),
+            'convocatorias' => $this->convocatoriaRepository->findAll(),
         ]);
     }
 
-    #[Route('/new', name: 'quinque_convocatoria_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $convocatoria = new Convocatoria();
         $form = $this->createForm(ConvocatoriaType::class, $convocatoria);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($convocatoria);
-            $entityManager->flush();
+            $this->convocatoriaRepository->save($convocatoria, true);
 
-            return $this->redirectToRoute('quinque_convocatoria_index');
+            return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
         }
 
         return $this->render('intranet/quinque/admin/convocatoria/new.html.twig', [
@@ -42,24 +48,27 @@ class ConvocatoriaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/show', name: 'quinque_convocatoria_show', methods: ['GET'])]
+    #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(Convocatoria $convocatoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/convocatoria/show.html.twig', [
             'convocatoria' => $convocatoria,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'quinque_convocatoria_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Convocatoria $convocatoria, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Convocatoria $convocatoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(ConvocatoriaType::class, $convocatoria);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->convocatoriaRepository->save($convocatoria, true);
 
-            return $this->redirectToRoute('quinque_convocatoria_index');
+            return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
         }
 
         return $this->render('intranet/quinque/admin/convocatoria/edit.html.twig', [
@@ -68,14 +77,14 @@ class ConvocatoriaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'quinque_convocatoria_delete', methods: ['POST'])]
-    public function delete(Request $request, Convocatoria $convocatoria, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    public function delete(Request $request, Convocatoria $convocatoria): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$convocatoria->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($convocatoria);
-            $entityManager->flush();
+        $this->denyAccessUnlessGranted('admin');
+        if ($this->isCsrfTokenValid('delete'.$convocatoria->getId(), $request->request->getString('_token'))) {
+            $this->convocatoriaRepository->remove($convocatoria, true);
         }
 
-        return $this->redirectToRoute('quinque_convocatoria_index');
+        return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
     }
 }
