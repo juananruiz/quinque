@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Quinque;
+namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +31,6 @@ class ErrorController extends AbstractController
         $mensaje = $exception instanceof HttpException ? self::ERRORES[$exception->getStatusCode()] ?? $exception->getMessage() : self::ERRORES[0];
         $this->addFlash('warning', $mensaje);
 
-        return $this->redirectToRoute('quinque_convocatoria_index');
+        return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
     }
 }

@@ -21,6 +21,8 @@ class ConvocatoriaController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/convocatoria/index.html.twig', [
             'convocatorias' => $this->convocatoriaRepository->findAll(),
         ]);
@@ -29,6 +31,7 @@ class ConvocatoriaController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $convocatoria = new Convocatoria();
         $form = $this->createForm(ConvocatoriaType::class, $convocatoria);
         $form->handleRequest($request);
@@ -48,6 +51,8 @@ class ConvocatoriaController extends AbstractController
     #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(Convocatoria $convocatoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/convocatoria/show.html.twig', [
             'convocatoria' => $convocatoria,
         ]);
@@ -56,6 +61,7 @@ class ConvocatoriaController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Convocatoria $convocatoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(ConvocatoriaType::class, $convocatoria);
         $form->handleRequest($request);
 
@@ -74,7 +80,8 @@ class ConvocatoriaController extends AbstractController
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Convocatoria $convocatoria): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$convocatoria->getId(), $request->request->get('_token'))) {
+        $this->denyAccessUnlessGranted('admin');
+        if ($this->isCsrfTokenValid('delete'.$convocatoria->getId(), $request->request->getString('_token'))) {
             $this->convocatoriaRepository->remove($convocatoria, true);
         }
 

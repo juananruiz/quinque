@@ -21,6 +21,8 @@ class CategoriaController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/categoria/index.html.twig', [
             'categorias' => $this->categoriaRepository->findAll(),
         ]);
@@ -29,6 +31,7 @@ class CategoriaController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $categoria = new Categoria();
         $form = $this->createForm(CategoriaType::class, $categoria);
         $form->handleRequest($request);
@@ -48,6 +51,8 @@ class CategoriaController extends AbstractController
     #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(Categoria $categoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/categoria/show.html.twig', [
             'categoria' => $categoria,
         ]);
@@ -56,6 +61,7 @@ class CategoriaController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Categoria $categoria): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(CategoriaType::class, $categoria);
         $form->handleRequest($request);
 
@@ -74,7 +80,8 @@ class CategoriaController extends AbstractController
     #[Route('/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Categoria $categoria): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$categoria->getId(), $request->request->get('_token'))) {
+        $this->denyAccessUnlessGranted('admin');
+        if ($this->isCsrfTokenValid('delete'.$categoria->getId(), $request->request->getString('_token'))) {
             $this->categoriaRepository->remove($categoria, true);
         }
 
