@@ -100,9 +100,12 @@
                                 </span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}"><i class="fas fa-edit"></i> Editar</button>
-                                <button type="button" class="btn btn-danger btn-sm delete-merito" 
-                                data-id="{{ merito.id }}"><i class="fas fa-trash"></i> Borrar</button>
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="edit" data-id="{{ merito.id }}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm delete-merito" data-id="{{ merito.id }}">
+                                    <i class="fas fa-trash"></i> Borrar
+                                </button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -127,7 +130,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{ include('intranet/quinque/admin/merito/_form.html.twig') }}
+                        {{ form_start(form, {'action': path('quinque_merito_save', {'solicitudId': solicitud.id}), 'attr': {'id': 'meritoForm'}}) }}
+                            {{ include('intranet/quinque/admin/merito/_form.html.twig') }}
+                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>
@@ -146,28 +151,32 @@
                 const button = event.relatedTarget;
                 const action = button.dataset.action;
                 const modalTitle = modal.querySelector('.modal-title');
-                const meritoId = button.dataset.id;
-
+                
                 if (action === 'edit') {
                     const meritoId = button.dataset.id;
                     modalTitle.textContent = 'Editar Mérito';
-                    // Establece la acción con la ruta del controlador para grabar los cambios
-                    form.setAttribute('action', '{{ path("quinque_merito_save", {"id": ":meritoId"}) }}');
-                    form.setAttribute('action', form.getAttribute('action').replace(':meritoId', meritoId));
-
-                    // Llama a la API del controlador que devuelve los datos del mérito
-                   const response = await fetch(`{{ path("quinque_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
-                    const data = await response.json();	
                     
-                    // Rellena el formulario con los datos
-                    document.getElementById('organismo').value = data.organismo;
-                    document.getElementById('categoriaId').value = data.categoriaId;
-                    document.getElementById('fechaInicio').value = data.fechaInicio;
-                    document.getElementById('fechaFin').value = data.fechaFin;
-                    document.getElementById('estadoId').value = data.estadoId;
+                    try {
+                        const response = await fetch(`{{ path("quinque_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
+                        const data = await response.json();
+                        
+                        if (data.status === 'success') {
+                            // Rellenar el formulario con los datos
+                            document.getElementById('merito_organismo').value = data.merito.organismo;
+                            document.getElementById('merito_categoria').value = data.merito.categoriaId;
+                            document.getElementById('merito_fechaInicio').value = data.merito.fechaInicio;
+                            document.getElementById('merito_fechaFin').value = data.merito.fechaFin;
+                            document.getElementById('merito_estado').value = data.merito.estadoId;
+                            document.getElementById('merito_dedicacion').value = data.merito.dedicacion || '';
+                            document.getElementById('merito_observaciones').value = data.merito.observaciones || '';
+                        } else {
+                            console.error('Error al cargar los datos del mérito:', data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error al cargar los datos del mérito:', error);
+                    }
                 } else {
                     modalTitle.textContent = 'Agregar Mérito';
-                    form.setAttribute('action', '{{ path("quinque_merito_save") }}');
                     form.reset();
                 }
             });
@@ -176,11 +185,10 @@
                 e.preventDefault();
                 
                 const formData = new FormData(form);
-                const method = form.getAttribute('method');
                 
                 try {
                     const response = await fetch(form.action, {
-                        method: 'POST', // Siempre usamos POST por simplicidad
+                        method: 'POST',
                         body: formData,
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
@@ -199,37 +207,34 @@
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Ha ocurrido un error al procesar la solicitud');
+                    alert('Ha ocurrido un error al procesar el formulario');
                 }
             });
 
-            // Delete merit functionality
+            // Manejo de eliminación de méritos
             document.querySelectorAll('.delete-merito').forEach(button => {
-                button.addEventListener('click', function() {
-                    if (confirm('¿Estás seguro de que quieres borrar este mérito?')) {
-                        const meritoId = this.getAttribute('data-id');
-                        fetch(
-                            '{{ path("quinque_merito_delete", {"id": ":meritoId"}) }}'.replace(':meritoId', meritoId), 
-                            {
-                                method: 'POST',
+                button.addEventListener('click', async function() {
+                    if (confirm('¿Está seguro de que desea eliminar este mérito?')) {
+                        const meritoId = this.dataset.id;
+                        try {
+                            const response = await fetch(`{{ path("quinque_merito_delete", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId), {
+                                method: 'DELETE',
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest'
                                 }
-                            }
-                        )
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Remove the row from the table
-                                this.closest('tr').remove();
+                            });
+
+                            const data = await response.json();
+                            
+                            if (data.status === 'success') {
+                                window.location.reload();
                             } else {
-                                alert('Error al borrar el mérito');
+                                alert(data.message);
                             }
-                        })
-                        .catch(error => {
+                        } catch (error) {
                             console.error('Error:', error);
-                            alert('Error al borrar el mérito');
-                        });
+                            alert('Ha ocurrido un error al eliminar el mérito');
+                        }
                     }
                 });
             });
