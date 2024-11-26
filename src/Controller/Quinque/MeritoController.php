@@ -3,18 +3,18 @@
 /**
  * Controller for managing Merito entities.
  *
- * path: src/Controller/MeritoController.php
+ * path: src/Controller/Quinque/MeritoController.php
  **/
 
 namespace App\Controller\Quinque;
 
 use App\Entity\Quinque\Categoria;
-use App\Entity\Quinque\Estado;
 use App\Entity\Quinque\Merito;
+use App\Entity\Quinque\MeritoEstado;
 use App\Entity\Quinque\Solicitud;
 use App\Form\Quinque\MeritoType;
 use App\Repository\Quinque\CategoriaRepository;
-use App\Repository\Quinque\EstadoRepository;
+use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\SolicitudRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,18 +30,18 @@ class MeritoController extends AbstractController
 {
     private $solicitudRepository;
     private $entityManager;
-    private EstadoRepository $estadoRepository;
+    private MeritoEstadoRepository $meritoEstadoRepository;
     private CategoriaRepository $categoriaRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         SolicitudRepository $solicitudRepository,
-        EstadoRepository $estadoRepository,
+        MeritoEstadoRepository $meritoEstadoRepository,
         CategoriaRepository $categoriaRepository,
     ) {
         $this->entityManager = $entityManager;
         $this->solicitudRepository = $solicitudRepository;
-        $this->estadoRepository = $estadoRepository;
+        $this->meritoEstadoRepository = $meritoEstadoRepository;
         $this->categoriaRepository = $categoriaRepository;
     }
 
@@ -93,7 +93,7 @@ class MeritoController extends AbstractController
             new \DateTime($request->request->get('fechaInicio'))
         );
         $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-        $estado = $this->entityManager->getRepository(Estado::class)->find($request->request->get('estadoId'));
+        $estado = $this->entityManager->getRepository(MeritoEstado::class)->find($request->request->get('estadoId'));
         if (!$estado) {
             return new JsonResponse([
                 'status' => 'error',
@@ -116,7 +116,7 @@ class MeritoController extends AbstractController
 
         // Check for overlapping date ranges
         if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
-            $estado = $this->entityManager->getRepository(Estado::class)->find(5);
+            $estado = $this->entityManager->getRepository(MeritoEstado::class)->find(5);
             $merito->setEstado($estado);
             $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
         }
@@ -162,12 +162,19 @@ class MeritoController extends AbstractController
             $merito->setCategoria($request->request->get('categoriaId'));
             $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
             $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-            $merito->setEstado($request->request->get('estadoId'));
+            $estado = $this->entityManager->getRepository(MeritoEstado::class)->find($request->request->get('estadoId'));
+            if (!$estado) {
+                return new JsonResponse([
+                    'status' => 'error',
+                    'message' => 'Estado no encontrado',
+                ], 404);
+            }
+            $merito->setEstado($estado);
 
             // Check for overlapping date ranges
             $solicitud = $merito->getSolicitud();
             if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
-                $estado = $this->entityManager->getRepository(Estado::class)->find(5);
+                $estado = $this->entityManager->getRepository(MeritoEstado::class)->find(5);
                 $merito->setEstado($estado);
                 $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
             }

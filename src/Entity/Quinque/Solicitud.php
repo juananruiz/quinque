@@ -33,6 +33,10 @@ class Solicitud
     #[ORM\JoinColumn(nullable: false)]
     private ?Convocatoria $convocatoria = null;
 
+    #[ORM\ManyToOne(targetEntity: SolicitudEstado::class, inversedBy: 'solicitudes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SolicitudEstado $estado = null;
+
     #[
         ORM\OneToMany(
             targetEntity: Merito::class,
@@ -119,6 +123,18 @@ class Solicitud
     public function setConvocatoria(?Convocatoria $convocatoria): static
     {
         $this->convocatoria = $convocatoria;
+
+        return $this;
+    }
+
+    public function getEstado(): ?SolicitudEstado
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(?SolicitudEstado $estado): static
+    {
+        $this->estado = $estado;
 
         return $this;
     }

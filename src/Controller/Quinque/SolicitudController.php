@@ -11,11 +11,12 @@
 namespace App\Controller\Quinque;
 
 use App\Entity\Quinque\Merito;
+use App\Entity\Quinque\MeritoEstado;
 use App\Entity\Quinque\Solicitud;
 use App\Form\Quinque\MeritoType;
 use App\Form\Quinque\SolicitudType;
 use App\Repository\Quinque\CategoriaRepository;
-use App\Repository\Quinque\EstadoRepository;
+use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\PersonaRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,26 +32,26 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SolicitudController extends AbstractController
 {
     private CategoriaRepository $_categoriaRepository;
-    private EstadoRepository $_estadoRepository;
-    private $_personaRepository;
-    private $_entityManager;
+    private MeritoEstadoRepository $_meritoEstadoRepository;
+    private PersonaRepository $_personaRepository;
+    private EntityManagerInterface $_entityManager;
 
     /**
      * Constructor for SolicitudController.
      *
      * @param CategoriaRepository    $categoriaRepository The categoria repository
-     * @param EstadoRepository       $estadoRepository    The estado repository
+     * @param MeritoEstadoRepository $meritoEstadoRepository The merito estado repository
      * @param PersonaRepository      $personaRepository   The persona repository
      * @param EntityManagerInterface $entityManager       The entity manager
      */
     public function __construct(
         CategoriaRepository $categoriaRepository,
-        EstadoRepository $estadoRepository,
+        MeritoEstadoRepository $meritoEstadoRepository,
         PersonaRepository $personaRepository,
         EntityManagerInterface $entityManager,
     ) {
         $this->_categoriaRepository = $categoriaRepository;
-        $this->_estadoRepository = $estadoRepository;
+        $this->_meritoEstadoRepository = $meritoEstadoRepository;
         $this->_personaRepository = $personaRepository;
         $this->_entityManager = $entityManager;
     }
@@ -74,7 +75,7 @@ final class SolicitudController extends AbstractController
                 'solicitud' => $solicitud,
                 'meritos' => $solicitud->getMeritos(),
                 'categorias' => $this->_categoriaRepository->findAll(),
-                'estados' => $this->_estadoRepository->findAll(),
+                'estados' => $this->_meritoEstadoRepository->findAll(),
                 'persona' => $solicitud->getPersona(),
                 'meritosComputados' => $solicitud->getMeritosComputados(),
                 'form' => $form->createView(),

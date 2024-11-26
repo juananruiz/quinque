@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Estados de Méritos{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1><i class="fas fa-tasks"></i> Estados de Méritos</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Color</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for merito_estado in merito_estados %}
+                <tr>
+                    <td>{{ merito_estado.id }}</td>
+                    <td>{{ merito_estado.nombre }}</td>
+                    <td>
+                        <span class="badge" style="background-color: {{ merito_estado.color }}">
+                            {{ merito_estado.color }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ path('app_merito_estado_show', {'id': merito_estado.id}) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ path('app_merito_estado_edit', {'id': merito_estado.id}) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_merito_estado_new') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Nuevo Estado de Mérito
+        </a>
+    </div>
+{% endblock %}

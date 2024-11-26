@@ -3,6 +3,7 @@
 namespace App\Entity\Quinque;
 
 use App\Repository\Quinque\MeritoRepository;
+use App\Entity\Quinque\MeritoEstado;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,7 +37,7 @@ class Merito
 
     #[ORM\ManyToOne(inversedBy: 'meritos')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Estado $estado = null;
+    private ?MeritoEstado $estado = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $createdAt = null;
@@ -91,12 +92,12 @@ class Merito
         return $this;
     }
 
-    public function getEstado(): ?Estado
+    public function getEstado(): ?MeritoEstado
     {
         return $this->estado;
     }
 
-    public function setEstado(?Estado $estado): self
+    public function setEstado(?MeritoEstado $estado): self
     {
         $this->estado = $estado;
 
