@@ -22,6 +22,7 @@ class MeritoType extends AbstractType
             ->add('organismo', TextType::class, [
                 'label' => 'Organismo',
                 'attr' => ['class' => 'form-control'],
+                'required' => true,
             ])
             ->add('categoria', EntityType::class, [
                 'class' => Categoria::class,
@@ -34,11 +35,13 @@ class MeritoType extends AbstractType
             ->add('fechaInicio', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Fecha Inicio',
+                'required' => true,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('fechaFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Fecha Fin',
+                'required' => true,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('estado', EntityType::class, [
@@ -51,10 +54,12 @@ class MeritoType extends AbstractType
             ])
             ->add('dedicacion', TextType::class, [
                 'label' => 'Dedicación',
+                'required' => false,
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('observaciones', TextType::class, [
                 'label' => 'Observaciones',
+                'required' => false,
                 'attr' => ['class' => 'form-control'],
             ]);
     }
@@ -63,6 +68,8 @@ class MeritoType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Merito::class,
+            'csrf_protection' => true,
+            'allow_extra_fields' => true,
         ]);
     }
 }

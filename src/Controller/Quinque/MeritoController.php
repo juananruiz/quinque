@@ -15,6 +15,7 @@ use App\Entity\Quinque\Solicitud;
 use App\Form\Quinque\MeritoType;
 use App\Repository\Quinque\CategoriaRepository;
 use App\Repository\Quinque\MeritoEstadoRepository;
+use App\Repository\Quinque\MeritoRepository;
 use App\Repository\Quinque\SolicitudRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,17 +33,20 @@ class MeritoController extends AbstractController
     private $entityManager;
     private MeritoEstadoRepository $meritoEstadoRepository;
     private CategoriaRepository $categoriaRepository;
+    private MeritoRepository $meritoRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         SolicitudRepository $solicitudRepository,
         MeritoEstadoRepository $meritoEstadoRepository,
         CategoriaRepository $categoriaRepository,
+        MeritoRepository $meritoRepository,
     ) {
         $this->entityManager = $entityManager;
         $this->solicitudRepository = $solicitudRepository;
         $this->meritoEstadoRepository = $meritoEstadoRepository;
         $this->categoriaRepository = $categoriaRepository;
+        $this->meritoRepository = $meritoRepository;
     }
 
     #[Route('/merito/add', name: 'quinque_merito_add')]
@@ -75,84 +79,67 @@ class MeritoController extends AbstractController
         );
     }
 
-    #[Route('/merito/save', name: 'quinque_merito_save', methods: ['POST'])]
-    public function save(Request $request): Response
+    #[Route('/merito/save/{solicitudId}', name: 'quinque_merito_save', methods: ['POST'])]
+    public function save(Request $request, int $solicitudId): JsonResponse
     {
         $merito = new Merito();
-        // Recojo los datos "a mano"
-        $merito->setOrganismo($request->request->get('organismo'));
-        $categoria = $this->entityManager->getRepository(Categoria::class)->find($request->request->get('categoriaId'));
-        if (!$categoria) {
-            return new JsonResponse([
-                'status' => 'error',
-                'message' => 'Categoría no encontrada',
-            ], 404);
-        }
-		$merito->setCategoria($categoria);
-        $merito->setFechaInicio(
-            new \DateTime($request->request->get('fechaInicio'))
-        );
-        $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-        $estado = $this->entityManager->getRepository(MeritoEstado::class)->find($request->request->get('estadoId'));
-        if (!$estado) {
-            return new JsonResponse([
-                'status' => 'error',
-                'message' => 'Estado no encontrado',
-            ], 404);
-        }
-        $merito->setEstado($estado);
-        // Recupera la solicitud
-        $solicitudId = $request->request->get('solicitud_id');
-        $solicitud = $this->solicitudRepository->find($solicitudId);
+        $solicitud = $this->entityManager->getRepository(Solicitud::class)->find($solicitudId);
+        
         if (!$solicitud) {
-            return new JsonResponse(
-                [
-                    'status' => 'error',
-                    'message' => 'Solicitud no encontrada',
-                ]
-            );
-        }
-        $merito->setSolicitud($solicitud);
-
-        // Check for overlapping date ranges
-        if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
-            $estado = $this->entityManager->getRepository(MeritoEstado::class)->find(5);
-            $merito->setEstado($estado);
-            $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Solicitud no encontrada'
+            ], 404);
         }
 
-        try {
-            $this->entityManager->persist($merito);
-            $this->entityManager->flush();
+        $form = $this->createForm(MeritoType::class, $merito);
+        $form->handleRequest($request);
 
-            return new JsonResponse(
-                [
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $merito->setSolicitud($solicitud);
+                $merito->setCreatedAt(new \DateTime());
+                
+                // Verificar solapamiento de fechas
+                if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin())) {
+                    $estado = $this->meritoEstadoRepository->find(5); // Estado solapado
+                    $merito->setEstado($estado);
+                }
+
+                $this->entityManager->persist($merito);
+                $this->entityManager->flush();
+
+                $response = [
                     'status' => 'success',
                     'message' => 'Mérito guardado correctamente',
-                    'redirect' => $this->generateUrl(
-                        'quinque_solicitud_show',
-                        ['id' => $merito->getSolicitud()->getId()]
-                    ),
-                ]
-            );
-        } catch (\Exception $e) {
-            return new JsonResponse(
-                [
+                    'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $solicitudId])
+                ];
+
+                if ($merito->getEstado()->getId() === 5) {
+                    $response['warning'] = 'El mérito se ha guardado pero las fechas se solapan con otro mérito existente.';
+                }
+
+                return new JsonResponse($response);
+            } catch (\Exception $e) {
+                return new JsonResponse([
                     'status' => 'error',
-                    'message' => 'Error al guardar el mérito: '.$e->getMessage(),
-                ]
-            );
+                    'message' => 'Error al guardar el mérito: ' . $e->getMessage()
+                ]);
+            }
         }
+
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+
+        return new JsonResponse([
+            'status' => 'error',
+            'message' => 'Error en el formulario',
+            'errors' => $errors
+        ]);
     }
 
-    /**
-     * Updates a Merito entity.
-     *
-     * @param Merito  $merito  the Merito entity to update
-     * @param Request $request the HTTP request object
-     *
-     * @return Response the JSON response indicating success or failure
-     */
     #[Route('/merito/edit/{id}', name: 'quinque_merito_edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): Response
     {
@@ -176,16 +163,21 @@ class MeritoController extends AbstractController
             if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
                 $estado = $this->entityManager->getRepository(MeritoEstado::class)->find(5);
                 $merito->setEstado($estado);
-                $this->addFlash('warning', 'Las fechas del mérito se solapan con otro mérito existente.');
             }
 
             $this->entityManager->flush();
 
-            return new JsonResponse([
+            $response = [
                 'status' => 'success',
                 'message' => 'Mérito actualizado correctamente',
                 'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $merito->getSolicitud()->getId()]),
-            ]);
+            ];
+
+            if ($merito->getEstado()->getId() === 5) {
+                $response['warning'] = 'El mérito se ha actualizado pero las fechas se solapan con otro mérito existente.';
+            }
+
+            return new JsonResponse($response);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
@@ -244,30 +236,19 @@ class MeritoController extends AbstractController
         }
     }
 
-    /**
-     * Checks if the given date range overlaps with any existing merits in the solicitud.
-     *
-     * @param Solicitud          $solicitud   the solicitud entity
-     * @param \DateTimeInterface $fechaInicio the start date of the new merit
-     * @param \DateTimeInterface $fechaFin    the end date of the new merit
-     *
-     * @return bool true if the date range overlaps, false otherwise
-     */
-    private function isDateRangeOverlapping(Solicitud $solicitud, \DateTimeInterface $fechaInicio, \DateTimeInterface $fechaFin, ?Merito $currentMerito = null): bool
+    private function isDateRangeOverlapping(Solicitud $solicitud, \DateTime $startDate, \DateTime $endDate, ?Merito $excludeMerito = null): bool
     {
         foreach ($solicitud->getMeritos() as $existingMerito) {
-            if ($currentMerito && $existingMerito->getId() === $currentMerito->getId()) {
+            if ($excludeMerito && $existingMerito->getId() === $excludeMerito->getId()) {
                 continue;
             }
             if (
-                ($fechaInicio >= $existingMerito->getFechaInicio() && $fechaInicio <= $existingMerito->getFechaFin())
-                || ($fechaFin >= $existingMerito->getFechaInicio() && $fechaFin <= $existingMerito->getFechaFin())
-                || ($fechaInicio <= $existingMerito->getFechaInicio() && $fechaFin >= $existingMerito->getFechaFin())
+                ($startDate <= $existingMerito->getFechaFin() && $endDate >= $existingMerito->getFechaInicio()) ||
+                ($existingMerito->getFechaInicio() <= $endDate && $existingMerito->getFechaFin() >= $startDate)
             ) {
                 return true;
             }
         }
-
         return false;
     }
 }
