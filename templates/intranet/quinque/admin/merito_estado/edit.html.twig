@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Estado de Mérito{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1>Editar Estado de Mérito</h1>
+
+        {{ include('intranet/quinque/admin/merito_estado/_form.html.twig', {'button_label': 'Actualizar'}) }}
+
+        <a href="{{ path('app_merito_estado_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al listado
+        </a>
+
+        {{ include('intranet/quinque/admin/merito_estado/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

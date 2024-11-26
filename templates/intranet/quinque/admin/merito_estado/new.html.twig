@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Estado de Mérito{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1>Crear nuevo Estado de Mérito</h1>
+
+        {{ include('intranet/quinque/admin/merito_estado/_form.html.twig') }}
+
+        <a href="{{ path('app_merito_estado_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+{% endblock %}

@@ -5,8 +5,8 @@
 namespace App\Form\Quinque;
 
 use App\Entity\Quinque\Categoria;
-use App\Entity\Quinque\Estado;
 use App\Entity\Quinque\Merito;
+use App\Entity\Quinque\MeritoEstado;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -42,7 +42,7 @@ class MeritoType extends AbstractType
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('estado', EntityType::class, [
-                'class' => Estado::class,
+                'class' => MeritoEstado::class,
                 'choice_label' => 'nombre',
                 'placeholder' => 'Seleccione un estado',
                 'required' => true,

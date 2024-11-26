@@ -1,15 +1,14 @@
 <?php
-// src/Entity/Estado.php
 namespace App\Entity\Quinque;
 
-use App\Repository\Quinque\EstadoRepository;
+use App\Repository\Quinque\MeritoEstadoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EstadoRepository::class)]
-#[ORM\Table(name: 'quinque_estado')]
-class Estado
+#[ORM\Entity(repositoryClass: MeritoEstadoRepository::class)]
+#[ORM\Table(name: 'quinque_merito_estado')]
+class MeritoEstado
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -55,5 +54,40 @@ class Estado
     {
         $this->color = $color;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Merito>
+     */
+    public function getMeritos(): Collection
+    {
+        return $this->meritos;
+    }
+
+    public function addMerito(Merito $merito): static
+    {
+        if (!$this->meritos->contains($merito)) {
+            $this->meritos->add($merito);
+            $merito->setEstado($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMerito(Merito $merito): static
+    {
+        if ($this->meritos->removeElement($merito)) {
+            // set the owning side to null (unless already changed)
+            if ($merito->getEstado() === $this) {
+                $merito->setEstado(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nombre;
     }
 }
