@@ -8,7 +8,7 @@
     {# Header Section #}
     <h1 class="mb-3">
         <i class="fas fa-paper-plane text-warning" aria-hidden="true"></i> 
-        Solicitud quinquenio - convocatoria {{ solicitud.convocatoria.nombre }}
+        Solicitud Quinquenio - Convocatoria {{ solicitud.convocatoria.nombre }}
     </h1>
 
     {# Solicitante Information Section #}
@@ -80,6 +80,7 @@
                         <th scope="col">Categoría</th>
                         <th scope="col">Fecha Inicio</th>
                         <th scope="col">Fecha Fin</th>
+                        <th scope="col">Dedicación</th>
                         <th scope="col">Días</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Acciones</th>
@@ -93,6 +94,7 @@
                             <td>{{ merito.categoria.abreviatura }}</td>
                             <td>{{ merito.fechaInicio|date('Y-m-d') }}</td>
                             <td>{{ merito.fechaFin|date('Y-m-d') }}</td>
+                            <td>{{ merito.dedicacion }}</td>
                             <td>{{ merito.diasTranscurridos }}</td>
                             <td>
                                 <span class="badge" style="background-color: {{ merito.estado.color }}">
@@ -131,6 +133,7 @@
                     </div>
                     <div class="modal-body">
                         {{ form_start(form, {'action': path('quinque_merito_save', {'solicitudId': solicitud.id}), 'attr': {'id': 'meritoForm'}}) }}
+                            <input type="hidden" id="merito_id" name="merito_id" value="">
                             {{ include('intranet/quinque/admin/merito/_form.html.twig') }}
                         {{ form_end(form) }}
                     </div>
@@ -151,10 +154,13 @@
                 const button = event.relatedTarget;
                 const action = button.dataset.action;
                 const modalTitle = modal.querySelector('.modal-title');
+                const form = document.getElementById('meritoForm');
                 
                 if (action === 'edit') {
                     const meritoId = button.dataset.id;
                     modalTitle.textContent = 'Editar Mérito';
+                    form.action = `{{ path("quinque_merito_edit", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId);
+                    document.getElementById('merito_id').value = meritoId;
                     
                     try {
                         const response = await fetch(`{{ path("quinque_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
