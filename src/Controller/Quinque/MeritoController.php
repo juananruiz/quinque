@@ -141,48 +141,50 @@ class MeritoController extends AbstractController
     }
 
     #[Route('/merito/edit/{id}', name: 'quinque_merito_edit', methods: ['POST'])]
-    public function edit(Merito $merito, Request $request): Response
+    public function edit(Merito $merito, Request $request): JsonResponse
     {
         try {
-            // Actualizar los datos manualmente
-            $merito->setOrganismo($request->request->get('organismo'));
-            $merito->setCategoria($request->request->get('categoriaId'));
-            $merito->setFechaInicio(new \DateTime($request->request->get('fechaInicio')));
-            $merito->setFechaFin(new \DateTime($request->request->get('fechaFin')));
-            $estado = $this->entityManager->getRepository(MeritoEstado::class)->find($request->request->get('estadoId'));
-            if (!$estado) {
-                return new JsonResponse([
-                    'status' => 'error',
-                    'message' => 'Estado no encontrado',
-                ], 404);
-            }
-            $merito->setEstado($estado);
+            $form = $this->createForm(MeritoType::class, $merito);
+            $form->handleRequest($request);
 
-            // Check for overlapping date ranges
-            $solicitud = $merito->getSolicitud();
-            if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
-                $estado = $this->entityManager->getRepository(MeritoEstado::class)->find(5);
-                $merito->setEstado($estado);
-            }
+            if ($form->isSubmitted() && $form->isValid()) {
+                // Check for overlapping date ranges
+                $solicitud = $merito->getSolicitud();
+                if ($this->isDateRangeOverlapping($solicitud, $merito->getFechaInicio(), $merito->getFechaFin(), $merito)) {
+                    $estado = $this->meritoEstadoRepository->find(5);
+                    $merito->setEstado($estado);
+                }
 
-            $this->entityManager->flush();
+                $this->entityManager->flush();
 
-            $response = [
-                'status' => 'success',
-                'message' => 'Mérito actualizado correctamente',
-                'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $merito->getSolicitud()->getId()]),
-            ];
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Mérito actualizado correctamente',
+                    'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $merito->getSolicitud()->getId()]),
+                ];
 
-            if ($merito->getEstado()->getId() === 5) {
-                $response['warning'] = 'El mérito se ha actualizado pero las fechas se solapan con otro mérito existente.';
+                if ($merito->getEstado()->getId() === 5) {
+                    $response['warning'] = 'El mérito se ha actualizado pero las fechas se solapan con otro mérito existente.';
+                }
+
+                return new JsonResponse($response);
             }
 
-            return new JsonResponse($response);
+            $errors = [];
+            foreach ($form->getErrors(true) as $error) {
+                $errors[] = $error->getMessage();
+            }
+
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Error en el formulario',
+                'errors' => $errors
+            ], 400);
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
                 'message' => 'Error al actualizar el mérito: '.$e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -196,22 +198,32 @@ class MeritoController extends AbstractController
     #[Route('/merito/{id}/edit', name: 'quinque_merito_edit_data', methods: ['GET'])]
     public function getEditData(Merito $merito): JsonResponse
     {
-        return new JsonResponse(
-            [
-                'id' => $merito->getId(),
-                'organismo' => $merito->getOrganismo(),
-                'categoriaId' => $merito->getCategoria()->getId(),
-                'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
-                'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
-                'estadoId' => $merito->getEstado()->getId(),
-            ]
-        );
+        try {
+            return new JsonResponse([
+                'status' => 'success',
+                'merito' => [
+                    'id' => $merito->getId(),
+                    'organismo' => $merito->getOrganismo(),
+                    'categoriaId' => $merito->getCategoria()->getId(),
+                    'fechaInicio' => $merito->getFechaInicio()->format('Y-m-d'),
+                    'fechaFin' => $merito->getFechaFin()->format('Y-m-d'),
+                    'estadoId' => $merito->getEstado()->getId(),
+                    'dedicacion' => $merito->getDedicacion(),
+                    'observaciones' => $merito->getObservaciones()
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Error al cargar los datos del mérito: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Deletes a Merito entity by its ID.
      */
-    #[Route('/merito/delete/{id}', name: 'quinque_merito_delete', methods: ['POST'])]
+    #[Route('/merito/delete/{id}', name: 'quinque_merito_delete', methods: ['DELETE', 'POST'])]
     public function delete(Merito $merito): JsonResponse
     {
         try {
@@ -219,20 +231,15 @@ class MeritoController extends AbstractController
             $this->entityManager->remove($merito);
             $this->entityManager->flush();
 
-            return new JsonResponse(
-                [
-                    'success' => true,
-                    'message' => 'Mérito borrado correctamente',
-                ]
-            );
+            return new JsonResponse([
+                'status' => 'success',
+                'message' => 'Mérito borrado correctamente',
+            ]);
         } catch (\Exception $e) {
-            return new JsonResponse(
-                [
-                    'success' => false,
-                    'message' => 'Error al borrar el mérito',
-                ],
-                500
-            );
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => 'Error al borrar el mérito: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
