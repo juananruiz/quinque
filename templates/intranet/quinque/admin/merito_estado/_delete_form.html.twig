@@ -1,6 +1,6 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar este elemento?');">
+<form method="post" action="{{ path('quinque_merito_estado_delete', {'id': merito_estado.id}) }}" onsubmit="return confirm('¿Estás seguro que deseas eliminar este elemento?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ merito_estado.id) }}">
+    <button class="btn btn-danger">
         <i class="fas fa-trash"></i> Eliminar
     </button>
-{{ form_end(form) }}
+</form>
