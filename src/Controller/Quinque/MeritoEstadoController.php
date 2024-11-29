@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/merito/estado')]
+#[Route('/merito_estado')]
 class MeritoEstadoController extends AbstractController
 {
     #[Route('/', name: 'quinque_merito_estado_index', methods: ['GET'])]
