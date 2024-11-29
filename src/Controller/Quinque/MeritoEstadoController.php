@@ -42,15 +42,21 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'quinque_merito_estado_show', methods: ['GET'])]
+    #[Route('/{id}/show', name: 'quinque_merito_estado_show', methods: ['GET'])]
     public function show(MeritoEstado $meritoEstado): Response
     {
+        $form = $this->createFormBuilder()
+            ->setAction($this->generateUrl('quinque_merito_estado_delete', ['id' => $meritoEstado->getId()]))
+            ->setMethod('POST')
+            ->getForm();
+
         return $this->render('intranet/quinque/admin/merito_estado/show.html.twig', [
             'merito_estado' => $meritoEstado,
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'quinque_merito_estado_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'quinque_merito_estado_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, MeritoEstado $meritoEstado, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MeritoEstadoType::class, $meritoEstado);
@@ -64,7 +70,7 @@ class MeritoEstadoController extends AbstractController
 
         return $this->render('intranet/quinque/admin/merito_estado/edit.html.twig', [
             'merito_estado' => $meritoEstado,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
