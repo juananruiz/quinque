@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/solicitud/estado')]
+#[Route('/admin/solicitud/estado')]
 class SolicitudEstadoController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
@@ -61,7 +61,7 @@ class SolicitudEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'quinque_solicitud_estado_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'quinque_solicitud_estado_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, SolicitudEstado $solicitudEstado): Response
     {
         $form = $this->createForm(SolicitudEstadoType::class, $solicitudEstado);
