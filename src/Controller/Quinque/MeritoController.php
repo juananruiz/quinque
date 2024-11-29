@@ -27,6 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Controller for managing Merito entities.
  */
+#[Route('/merito')]
 class MeritoController extends AbstractController
 {
     private $solicitudRepository;
@@ -49,7 +50,7 @@ class MeritoController extends AbstractController
         $this->meritoRepository = $meritoRepository;
     }
 
-    #[Route('/merito/add', name: 'quinque_merito_add')]
+    #[Route('/add', name: 'quinque_merito_add')]
     public function add(Request $request): Response
     {
         $merito = new Merito();
@@ -79,7 +80,7 @@ class MeritoController extends AbstractController
         );
     }
 
-    #[Route('/merito/save/{solicitudId}', name: 'quinque_merito_save', methods: ['POST'])]
+    #[Route('/save/{solicitudId}', name: 'quinque_merito_save', methods: ['POST'])]
     public function save(Request $request, int $solicitudId): JsonResponse
     {
         $merito = new Merito();
@@ -140,7 +141,7 @@ class MeritoController extends AbstractController
         ]);
     }
 
-    #[Route('/merito/edit/{id}', name: 'quinque_merito_edit', methods: ['POST'])]
+    #[Route('/edit/{id}', name: 'quinque_merito_edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): JsonResponse
     {
         try {
@@ -195,7 +196,7 @@ class MeritoController extends AbstractController
      *
      * @return JsonResponse the JSON response containing the Merito data
      */
-    #[Route('/merito/{id}/edit', name: 'quinque_merito_edit_data', methods: ['GET'])]
+    #[Route('/{id}/edit', name: 'quinque_merito_edit_data', methods: ['GET'])]
     public function getEditData(Merito $merito): JsonResponse
     {
         try {
@@ -223,7 +224,7 @@ class MeritoController extends AbstractController
     /**
      * Deletes a Merito entity by its ID.
      */
-    #[Route('/merito/delete/{id}', name: 'quinque_merito_delete', methods: ['DELETE', 'POST'])]
+    #[Route('/delete/{id}', name: 'quinque_merito_delete', methods: ['DELETE', 'POST'])]
     public function delete(Merito $merito): JsonResponse
     {
         try {

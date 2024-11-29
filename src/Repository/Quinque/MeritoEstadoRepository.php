@@ -5,6 +5,7 @@ namespace App\Repository\Quinque;
 use App\Entity\Quinque\MeritoEstado;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @extends ServiceEntityRepository<MeritoEstado>
@@ -14,7 +15,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MeritoEstado[]    findAll()
  * @method MeritoEstado[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class MeritoEstadoRepository extends ServiceEntityRepository
+#[ORM\Table(name: 'quinque_merito_estado')]
+
+ class MeritoEstadoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

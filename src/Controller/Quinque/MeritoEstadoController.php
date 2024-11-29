@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/merito/estado')]
+#[Route('/merito/estado')]
 class MeritoEstadoController extends AbstractController
 {
     #[Route('/', name: 'quinque_merito_estado_index', methods: ['GET'])]
@@ -68,7 +68,7 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'quinque_merito_estado_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'quinque_merito_estado_delete', methods: ['POST'])]
     public function delete(Request $request, MeritoEstado $meritoEstado, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$meritoEstado->getId(), $request->request->get('_token'))) {

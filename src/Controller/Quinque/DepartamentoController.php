@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/departamento')]
 class DepartamentoController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
@@ -32,7 +33,7 @@ class DepartamentoController extends AbstractController
         ]);
     }
 
-    #[Route('/departamento/new', name: 'quinque_departamento_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'quinque_departamento_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $departamento = new Departamento();
@@ -52,7 +53,7 @@ class DepartamentoController extends AbstractController
         ]);
     }
 
-    #[Route('/departamento/{id}/edit', name: 'quinque_departamento_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'quinque_departamento_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Departamento $departamento): Response
     {
         $form = $this->createForm(DepartamentoType::class, $departamento);
