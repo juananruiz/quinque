@@ -4,7 +4,16 @@
         {% if field.vars.name != '_token' %}
             <div class="mb-3">
                 {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                {% if field.vars.name == 'departamento' %}
+                    {{ form_widget(field, {
+                        'attr': {
+                            'class': 'form-control select2-departamento',
+                            'data-placeholder': 'Seleccione un departamento'
+                        }
+                    }) }}
+                {% else %}
+                    {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                {% endif %}
                 {% if field.vars.errors|length > 0 %}
                     <div class="invalid-feedback">
                         {{ form_errors(field) }}
@@ -20,3 +29,25 @@
         </button>
     </div>
 {{ form_end(form) }}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar Select2 para el campo de departamento
+        $('.select2-departamento').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return "No se encontraron resultados";
+                },
+                searching: function() {
+                    return "Buscando...";
+                }
+            },
+            placeholder: 'Seleccione un departamento',
+            allowClear: true
+        });
+    });
+</script>
+{% endblock %}
