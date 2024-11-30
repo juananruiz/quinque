@@ -5,6 +5,7 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Categoria;
 use App\Form\Quinque\CategoriaType;
 use App\Repository\Quinque\CategoriaRepository;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class CategoriaController extends AbstractController
 {
     public function __construct(
+        private readonly MessageGenerator $generator,
         private readonly CategoriaRepository $categoriaRepository,
     ) {
     }
@@ -38,6 +40,9 @@ class CategoriaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->categoriaRepository->save($categoria, true);
+            $this->generator->logAndFlash('info', 'Nueva categoría creada', [
+                'id' => $categoria->getId(),
+            ]);
 
             return $this->redirectToRoute('intranet_quinque_admin_categoria_index');
         }
@@ -67,6 +72,9 @@ class CategoriaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->categoriaRepository->save($categoria, true);
+            $this->generator->logAndFlash('info', 'Categoría modificada', [
+                'id' => $categoria->getId(),
+            ]);
 
             return $this->redirectToRoute('intranet_quinque_admin_categoria_index');
         }
@@ -81,8 +89,12 @@ class CategoriaController extends AbstractController
     public function delete(Request $request, Categoria $categoria): Response
     {
         $this->denyAccessUnlessGranted('admin');
-        if ($this->isCsrfTokenValid('delete'.$categoria->getId(), $request->request->getString('_token'))) {
+        $id = $categoria->getId();
+        if ($this->isCsrfTokenValid('delete'.$id, $request->request->getString('_token'))) {
             $this->categoriaRepository->remove($categoria, true);
+            $this->generator->logAndFlash('info', 'Categoría eliminada', [
+                'id' => $id,
+            ]);
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_categoria_index');

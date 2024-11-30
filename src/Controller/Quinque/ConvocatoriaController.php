@@ -5,6 +5,7 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Convocatoria;
 use App\Form\Quinque\ConvocatoriaType;
 use App\Repository\Quinque\ConvocatoriaRepository;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConvocatoriaController extends AbstractController
 {
     public function __construct(
+        private readonly MessageGenerator $generator,
         private readonly ConvocatoriaRepository $convocatoriaRepository,
     ) {
     }
@@ -38,6 +40,9 @@ class ConvocatoriaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->convocatoriaRepository->save($convocatoria, true);
+            $this->generator->logAndFlash('info', 'Nueva convocatoria creada', [
+                'id' => $convocatoria->getId(),
+            ]);
 
             return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
         }
@@ -67,6 +72,9 @@ class ConvocatoriaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->convocatoriaRepository->save($convocatoria, true);
+            $this->generator->logAndFlash('info', 'Convocatoria modificada', [
+                'id' => $convocatoria->getId(),
+            ]);
 
             return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
         }
@@ -81,8 +89,12 @@ class ConvocatoriaController extends AbstractController
     public function delete(Request $request, Convocatoria $convocatoria): Response
     {
         $this->denyAccessUnlessGranted('admin');
-        if ($this->isCsrfTokenValid('delete'.$convocatoria->getId(), $request->request->getString('_token'))) {
+        $id = $convocatoria->getId();
+        if ($this->isCsrfTokenValid('delete'.$id, $request->request->getString('_token'))) {
             $this->convocatoriaRepository->remove($convocatoria, true);
+            $this->generator->logAndFlash('info', 'Convocatoria eliminada', [
+                'id' => $id,
+            ]);
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');
