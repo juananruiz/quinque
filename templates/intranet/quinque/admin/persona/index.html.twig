@@ -3,6 +3,11 @@
 
 {% block title %}Solicitantes{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
     <div class="row mb-3">
         <div class="col-6"><h1 class=""><i class="fas fa-person text-warning"></i> Solicitantes</h1>
@@ -48,6 +53,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.bootstrap5.min.js') }}"></script>
     <!--suppress JSUnresolvedReference -->
     <script>
         $(document).ready(function() {

@@ -3,6 +3,11 @@
 
 {% block title %}Convocatoria{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
 	<div class="row">
 		<div class="col-md-6 mb-3">
@@ -40,6 +45,7 @@
                 <th>ID</th>
                 <th>Solicitante</th>
                 <th>Fecha Entrada</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -49,6 +55,11 @@
                     <td>{{ solicitud.id }}</td>
                     <td>{{ solicitud.persona.nombre}} {{ solicitud.persona.apellidos}}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
+                    <td>
+                        <span class="badge" style="background-color: {{ solicitud.estado.color }}">
+                            {{ solicitud.estado.nombre }}
+                        </span>
+                    </td>
                     <td>
                         <a href="{{ path('quinque_solicitud_show', {'id': solicitud.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
                     </td>
@@ -60,6 +71,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
         $(document).ready(function() {
 		$('#convocatorias').DataTable({

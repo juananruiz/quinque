@@ -1,0 +1,65 @@
+{# templates/intranet/peticion/solicitud/show.html.twig #}
+{% extends 'intranet/quinque/admin/base.html.twig' %}
+
+{% block title %}Detalles de la Solicitud{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col">
+                <h1><i class="fas fa-file-alt text-warning"></i> Detalles de la Solicitud</h1>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ solicitud.asunto }}</h5>
+                <p class="card-text">{{ solicitud.contenido|nl2br }}</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-comments"></i> Comentarios ({{ solicitud.comentarios|length }})
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if solicitud.comentarios is empty %}
+                    <p class="text-muted">No hay comentarios todavía.</p>
+                {% else %}
+                    {% for comentario in solicitud.comentarios %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <p class="mb-1">{{ comentario.contenido|nl2br }}</p>
+                            <small class="text-muted">
+                                Creado el {{ comentario.createdAt|date('d/m/Y H:i') }}
+                                {% if comentario.modifiedAt %}
+                                    (Modificado el {{ comentario.modifiedAt|date('d/m/Y H:i') }})
+                                {% endif %}
+                            </small>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <a href="{{ path('app_peticion_solicitud_edit', {'id': solicitud.id}) }}" 
+               class="btn btn-warning">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            <a href="{{ path('app_peticion_solicitud_index') }}" 
+               class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver al listado
+            </a>
+        </div>
+
+        <form method="post" action="{{ path('app_peticion_solicitud_delete', {'id': solicitud.id}) }}" 
+              onsubmit="return confirm('¿Está seguro de que desea eliminar esta solicitud?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ solicitud.id) }}">
+            <button class="btn btn-danger">
+                <i class="fas fa-trash"></i> Eliminar
+            </button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {# templates/intranet/quinque/admin/solicitud/_form.html.twig #}
 
-{{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'method': 'POST'}}) }}
     {% for field in form %}
         {% if field.vars.name != '_token' %}
             <div class="mb-3">

@@ -101,6 +101,11 @@ final class SolicitudController extends AbstractController
 
         $solicitud = new Solicitud();
         $solicitud->setPersona($persona);
+        
+        // Establecer el estado inicial (ID = 1)
+        $estadoInicial = $this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 1);
+        $solicitud->setEstado($estadoInicial);
+        
         $form = $this->createForm(SolicitudType::class, $solicitud);
         $form->handleRequest($request);
 
@@ -122,19 +127,38 @@ final class SolicitudController extends AbstractController
             ]
         );
     }
-    #[Route('/edit/{id}', name: 'quinque_solicitud_edit')]
-	public function edit(Solicitud $solicitud): Response
-	{
-		$form = $this->createForm(SolicitudType::class, $solicitud);
 
-		return $this->render(
-			'intranet/quinque/admin/solicitud/edit.html.twig',
+    /**
+     * Edits an existing Solicitud entity.
+     *
+     * @param Request   $request   The HTTP request
+     * @param Solicitud $solicitud The Solicitud entity to edit
+     *
+     * @return Response The response object
+     */
+    #[Route('/edit/{id}', name: 'quinque_solicitud_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Solicitud $solicitud): Response
+    {
+        $form = $this->createForm(SolicitudType::class, $solicitud);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->_entityManager->flush();
+
+            return $this->redirectToRoute(
+                'quinque_solicitud_show',
+                ['id' => $solicitud->getId()]
+            );
+        }
+
+        return $this->render(
+            'intranet/quinque/admin/solicitud/edit.html.twig',
             [
                 'solicitud' => $solicitud,
                 'form' => $form->createView(),
             ]
-        );  
-	}
+        );
+    }
 
     #[Route('/{id}/delete', name: 'quinque_solicitud_delete', methods: ['POST'])]
     public function delete(Request $request, Solicitud $solicitud, EntityManagerInterface $entityManager): Response

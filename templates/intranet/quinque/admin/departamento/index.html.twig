@@ -3,6 +3,11 @@
 
 {% block title %}Lista de Departamentos{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
     <div class="row mt-3 mb-3">
 		<div class="col-6">
@@ -44,6 +49,8 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.bootstrap5.min.js') }}"></script>
     <!--suppress JSUnresolvedReference -->
     <script>
         $(document).ready(function() {

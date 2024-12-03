@@ -34,7 +34,7 @@ class Solicitud
     private ?Convocatoria $convocatoria = null;
 
     #[ORM\ManyToOne(targetEntity: SolicitudEstado::class, inversedBy: 'solicitudes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?SolicitudEstado $estado = null;
 
     #[

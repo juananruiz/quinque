@@ -11,51 +11,55 @@
             <i class="fas fa-paper-plane text-warning" aria-hidden="true"></i> 
             Solicitud Quinquenio - Convocatoria {{ solicitud.convocatoria.nombre }}
         </h1>
-    </div
+    </div>
     {# Solicitante Information Section #}
-    <section aria-labelledby="datos-solicitante">
-        <h2 id="datos-solicitante">Datos del Solicitante</h2>
-        <table class="table table-striped">
-            <tbody>
-                <tr>
-                    <th>DNI</th>
-                    <td>{{ persona.dni }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre completo</th>
-                    <td>{{ persona.nombre }} {{ persona.apellidos }}</td>
-                </tr>
-                <tr>
-                    <th>Departamento</th>
-                    <td>{{ persona.departamento.nombre }}</td>
-                <tr>
-                    <th>Correo</th>
-                    <td>{{ persona.email }}</td>
-                </tr>
-                <tr>
-                    <th>Fecha de Solicitud</th>
-                    <td>{{ solicitud.fechaEntrada|date('Y-m-d') }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="btn-group mb-4">
-            <a href="{{ path('quinque_persona_show', {'id': persona.id}) }}"
-               class="btn btn-secondary" 
-               aria-label="Ver detalles del solicitante">
-                <i class="fas fa-user" aria-hidden="true"></i> Ver solicitante
-            </a>
-            <a href="{{ path('quinque_convocatoria_show', {'id': solicitud.convocatoria.id}) }}"
-               class="btn btn-secondary"
-               aria-label="Ver detalles de la convocatoria">
-                <i class="fas fa-bullhorn" aria-hidden="true"></i> Ver convocatoria
-            </a>
+    <section>
+        <h2 class="h4 mt-4">Datos del Solicitante</h2>
+        <div class="row bg-light p-3">
+            <div class="col-3 border-end border-warning mb-2">
+                <span class="text-secondary small">DNI</span>
+                <br>{{ persona.dni }}
+            </div>
+            <div class="col-3 border-end border-warning mb-2">
+                <span class="text-secondary small">Nombre completo</span>
+                <br>{{ persona.nombre }} {{ persona.apellidos }}
+            </div>
+            <div class="col-3 border-end border-warning mb-2">
+                <span class="text-secondary small">Departamento</span>
+                <br>{{ persona.departamento.nombre }}
+            </div>
+            <div class="col-3 mb-2">
+                <span class="text-secondary small">Correo</span>
+                <br>{{ persona.email }}
+            </div>
+            <div class="col-3 border-end border-warning mb-2">
+                <span class="text-secondary small">Fecha de Solicitud</span>
+                <br>{{ solicitud.fechaEntrada|date('Y-m-d') }}
+            </div>
+            <div class="col-3 mb-2">
+                <span class="text-secondary small">Estado solicitud</span>
+                <br>
+                <span class="badge" style="background-color: {{ solicitud.estado.color }}">
+                    {{ solicitud.estado.nombre }}
+                </span>
+            </div>
+            <div class="col-3 mb-2">
+                <a href="{{ path('quinque_persona_show', {'id': persona.id}) }}"
+                    class="btn btn-light btn-sm mt-3"> 
+                    <i class="fas fa-user"></i> Ver solicitante
+                </a>
+            </div>
+            <div class="col-3 mb-2">
+                <a href="{{ path('quinque_convocatoria_show', {'id': solicitud.convocatoria.id}) }}"
+                    class="btn btn-light btn-sm mt-3">
+                    <i class="fas fa-bullhorn"></i> Ver convocatoria
+                </a>
+            </div>
         </div>
     </section>
 
-    {# Meritos Section #}
-    <section aria-labelledby="meritos-section">
-        <h2 id="meritos-section">Méritos</h2>
+    <section>
+        <h2 class="h4 mt-4">Méritos aportados</h2>
         <div id="requisitos" class="row">
             <div class="col-md-6">
                 <strong>Meritos computados:</strong> 
@@ -120,9 +124,12 @@
             </div>
         {% endif %}
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
             <i class="fas fa-plus"></i> Agregar Mérito
         </button>
+        <a href="{{ path('quinque_solicitud_edit', {'id': solicitud.id}) }}"
+            class="btn btn-warning mb-3 text-end"><i class="fas fa-edit"></i> Editar solicitud
+        </a>
 
         <!-- Modal -->
         <div class="modal fade" id="addMeritoModal" tabindex="-1" aria-labelledby="addMeritoModalLabel" aria-hidden="true">

@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="mt-3">
+        <button class="btn btn-primary">
+            <i class="fas fa-save"></i> {{ button_label|default('Guardar') }}
+        </button>
+        <a href="{{ path('app_peticion_solicitud_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver al listado
+        </a>
+    </div>
+{{ form_end(form) }}

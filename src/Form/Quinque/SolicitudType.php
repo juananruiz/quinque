@@ -4,6 +4,7 @@ namespace App\Form\Quinque;
 
 use App\Entity\Quinque\Convocatoria;
 use App\Entity\Quinque\Solicitud;
+use App\Entity\Quinque\SolicitudEstado;
 use App\Repository\Quinque\ConvocatoriaRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -39,6 +40,8 @@ class SolicitudType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $activeConvocatoria = $this->convocatoriaRepository->findOneBy(['activa' => 1]);
+        $solicitud = $builder->getData();
+        $isEdit = $solicitud && $solicitud->getId() !== null;
 
         $builder
             ->add(
@@ -58,8 +61,9 @@ class SolicitudType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                    'attr' => ['class' => 'form-control'],
+                    'required' => true,
                     'label' => 'Fecha entrada',
+                    'attr' => ['class' => 'form-control'],
                 ]
             )
             ->add(
@@ -73,6 +77,19 @@ class SolicitudType extends AbstractType
                     'label' => false,
                 ]
             );
+
+        // Solo mostrar el campo estado en el formulario de edición
+        if ($isEdit) {
+            $builder->add(
+                'estado',
+                EntityType::class,
+                [
+                    'class' => SolicitudEstado::class,
+                    'choice_label' => 'nombre',
+                    'required' => false,
+                ]
+            );
+        }
     }
 
     /**
