@@ -1,5 +1,14 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            {{ form_row(form.solicitante) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.asignado) }}
+        </div>
+    </div>
+    {{ form_row(form.asunto) }}
+    {{ form_row(form.contenido) }}
     <div class="mt-3">
         <button class="btn btn-primary">
             <i class="fas fa-save"></i> {{ button_label|default('Guardar') }}

@@ -33,11 +33,11 @@ class Solicitud
     private ?Persona $solicitante = null;
 
     #[ORM\ManyToOne(targetEntity: Persona::class)]
-    #[ORM\JoinColumn(name: 'id_asignado', nullable: false)]
+    #[ORM\JoinColumn(name: 'id_asignado', nullable: true)]
     private ?Persona $asignado = null;
 
     #[ORM\ManyToOne(targetEntity: Unidad::class)]
-    #[ORM\JoinColumn(name: 'id_unidad', nullable: false)]
+    #[ORM\JoinColumn(name: 'id_unidad', nullable: true)]
     private ?Unidad $unidad = null;
 
     public function __construct()
