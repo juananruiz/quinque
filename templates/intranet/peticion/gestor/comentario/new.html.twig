@@ -1,0 +1,32 @@
+{# templates/intranet/peticion/gestor/comentario/new.html.twig #}
+{% extends 'intranet/quinque/admin/base.html.twig' %}
+
+{% block title %}Nuevo Comentario{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col">
+                <h1><i class="fas fa-comment-plus text-primary"></i> Nuevo Comentario</h1>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Contenido del comentario</label>
+                        <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                    <a href="{{ path('app_peticion_solicitud_show', {'id': solicitud.id}) }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

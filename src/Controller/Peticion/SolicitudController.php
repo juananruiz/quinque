@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/intranet/peticion/solicitud')]
+#[Route('/intranet/peticion/gestor/solicitud')]
 class SolicitudController extends AbstractController
 {
     #[Route('/', name: 'app_peticion_solicitud_index', methods: ['GET'])]
     public function index(SolicitudRepository $solicitudRepository): Response
     {
-        return $this->render('intranet/peticion/solicitud/index.html.twig', [
+        return $this->render('intranet/peticion/gestor/solicitud/index.html.twig', [
             'solicitudes' => $solicitudRepository->findAll(),
         ]);
     }
@@ -37,7 +37,7 @@ class SolicitudController extends AbstractController
             return $this->redirectToRoute('app_peticion_solicitud_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('intranet/peticion/solicitud/new.html.twig', [
+        return $this->render('intranet/peticion/gestor/solicitud/new.html.twig', [
             'solicitud' => $solicitud,
             'form' => $form,
         ]);
@@ -46,7 +46,7 @@ class SolicitudController extends AbstractController
     #[Route('/{id}', name: 'app_peticion_solicitud_show', methods: ['GET'])]
     public function show(Solicitud $solicitud): Response
     {
-        return $this->render('intranet/peticion/solicitud/show.html.twig', [
+        return $this->render('intranet/peticion/gestor/solicitud/show.html.twig', [
             'solicitud' => $solicitud,
         ]);
     }
@@ -64,7 +64,7 @@ class SolicitudController extends AbstractController
             return $this->redirectToRoute('app_peticion_solicitud_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('intranet/peticion/solicitud/edit.html.twig', [
+        return $this->render('intranet/peticion/gestor/solicitud/edit.html.twig', [
             'solicitud' => $solicitud,
             'form' => $form,
         ]);

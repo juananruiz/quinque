@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        {{ include('intranet/peticion/solicitud/_form.html.twig', {'button_label': 'Actualizar'}) }}
+        {{ include('intranet/peticion/gestor/solicitud/_form.html.twig', {'button_label': 'Actualizar'}) }}
 
         <form method="post" action="{{ path('app_peticion_solicitud_delete', {'id': solicitud.id}) }}" 
               onsubmit="return confirm('¿Está seguro de que desea eliminar esta solicitud?');" 
