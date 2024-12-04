@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ComentarioRepository::class)]
+#[ORM\Table(name: 'peticion_comentario')]
 class Comentario
 {
     #[ORM\Id]
