@@ -4,6 +4,7 @@ namespace App\Form\Peticion;
 
 use App\Entity\Peticion\Solicitud;
 use App\Entity\Persona;
+use App\Entity\Unidad;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -38,6 +39,18 @@ class SolicitudType extends AbstractType
                 'attr' => [
                     'class' => 'form-control select2',
                     'data-placeholder' => 'Buscar gestor...'
+                ]
+            ])
+            ->add('unidad', EntityType::class, [
+                'class' => Unidad::class,
+                'choice_label' => function(Unidad $unidad) {
+                    return $unidad->getNombre();
+                },
+                'placeholder' => 'Seleccione una unidad (opcional)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control select2',
+                    'data-placeholder' => 'Buscar unidad...'
                 ]
             ])
             ->add('asunto', TextType::class, [

@@ -1,10 +1,13 @@
 {{ form_start(form) }}
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ form_row(form.solicitante) }}
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             {{ form_row(form.asignado) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.unidad) }}
         </div>
     </div>
     {{ form_row(form.asunto) }}

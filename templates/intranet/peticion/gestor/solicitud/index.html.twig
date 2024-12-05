@@ -25,7 +25,8 @@
                 <tr>
                     <th>Id</th>
                     <th>Asunto</th>
-                    <th>Contenido</th>
+                    <th>Unidad</th>
+                    <th>Solicitante</th>
                     <th>Comentarios</th>
                     <th>Acciones</th>
                 </tr>
@@ -35,7 +36,8 @@
                 <tr>
                     <td>{{ solicitud.id }}</td>
                     <td>{{ solicitud.asunto }}</td>
-                    <td>{{ solicitud.contenido|slice(0, 100) }}{% if solicitud.contenido|length > 100 %}...{% endif %}</td>
+                    <td>{{ solicitud.unidad.nombre|slice(0, 100) }}{% if solicitud.unidad.nombre|length > 100 %}...{% endif %}</td>
+                    <td>{{ solicitud.solicitante.apellidos }}, {{ solicitud.solicitante.nombre }}</td>
                     <td>{{ solicitud.comentarios|length }}</td>
                     <td>
                         <a href="{{ path('app_peticion_solicitud_show', {'id': solicitud.id}) }}" 
