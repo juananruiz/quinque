@@ -147,9 +147,8 @@ class Solicitud
     public function getMeritosComputados(): int
     {
         $diasComputados = 0;
-
         foreach ($this->getMeritos() as $merito) {
-            // Suma solo los días de los méritos cuyo estado sea 1 (admitido).
+            // Suma solo los días de los méritos cuyo estado sea 2 (admitido).
             // TODO: ver si esto funciona
             if (2 === $merito->getEstado()?->getId()) {
                 $dias = $merito->getDiasTranscurridos();

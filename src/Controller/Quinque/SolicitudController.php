@@ -199,7 +199,7 @@ final class SolicitudController extends AbstractController
      * @return Response The PDF response
      */
     #[Route('/{id}/pdf', name: 'quinque_solicitud_pdf')]
-    public function generatePdf(Solicitud $solicitud): Response
+    public function generateReconocePdf(Solicitud $solicitud): Response
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
@@ -214,12 +214,21 @@ final class SolicitudController extends AbstractController
         $imageData = base64_encode(file_get_contents($imagePath));
         $imageSrc = 'data:image/png;base64,' . $imageData;
         
-        // Render the HTML as PDF
-        $html = $this->renderView('intranet/quinque/admin/solicitud/reconocimiento_quinquenio.html.twig', [
-            'solicitud' => $solicitud,
-            'meritosComputados' => $solicitud->getMeritosComputados(),
-            'selloBase64' => $imageSrc,
-        ]);
+        if ($solicitud->getMeritosComputados() >= 1825) { // TODO: Evitar número mágico
+            $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_estimado.html.twig', 
+                [
+                'solicitud' => $solicitud,
+                'meritosComputados' => $solicitud->getMeritosComputados(),
+                'selloBase64' => $imageSrc,
+                ]);
+        } else {
+            $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_desestimado.html.twig', 
+                [
+                'solicitud' => $solicitud,
+                'meritosComputados' => $solicitud->getMeritosComputados(),
+                'selloBase64' => $imageSrc,
+                ]);
+        }
         
         $dompdf->loadHtml($html);
         
