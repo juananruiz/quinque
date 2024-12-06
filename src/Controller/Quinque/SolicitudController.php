@@ -11,15 +11,15 @@
 namespace App\Controller\Quinque;
 
 use App\Entity\Quinque\Merito;
-use App\Entity\Quinque\MeritoEstado;
 use App\Entity\Quinque\Solicitud;
 use App\Form\Quinque\MeritoType;
 use App\Form\Quinque\SolicitudType;
 use App\Repository\Quinque\CategoriaRepository;
 use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\PersonaRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -191,4 +191,49 @@ final class SolicitudController extends AbstractController
             Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * Generates a PDF document for a Solicitud entity.
+     *
+     * @param Solicitud $solicitud The Solicitud entity
+     *
+     * @return Response The PDF response
+     */
+    #[Route('/{id}/pdf', name: 'quinque_solicitud_pdf')]
+    public function generatePdf(Solicitud $solicitud): Response
+    {
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->setIsRemoteEnabled(true);
+        
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+        
+        // Convert image to base64
+        $imagePath = $this->getParameter('kernel.project_dir') . '/public/assets/images/sello-personal-docente.png';
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageSrc = 'data:image/png;base64,' . $imageData;
+        
+        // Render the HTML as PDF
+        $html = $this->renderView('intranet/quinque/admin/solicitud/reconocimiento_quinquenio.html.twig', [
+            'solicitud' => $solicitud,
+            'meritosComputados' => $solicitud->getMeritosComputados(),
+            'selloBase64' => $imageSrc,
+        ]);
+        
+        $dompdf->loadHtml($html);
+        
+        // Configure page settings
+        $dompdf->setPaper('A4', 'portrait');
+        
+        // Render the HTML as PDF
+        $dompdf->render();
+        
+        // Output the generated PDF to Browser (inline view)
+        $response = new Response($dompdf->output());
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'inline; filename="solicitud-' . $solicitud->getId() . '.pdf"');
+        
+        return $response;
+    }
 }

@@ -11,6 +11,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('dias_a_periodo', [$this, 'diasAPeriodo']),
+            new TwigFilter('fecha_es', [$this, 'fechaEspanol']),
         ];
     }
 
@@ -33,5 +34,26 @@ class AppExtension extends AbstractExtension
         }
 
         return implode(', ', $partes);
+    }
+
+    public function fechaEspanol(\DateTimeInterface $fecha): string
+    {
+        $meses = [
+            'January' => 'enero',
+            'February' => 'febrero',
+            'March' => 'marzo',
+            'April' => 'abril',
+            'May' => 'mayo',
+            'June' => 'junio',
+            'July' => 'julio',
+            'August' => 'agosto',
+            'September' => 'septiembre',
+            'October' => 'octubre',
+            'November' => 'noviembre',
+            'December' => 'diciembre'
+        ];
+        
+        $fechaFormateada = $fecha->format('j \d\e F \d\e Y');
+        return strtr($fechaFormateada, $meses);
     }
 }

@@ -20,6 +20,30 @@
 	</div>
 	
 	<div class="mb-3">
+		{{ form_label(form.fechaResolucion) }}
+		{{ form_widget(form.fechaResolucion, {'attr': {'class': 'form-control'}}) }}
+		{{ form_errors(form.fechaResolucion) }}
+	</div>
+	
+	<div class="mb-3">
+		{{ form_label(form.delegaFirmaFecha) }}
+		{{ form_widget(form.delegaFirmaFecha, {'attr': {'class': 'form-control'}}) }}
+		{{ form_errors(form.delegaFirmaFecha) }}
+	</div>
+	
+	<div class="mb-3">
+		{{ form_label(form.delegaFirmaPersona) }}
+		{{ form_widget(form.delegaFirmaPersona, {'attr': {'class': 'form-control'}}) }}
+		{{ form_errors(form.delegaFirmaPersona) }}
+	</div>
+	
+	<div class="mb-3">
+		{{ form_label(form.delegaFirmaCargo) }}
+		{{ form_widget(form.delegaFirmaCargo, {'attr': {'class': 'form-control'}}) }}
+		{{ form_errors(form.delegaFirmaCargo) }}
+	</div>
+	
+	<div class="mb-3">
 		{{ form_label(form.activa) }}
 		{{ form_widget(form.activa) }}
 		{{ form_errors(form.activa) }}

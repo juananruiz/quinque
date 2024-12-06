@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <title>Reconocimiento de Quinquenio</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.4;
+                margin: 20px 20px 20px 50px;
+                font-size: 12px;
+            }
+            p {
+                text-align: justify;
+                margin-bottom: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <table style="width: 100%; margin-bottom: 5em; border:0;">
+            <tr>
+                <td style="width: 30%; vertical-align: top;">
+                    <img src="{{ selloBase64 }}" alt="Universidad de Sevilla - Área de Personal Docente" 
+                        style="height: 140px;">
+                </td>
+                <td style="width: 70%; vertical-align: top; text-align: right;">
+                    <div style="width: 70%; float: right; border: 1px solid black; border-radius: 5px; padding: 10px;">
+                        <p style="margin: 0; text-align: left;">Su Ref.:</p>
+                        <p style="margin: 0; text-align: left;">Ntra. Ref.: SGPD/ACG/PB</p>
+                        <p style="margin: 0; text-align: left;">Salida:</p>
+                        <p style="margin: 0; text-align: left;">Asunto: S/ Solicitud Complemento por Méritos Docentes</p>
+                        <p style="margin: 0; text-align: left;">Destinatario:</p>
+                        <p style="margin: 0; text-align: left;">D. Juan Francisco Martín Rodríguez</p>
+                        <p style="margin: 0; text-align: left;">C/ Avicena, 6 Bloque 5 – 1º C</p>
+                        <p style="margin: 0; text-align: left;">41927-Mairena del Aljarafe</p>
+                        <p style="margin: 0; text-align: left;">Sevilla</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <p>En Sevilla, a la fecha de la firma</p>
+        <p>En contestación a su solicitud del Complemento por Méritos Docentes, le comunico lo
+siguiente:</p>
+        <p>Primero: Que por Resolución Rectoral de fecha {{ solicitud.convocatoria.fechaResolucion|fecha_es}}, se estableció el
+plazo de presentación de solicitudes para el reconocimiento de la actividad docente (quinquenios)
+desde el {{ solicitud.convocatoria.fechaInicioSolicitud|fecha_es}} 
+al {{ solicitud.convocatoria.fechaFinSolicitud|fecha_es}}, de los Profesores Contratados
+Doctores/Profesores Permanentes Laborales - Mod. PCD, Profesores Contratados Doctores
+Interinos y Profesores Colaboradores que se encuentren en servicio activo a la finalización del
+plazo de presentación de solicitudes.</p>
+        <p>Segundo: Que el interesado con fecha 21 de julio de 2023 suscribió en esta Universidad un
+contrato en régimen laboral como Profesor Contratado Doctor.</p>
+        <p>Tercero: De la documentación aportada por el interesado, Hoja de Servicios expedida por
+la Sra. Directora Técnica del Área de Investigación y Certificado de Actividades Docente de esta
+Universidad, se le reconocen los siguientes periodos: 
+        <div style="margin: 0 auto; width: 80%;">
+        <table style="border-collapse: collapse; margin-bottom: 15px;">
+            <tbody>
+                {% for merito in solicitud.meritos %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 6px;">{{ merito.organismo }}</td>
+                    <td style="border: 1px solid #ddd; padding: 6px;">{{ merito.fechaInicio|date('d-m-Y') }}</td>
+                    <td style="border: 1px solid #ddd; padding: 6px;">{{ merito.fechaFin|date('d-m-Y') }}</td>
+                    <td style="border: 1px solid #ddd; padding: 6px;">{{ merito.categoria.nombre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <p style="margin-left: 5em; margin-bottom: 3em;">Computándose un total de <strong>{{ meritosComputados|dias_a_periodo }}</strong.</p>
+
+        <p>ESTE RECTORADO, teniendo en cuenta lo expuesto y de conformidad con las
+atribuciones que le confieren el art. 50 de la L.O.S.U. y el art. 20.o) del Estatuto de la Universidad
+de Sevilla, ha resuelto: <strong>Desestimar la petición de {{ solicitud.persona.nombre }} 
+{{ solicitud.persona.apellidos }}</strong>, al no
+completar el periodo de 5 años necesarios de actividad docente para formar un tramo.
+
+        <p>Contra la presente Resolución que pone fin a la vía administrativa podrá interponerse, con
+carácter potestativo, Recurso de Reposición ante el Rector de esta Universidad, en el plazo de un
+mes, conforme a lo dispuesto en los artículos 123 y 124 de la Ley 39/2015, de 1 de octubre, del
+Procedimiento Administrativo Común de las Administraciones Públicas, o bien, directamente
+demanda en el plazo de dos meses ante el Juzgado o Sala de lo Social, según dispone el artículo 69
+de la Ley 36/2011, de 10 de octubre, reguladora de la Jurisdicción Social.</p>
+
+        <p style="text-align: center;">EL RECTOR,
+        <br>P.D. (Resol. Rec. {{solicitud.convocatoria.delegaFirmaFecha|date('d-m-Y')}})
+        <br>{{solicitud.convocatoria.delegaFirmaCargo}},
+        <br>Fdo: {{solicitud.convocatoria.delegaFirmaPersona}}</p>
+
+    </body>
+</html>

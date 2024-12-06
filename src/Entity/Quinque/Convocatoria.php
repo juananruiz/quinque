@@ -29,6 +29,18 @@ class Convocatoria
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaFinSolicitud = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $fechaResolucion = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $delegaFirmaFecha = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $delegaFirmaPersona = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $delegaFirmaCargo = null;
+
     #[ORM\OneToMany(targetEntity: Solicitud::class, mappedBy: 'convocatoria')]
     private Collection $solicitudes;
 
@@ -86,6 +98,54 @@ class Convocatoria
     public function setFechaFinSolicitud(\DateTimeInterface $fechaFinSolicitud): static
     {
         $this->fechaFinSolicitud = $fechaFinSolicitud;
+
+        return $this;
+    }
+
+    public function getFechaResolucion(): ?\DateTimeInterface
+    {
+        return $this->fechaResolucion;
+    }
+
+    public function setFechaResolucion(?\DateTimeInterface $fechaResolucion): static
+    {
+        $this->fechaResolucion = $fechaResolucion;
+
+        return $this;
+    }
+
+    public function getDelegaFirmaFecha(): ?\DateTimeInterface
+    {
+        return $this->delegaFirmaFecha;
+    }
+
+    public function setDelegaFirmaFecha(?\DateTimeInterface $delegaFirmaFecha): static
+    {
+        $this->delegaFirmaFecha = $delegaFirmaFecha;
+
+        return $this;
+    }
+
+    public function getDelegaFirmaPersona(): ?string
+    {
+        return $this->delegaFirmaPersona;
+    }
+
+    public function setDelegaFirmaPersona(?string $delegaFirmaPersona): static
+    {
+        $this->delegaFirmaPersona = $delegaFirmaPersona;
+
+        return $this;
+    }
+
+    public function getDelegaFirmaCargo(): ?string
+    {
+        return $this->delegaFirmaCargo;
+    }
+
+    public function setDelegaFirmaCargo(?string $delegaFirmaCargo): static
+    {
+        $this->delegaFirmaCargo = $delegaFirmaCargo;
 
         return $this;
     }

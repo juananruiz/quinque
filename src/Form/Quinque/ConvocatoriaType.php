@@ -16,6 +16,10 @@ class ConvocatoriaType extends AbstractType
             ->add('nombre')
             ->add('fechaInicioSolicitud')
             ->add('fechaFinSolicitud')
+            ->add('fechaResolucion')
+            ->add('delegaFirmaFecha')
+            ->add('delegaFirmaPersona')
+            ->add('delegaFirmaCargo')
             ->add('activa', ChoiceType::class, [
                 'label' => 'Estado',
                 'choices' => [
