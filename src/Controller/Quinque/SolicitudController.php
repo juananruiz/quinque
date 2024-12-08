@@ -198,7 +198,7 @@ final class SolicitudController extends AbstractController
      *
      * @return Response The PDF response
      */
-    #[Route('/{id}/pdf', name: 'quinque_solicitud_pdf')]
+    #[Route('/{id}/resolucion-pdf', name: 'quinque_solicitud_pdf')]
     public function generateReconocePdf(Solicitud $solicitud): Response
     {
         // Configure Dompdf according to your needs
