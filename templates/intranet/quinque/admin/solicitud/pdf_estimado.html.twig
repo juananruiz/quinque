@@ -29,7 +29,7 @@
                         <p style="margin: 0;"><span style="font-size: 9px; color: #888;">Ntra. Ref.:</span> SGPD/ACG/PB</p>
                         <p style="margin: 0;"><span style="font-size: 9px; color: #888;">Salida:</span></p>
                         <p style="margin: 0; text-align: left;"><span style="font-size: 9px; color: #888;">Asunto:</span> 
-                            S/ Solicitud Complemento por Méritos Docentes</p>
+                            Reconocimiento de Quinquenio/s</p>
                         <p style="margin: 0;"<span style="font-size: 9px; color: #888;">Destinatario: </span> 
                         <p style="margin: 0;">{{ solicitud.persona.nombre }} {{ solicitud.persona.apellidos }}</p>
                         <p style="margin: 0;">C/ Avicena, 6 Bloque 5 – 1º C</p>
@@ -41,24 +41,17 @@
         </table>
 
         <p>En Sevilla, a la fecha de la firma</p>
-        <h2>ESTIMADO</h2>
-        <p>En contestación a su solicitud del Complemento por Méritos Docentes, le comunico lo
-siguiente:</p>
-        <p>Primero: Que por Resolución Rectoral de fecha {{ solicitud.convocatoria.fechaResolucion|fecha_es}}, se estableció el
-plazo de presentación de solicitudes para el reconocimiento de la actividad docente (quinquenios)
-desde el {{ solicitud.convocatoria.fechaInicioSolicitud|fecha_es}} 
-al {{ solicitud.convocatoria.fechaFinSolicitud|fecha_es}}, de los Profesores Contratados
-Doctores/Profesores Permanentes Laborales - Mod. PCD, Profesores Contratados Doctores
-Interinos y Profesores Colaboradores que se encuentren en servicio activo a la finalización del
-plazo de presentación de solicitudes.</p>
-        <p>Segundo: Que el interesado con fecha {{ solicitud.meritos|last.fechaInicio|fecha_es }} suscribió en esta Universidad un
-contrato en régimen laboral como {{ solicitud.meritos|last.categoria.nombre }}.</p>
-        <p>Tercero: De la documentación aportada por el interesado, Hoja de Servicios expedida por
-la Sra. Directora Técnica del Área de Investigación y Certificado de Actividades Docente de esta
-Universidad, se le reconocen los siguientes periodos: 
+        <p>En contestación a su solicitud del Complemento por Méritos Docentes, y teniendo 
+        en cuenta la Resolución Rectoral de {{ solicitud.convocatoria.fechaResolucion|fecha_es}} 
+        de la Universidad de Sevilla, y en virtud del Acuerdo de Consejo de Gobierno CG/6.3, 24-11-17, 
+        modificado por el Acuerdo CG/7.10, 13-3-18 y por el Acuerdo CG/5.9.1., 24-7-18.
+        ESTE RECTORADO, de conformidad con las atribuciones que le confieren el art. 50 de 
+        la L.O.S.U. y el art. 20.o) del Estatuto de la Universidad de Sevilla, HA RESUELTO: 
+        Reconocer a <strong>{{ solicitud.persona.nombre }} {{ solicitud.persona.apellidos }}</strong>
+        con la categoría de {{ solicitud.meritos|last.categoria.nombre }}, los siguientes 
+        componentes por méritos docentes:
         <div style="margin: 0 auto; width: 80%;">
-        <table style="border-collapse: collapse; margin-bottom: 15px;">
-            <tbody>
+            <table style="border-collapse: collapse; margin-bottom: 15px;">
                 {% for merito in solicitud.meritos %}
                     {% if merito.estado.id == 2 %}
                     <tr>
@@ -69,16 +62,8 @@ Universidad, se le reconocen los siguientes periodos:
                     </tr>
                     {% endif %}
                 {% endfor %}
-            </tbody>
-        </table>
+            </table>
         </div>
-        <p style="margin-left: 5em; margin-bottom: 3em;">Computándose un total de <strong>{{ meritosComputados|dias_a_periodo }}</strong>.</p>
-
-        <p>ESTE RECTORADO, teniendo en cuenta lo expuesto y de conformidad con las
-atribuciones que le confieren el art. 50 de la LOSU y el art. 20.o) del Estatuto de la Universidad
-de Sevilla, ha resuelto:</p> 
-        <p><strong>Desestimar la petición de {{ solicitud.persona.nombre }} 
-{{ solicitud.persona.apellidos }}</strong>, al no completar el periodo de 5 años necesarios de actividad docente para formar un tramo.
 
         <p>Contra la presente Resolución que pone fin a la vía administrativa podrá interponerse, con
 carácter potestativo, Recurso de Reposición ante el Rector de esta Universidad, en el plazo de un
