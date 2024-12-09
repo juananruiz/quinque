@@ -68,11 +68,11 @@
             <div class="col-md-6 text-end">
                 {# TODO: Evitar número mágico #}
                 {% if meritosComputados >= 1825 %}
-                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" type="button" class="btn btn-primary me-2">
+                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
                         <i class="fas fa-file-pdf"></i> Generar resolución estimatoria
                     </a>
                 {% else %}
-                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" type="button" class="btn btn-primary me-2">
+                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
                         <i class="fas fa-file-pdf"></i> Generar resolución desestimatoria
                     </a>
                 {% endif %}
