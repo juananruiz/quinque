@@ -3,7 +3,6 @@
 
 {% block title %}Detalles de la Solicitud{% endblock %}
  
-{# Add necessary JavaScript for inline editing #}
 {% block javascripts %}
     {{ parent() }}
     <script>
@@ -200,110 +199,126 @@
 
 {% block body %}
     {{ parent() }}
-    <div class="container">
-        <div class="row mb-3">
-            <div class="col">
-                <h1><i class="fas fa-file-alt text-warning"></i> Detalles de la Solicitud</h1>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">{{ solicitud.asunto }}</h5>
-                <p class="card-text">{{ solicitud.contenido|nl2br }}</p>
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="fas fa-comments"></i> Comentarios ({{ solicitud.comentarios|length }})
-                    </h5>
-                    <button type="button" 
-                            class="btn btn-primary btn-sm" 
-                            id="new-comment-btn" onclick="document.getElementById('new-comment-form').style.display = 'block'; document.getElementById('no-comments-message').style.display = 'none';">
-                        <i class="fas fa-plus"></i> Nuevo comentario
-                    </button>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main content area -->
+            <div class="col-md-9">
+                <div class="row mb-3">
+                    <div class="col">
+                        <h2>{{ solicitud.asunto }}</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="card-body">
-                {% if solicitud.comentarios is empty %}
-                    <p class="text-muted" id="no-comments-message">No hay comentarios todavía.</p>
-                {% else %}
-                    {% for comentario in solicitud.comentarios %}
-                        <div class="mb-3 pb-3 border-bottom comment-container">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <p class="mb-1 comment-content">{{ comentario.contenido|nl2br }}</p>
-                                <div>
-                                    <button type="button" 
-                                            class="btn btn-warning btn-sm edit-comment-btn" 
-                                            data-comment-id="{{ comentario.id }}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <form method="post" action="{{ path('app_peticion_comentario_delete', {'id': comentario.id}) }}" 
-                                          class="d-inline" 
-                                          onsubmit="return confirm('¿Está seguro de que desea eliminar este comentario?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comentario.id) }}">
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
+                 <div class="card mb-4">
+                    <div class="card-body">
+                    <p>{{ solicitud.contenido|nl2br }}</p>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-comments"></i> Comentarios ({{ solicitud.comentarios|length }})
+                            </h5>
+                            <button type="button" 
+                                    class="btn btn-primary btn-sm" 
+                                    id="new-comment-btn" onclick="document.getElementById('new-comment-form').style.display = 'block'; document.getElementById('no-comments-message').style.display = 'none';">
+                                <i class="fas fa-plus"></i> Nuevo comentario
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if solicitud.comentarios is empty %}
+                            <p class="text-muted" id="no-comments-message">No hay comentarios todavía.</p>
+                        {% else %}
+                            {% for comentario in solicitud.comentarios %}
+                                <div class="mb-3 pb-3 border-bottom comment-container">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <p class="mb-1 comment-content">{{ comentario.contenido|nl2br }}</p>
+                                        <div>
+                                            <button type="button" 
+                                                    class="btn btn-warning btn-sm edit-comment-btn" 
+                                                    data-comment-id="{{ comentario.id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <form method="post" action="{{ path('app_peticion_comentario_delete', {'id': comentario.id}) }}" 
+                                                  class="d-inline" 
+                                                  onsubmit="return confirm('¿Está seguro de que desea eliminar este comentario?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comentario.id) }}">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <form class="edit-form mt-2" style="display: none;" 
+                                          action="{{ path('app_peticion_comentario_edit', {'id': comentario.id}) }}" 
+                                          method="POST">
+                                        <div class="form-group">
+                                            <textarea class="form-control mb-2" rows="3" name="content">{{ comentario.contenido }}</textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" 
+                                                onclick="this.closest('.edit-form').style.display='none';
+                                                         this.closest('.comment-container').querySelector('.comment-content').style.display='block';">
+                                            Cancelar
                                         </button>
                                     </form>
+                                    <small class="text-muted d-block">
+                                        Creado el {{ comentario.createdAt|date('d/m/Y H:i') }}
+                                        {% if comentario.modifiedAt %}
+                                            <span class="modified-at">(Modificado el {{ comentario.modifiedAt|date('d/m/Y H:i') }})</span>
+                                        {% endif %}
+                                    </small>
                                 </div>
-                            </div>
-                            <form class="edit-form mt-2" style="display: none;" 
-                                  action="{{ path('app_peticion_comentario_edit', {'id': comentario.id}) }}" 
-                                  method="POST">
+                            {% endfor %}
+                        {% endif %}
+                        
+                        {# Formulario para nuevo comentario #}
+                        <div id="new-comment-form" class="mb-3 pb-3 border-bottom" style="display: none;">
+                            <form class="new-comment-form" action="{{ path('app_peticion_comentario_new', {'solicitud_id': solicitud.id}) }}" method="POST">
                                 <div class="form-group">
-                                    <textarea class="form-control mb-2" rows="3" name="content">{{ comentario.contenido }}</textarea>
+                                    <textarea class="form-control mb-2" rows="3" name="content" required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-success btn-sm">Guardar</button>
-                                <button type="button" class="btn btn-secondary btn-sm" 
-                                        onclick="this.closest('.edit-form').style.display='none';
-                                                 this.closest('.comment-container').querySelector('.comment-content').style.display='block';">
-                                    Cancelar
-                                </button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="hideNewCommentForm()">Cancelar</button>
                             </form>
-                            <small class="text-muted d-block">
-                                Creado el {{ comentario.createdAt|date('d/m/Y H:i') }}
-                                {% if comentario.modifiedAt %}
-                                    <span class="modified-at">(Modificado el {{ comentario.modifiedAt|date('d/m/Y H:i') }})</span>
-                                {% endif %}
-                            </small>
                         </div>
-                    {% endfor %}
-                {% endif %}
-                
-                {# Formulario para nuevo comentario #}
-                <div id="new-comment-form" class="mb-3 pb-3 border-bottom" style="display: none;">
-                    <form class="new-comment-form" action="{{ path('app_peticion_comentario_new', {'solicitud_id': solicitud.id}) }}" method="POST">
-                        <div class="form-group">
-                            <textarea class="form-control mb-2" rows="3" name="content" required></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <a href="{{ path('app_peticion_solicitud_index') }}" 
+                       class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a las peticiones
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right panel with request details -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="small text-muted">Unidad</label>
+                            <div>{{ solicitud.unidad.nombre }}</div>
                         </div>
-                        <button type="submit" class="btn btn-success btn-sm">Guardar</button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="hideNewCommentForm()">Cancelar</button>
-                    </form>
+                        <div class="mb-3">
+                            <label class="small text-muted">Solicitante</label>
+                            <div>{{ solicitud.solicitante.nombre }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Asignado a</label>
+                            <div>{{ solicitud.asignado ? solicitud.asignado.nombre : 'Sin asignar' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('app_peticion_solicitud_edit', {'id': solicitud.id}) }}" 
+                        class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="mb-3">
-            <a href="{{ path('app_peticion_solicitud_edit', {'id': solicitud.id}) }}" 
-               class="btn btn-warning">
-                <i class="fas fa-edit"></i> Editar
-            </a>
-            <a href="{{ path('app_peticion_solicitud_index') }}" 
-               class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Volver al listado
-            </a>
-        </div>
-
-        <form method="post" action="{{ path('app_peticion_solicitud_delete', {'id': solicitud.id}) }}" 
-              onsubmit="return confirm('¿Está seguro de que desea eliminar esta solicitud?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ solicitud.id) }}">
-            <button class="btn btn-danger">
-                <i class="fas fa-trash"></i> Eliminar
-            </button>
-        </form>
     </div>
 {% endblock %}
