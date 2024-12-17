@@ -5,6 +5,8 @@ namespace App\Controller\Peticion;
 use App\Entity\Peticion\Solicitud;
 use App\Form\Peticion\SolicitudType;
 use App\Repository\Peticion\SolicitudRepository;
+use App\Repository\Peticion\EstadoRepository;
+use App\Repository\Peticion\UnidadRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +17,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class SolicitudController extends AbstractController
 {
     #[Route('/', name: 'app_peticion_solicitud_index', methods: ['GET'])]
-    public function index(SolicitudRepository $solicitudRepository): Response
+    public function index(
+        SolicitudRepository $solicitudRepository,
+        EstadoRepository $estadoRepository,
+        UnidadRepository $unidadRepository
+    ): Response
     {
         return $this->render('intranet/peticion/gestor/solicitud/index.html.twig', [
             'solicitudes' => $solicitudRepository->findAll(),
+            'estados' => $estadoRepository->findAll(),
+            'unidades' => $unidadRepository->findAll(),
         ]);
     }
 

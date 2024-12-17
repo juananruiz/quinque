@@ -9,9 +9,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Persona;
 use App\Entity\Unidad;
+use App\Entity\Estado;
 
 #[ORM\Entity(repositoryClass: SolicitudRepository::class)]
 #[ORM\Table(name: 'peticion_solicitud')]
+#[ORM\HasLifecycleCallbacks]
 class Solicitud
 {
     #[ORM\Id]
@@ -40,9 +42,23 @@ class Solicitud
     #[ORM\JoinColumn(name: 'id_unidad', nullable: true)]
     private ?Unidad $unidad = null;
 
+    #[ORM\ManyToOne(targetEntity: Estado::class)]
+    #[ORM\JoinColumn(name: 'id_estado', nullable: false)]
+    private ?Estado $estado = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $fechaCreacion = null;
+
     public function __construct()
     {
         $this->comentarios = new ArrayCollection();
+        $this->fechaCreacion = new \DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function setFechaCreacionValue()
+    {
+        $this->fechaCreacion = new \DateTime();
     }
 
     public function getId(): ?int
@@ -137,6 +153,28 @@ class Solicitud
     {
         $this->unidad = $unidad;
 
+        return $this;
+    }
+
+    public function getEstado(): ?Estado
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(?Estado $estado): static
+    {
+        $this->estado = $estado;
+        return $this;
+    }
+
+    public function getFechaCreacion(): ?\DateTimeInterface
+    {
+        return $this->fechaCreacion;
+    }
+
+    public function setFechaCreacion(\DateTimeInterface $fechaCreacion): static
+    {
+        $this->fechaCreacion = $fechaCreacion;
         return $this;
     }
 }
