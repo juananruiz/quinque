@@ -111,12 +111,16 @@
                     <td>{{ solicitud.unidad.nombre|slice(0, 100) }}{% if solicitud.unidad.nombre|length > 100 %}...{% endif %}</td>
                     <td>{{ solicitud.solicitante.apellidos }}, {{ solicitud.solicitante.nombre }}</td>
                     <td>
-                        <span class="badge bg-{{ solicitud.estado.color }}">
-                            {{ solicitud.estado.nombre }}
-                        </span>
+                        {% if solicitud.estado %}
+                            <span class="badge bg-{{ solicitud.estado.color }}">
+                                {{ solicitud.estado.nombre }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">Sin estado</span>
+                        {% endif %}
                     </td>
-                    <td data-order="{{ solicitud.fechaCreacion|date('Y-m-d') }}">
-                        {{ solicitud.fechaCreacion|date('d/m/Y') }}
+                    <td data-order="{{ solicitud.fechaEntrada|date('Y-m-d') }}">
+                        {{ solicitud.fechaEntrada|date('d/m/Y') }}
                     </td>
                     <td>{{ solicitud.comentarios|length }}</td>
                     <td>

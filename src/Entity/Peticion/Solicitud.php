@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Persona;
 use App\Entity\Unidad;
-use App\Entity\Estado;
+use App\Entity\Peticion\Estado;
 
 #[ORM\Entity(repositoryClass: SolicitudRepository::class)]
 #[ORM\Table(name: 'peticion_solicitud')]
@@ -47,18 +47,18 @@ class Solicitud
     private ?Estado $estado = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $fechaCreacion = null;
+    private ?\DateTimeInterface $fechaEntrada = null;
 
     public function __construct()
     {
         $this->comentarios = new ArrayCollection();
-        $this->fechaCreacion = new \DateTime();
+        $this->fechaEntrada = new \DateTime();
     }
 
     #[ORM\PrePersist]
-    public function setFechaCreacionValue()
+    public function setFechaEntradaValue()
     {
-        $this->fechaCreacion = new \DateTime();
+        $this->fechaEntrada = new \DateTime();
     }
 
     public function getId(): ?int
@@ -74,7 +74,6 @@ class Solicitud
     public function setAsunto(string $asunto): static
     {
         $this->asunto = $asunto;
-
         return $this;
     }
 
@@ -86,7 +85,6 @@ class Solicitud
     public function setContenido(string $contenido): static
     {
         $this->contenido = $contenido;
-
         return $this;
     }
 
@@ -104,19 +102,16 @@ class Solicitud
             $this->comentarios->add($comentario);
             $comentario->setSolicitud($this);
         }
-
         return $this;
     }
 
     public function removeComentario(Comentario $comentario): static
     {
         if ($this->comentarios->removeElement($comentario)) {
-            // set the owning side to null (unless already changed)
             if ($comentario->getSolicitud() === $this) {
                 $comentario->setSolicitud(null);
             }
         }
-
         return $this;
     }
 
@@ -128,7 +123,6 @@ class Solicitud
     public function setSolicitante(?Persona $solicitante): static
     {
         $this->solicitante = $solicitante;
-
         return $this;
     }
 
@@ -140,7 +134,6 @@ class Solicitud
     public function setAsignado(?Persona $asignado): static
     {
         $this->asignado = $asignado;
-
         return $this;
     }
 
@@ -152,7 +145,6 @@ class Solicitud
     public function setUnidad(?Unidad $unidad): static
     {
         $this->unidad = $unidad;
-
         return $this;
     }
 
@@ -167,14 +159,14 @@ class Solicitud
         return $this;
     }
 
-    public function getFechaCreacion(): ?\DateTimeInterface
+    public function getFechaEntrada(): ?\DateTimeInterface
     {
-        return $this->fechaCreacion;
+        return $this->fechaEntrada;
     }
 
-    public function setFechaCreacion(\DateTimeInterface $fechaCreacion): static
+    public function setFechaEntrada(\DateTimeInterface $fechaEntrada): static
     {
-        $this->fechaCreacion = $fechaCreacion;
+        $this->fechaEntrada = $fechaEntrada;
         return $this;
     }
 }
