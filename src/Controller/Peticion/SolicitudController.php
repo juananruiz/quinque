@@ -6,7 +6,7 @@ use App\Entity\Peticion\Solicitud;
 use App\Form\Peticion\SolicitudType;
 use App\Repository\Peticion\SolicitudRepository;
 use App\Repository\Peticion\EstadoRepository;
-use App\Repository\Peticion\UnidadRepository;
+use App\Repository\UnidadRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,9 +31,20 @@ class SolicitudController extends AbstractController
     }
 
     #[Route('/new', name: 'app_peticion_solicitud_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager,
+        EstadoRepository $estadoRepository
+    ): Response
     {
         $solicitud = new Solicitud();
+        
+        // Asignar estado inicial
+        $estadoInicial = $estadoRepository->findOneBy(['nombre' => 'Nuevo']) ?? $estadoRepository->findOneBy([]);
+        if ($estadoInicial) {
+            $solicitud->setEstado($estadoInicial);
+        }
+        
         $form = $this->createForm(SolicitudType::class, $solicitud);
         $form->handleRequest($request);
 

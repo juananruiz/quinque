@@ -215,6 +215,8 @@ final class SolicitudController extends AbstractController
         $imageSrc = 'data:image/png;base64,' . $imageData;
         
         if ($solicitud->getMeritosComputados() >= 1825) { // TODO: Evitar número mágico
+            $solicitud->setEstado($this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 2));
+            $this->_entityManager->flush();
             $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_estimado.html.twig', 
                 [
                 'solicitud' => $solicitud,
@@ -222,6 +224,9 @@ final class SolicitudController extends AbstractController
                 'selloBase64' => $imageSrc,
                 ]);
         } else {
+            $solicitud->setEstado($this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 3));
+            $this->_entityManager->flush();
+            //return $this->redirectToRoute('quinque_solicitud_show', ['id' => $solicitud->getId()], Response::HTTP_SEE_OTHER);
             $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_desestimado.html.twig', 
                 [
                 'solicitud' => $solicitud,
