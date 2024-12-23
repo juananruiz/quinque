@@ -14,4 +14,23 @@ class DepartamentoRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Departamento::class);
     }
+
+    public function save(Departamento $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Departamento $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 }
