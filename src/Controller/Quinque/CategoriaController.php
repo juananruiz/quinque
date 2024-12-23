@@ -9,10 +9,9 @@ use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-
-#[Route('/categoria', name: 'intranet_quinque_admin_categoria_')]
+#[Route('intranet/quinque/admin/categoria', name: 'intranet_quinque_admin_categoria_')]
 class CategoriaController extends AbstractController
 {
     public function __construct(
@@ -25,6 +24,7 @@ class CategoriaController extends AbstractController
     public function index(): Response
     {
         $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/categoria/index.html.twig', [
             'categorias' => $this->categoriaRepository->findAll(),
         ]);
@@ -32,17 +32,19 @@ class CategoriaController extends AbstractController
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
-    {        
+    {
         $this->denyAccessUnlessGranted('admin');
         $categoria = new Categoria();
         $form = $this->createForm(CategoriaType::class, $categoria);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($categoria);
-            $this->entityManager->flush();
+            $this->categoriaRepository->save($categoria, true);
+            $this->generator->logAndFlash('info', 'Nueva categoría creada', [
+                'id' => $categoria->getId(),
+            ]);
 
-            return $this->redirectToRoute('quinque_categoria_index');
+            return $this->redirectToRoute('intranet_quinque_admin_categoria_index');
         }
 
         return $this->render('intranet/quinque/admin/categoria/new.html.twig', [
@@ -55,6 +57,7 @@ class CategoriaController extends AbstractController
     public function show(Categoria $categoria): Response
     {
         $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/categoria/show.html.twig', [
             'categoria' => $categoria,
         ]);
@@ -68,9 +71,12 @@ class CategoriaController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
+            $this->categoriaRepository->save($categoria, true);
+            $this->generator->logAndFlash('info', 'Categoría modificada', [
+                'id' => $categoria->getId(),
+            ]);
 
-            return $this->redirectToRoute('quinque_categoria_index');
+            return $this->redirectToRoute('intranet_quinque_admin_categoria_index');
         }
 
         return $this->render('intranet/quinque/admin/categoria/edit.html.twig', [
@@ -83,11 +89,14 @@ class CategoriaController extends AbstractController
     public function delete(Request $request, Categoria $categoria): Response
     {
         $this->denyAccessUnlessGranted('admin');
-        if ($this->isCsrfTokenValid('delete'.$categoria->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($categoria);
-            $this->entityManager->flush();
+        $id = $categoria->getId();
+        if ($this->isCsrfTokenValid('delete'.$id, $request->request->getString('_token'))) {
+            $this->categoriaRepository->remove($categoria, true);
+            $this->generator->logAndFlash('info', 'Categoría eliminada', [
+                'id' => $id,
+            ]);
         }
 
-        return $this->redirectToRoute('quinque_categoria_index');
+        return $this->redirectToRoute('intranet_quinque_admin_categoria_index');
     }
 }
