@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTrack - Customer Support</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: white;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e1e1e1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-items a {
+            text-decoration: none;
+            color: #1a73e8;
+            padding: 5px 10px;
+        }
+
+        .new-ticket-btn {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .main-content {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            padding: 20px;
+            border-right: 1px solid #e1e1e1;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item.active {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .ticket-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            padding: 8px;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .ticket-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 8px;
+            border-collapse: collapse;
+        }
+
+        .ticket-table th, .ticket-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .status-new {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-in-progress {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .time-badge {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .time-badge.overdue {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #e1e1e1;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://www.jetbrains.com/youtrack/img/youtrack-logo.svg" alt="YouTrack">
+            <span>YouTrack</span>
+        </div>
+        <div class="nav-items">
+            <a href="#">Incidencias</a>
+            <a href="#">Helpdesk</a>
+            <a href="#">Paneles</a>
+            <a href="#">Paneles de Agile</a>
+            <a href="#">Más</a>
+        </div>
+        <button class="new-ticket-btn">Nuevo ticket</button>
+    </nav>
+
+    <div class="main-content">
+        <aside class="sidebar">
+            <div class="sidebar-item">
+                <span>Asignadas a mí</span>
+                <span>7</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Comentadas por mí</span>
+                <span>6</span>
+            </div>
+            <div class="sidebar-item active">
+                <span>Customer support</span>
+                <span>11</span>
+            </div>
+            <div class="sidebar-item">
+                <span>Notificadas por mí</span>
+                <span>0</span>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="ticket-header">
+                <h2>Customer support—Unresolved... 11</h2>
+            </div>
+
+            <div class="filters">
+                <select class="filter-select">
+                    <option>Estado</option>
+                </select>
+                <select class="filter-select">
+                    <option>Usuario asignado</option>
+                </select>
+                <input type="text" class="filter-select" placeholder="Buscar tickets que contengan palabras clave">
+            </div>
+
+            <table class="ticket-table">
+                <thead>
+                    <tr>
+                        <th>Resumen</th>
+                        <th>Estado</th>
+                        <th>Proyecto</th>
+                        <th>Usuario asignado</th>
+                        <th>SLA</th>
+                        <th>First Reply</th>
+                        <th>Resolution Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Could you please cancel...</td>
+                        <td><span class="status-badge status-new">Nuevo</span></td>
+                        <td>Customer support</td>
+                        <td><span class="avatar"></span>Sin asignar</td>
+                        <td><span class="time-badge">8 h</span></td>
+                        <td><span class="time-badge">8 h</span></td>
+                        <td><span class="time-badge">4 d.</span></td>
+                    </tr>
+                    <!-- Añade más filas según necesites -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
