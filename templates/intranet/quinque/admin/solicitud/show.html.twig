@@ -41,13 +41,13 @@
                 </span>
             </div>
             <div class="col-3 mb-2">
-                <a href="{{ path('quinque_persona_show', {'id': persona.id}) }}"
+                <a href="{{ path('intranet_quinque_admin_persona_show', {'id': persona.id}) }}"
                     class="btn btn-light btn-sm mt-3"> 
                     <i class="fas fa-user"></i> Ver solicitante
                 </a>
             </div>
             <div class="col-3 mb-2">
-                <a href="{{ path('quinque_convocatoria_show', {'id': solicitud.convocatoria.id}) }}"
+                <a href="{{ path('intranet_quinque_admin_convocatoria_show', {'id': solicitud.convocatoria.id}) }}"
                     class="btn btn-light btn-sm mt-3">
                     <i class="fas fa-bullhorn"></i> Ver convocatoria
                 </a>
@@ -68,11 +68,11 @@
             <div class="col-md-6 text-end">
                 {# TODO: Evitar número mágico #}
                 {% if meritosComputados >= 1825 %}
-                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
+                    <a href="{{ path('intranet_quinque_admin_solicitud_resolucion_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
                         <i class="fas fa-file-pdf"></i> Generar resolución estimatoria
                     </a>
                 {% else %}
-                    <a href="{{ path('quinque_solicitud_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
+                    <a href="{{ path('intranet_quinque_admin_solicitud_resolucion_pdf', {'id': solicitud.id}) }}" target="_blank" type="button" class="btn btn-primary me-2">
                         <i class="fas fa-file-pdf"></i> Generar resolución desestimatoria
                     </a>
                 {% endif %}
@@ -83,7 +83,7 @@
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMeritoModal" data-action="add">
             <i class="fas fa-plus"></i> Agregar Mérito
         </button>
-        <a href="{{ path('quinque_solicitud_edit', {'id': solicitud.id}) }}"
+        <a href="{{ path('intranet_quinque_admin_solicitud_edit', {'id': solicitud.id}) }}"
             class="btn btn-warning mb-3 text-end"><i class="fas fa-edit"></i> Editar solicitud
         </a>
 
@@ -96,7 +96,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{ form_start(form, {'action': path('quinque_merito_save', {'solicitudId': solicitud.id}), 'attr': {'id': 'meritoForm'}}) }}
+                        {{ form_start(form, {'action': path('intranet_quinque_admin_merito_save', {'solicitudId': solicitud.id}), 'attr': {'id': 'meritoForm'}}) }}
                             <input type="hidden" id="merito_id" name="merito_id" value="">
                             {{ include('intranet/quinque/admin/merito/_form.html.twig') }}
                         {{ form_end(form) }}
@@ -123,11 +123,11 @@
                 if (action === 'edit') {
                     const meritoId = button.dataset.id;
                     modalTitle.textContent = 'Editar Mérito';
-                    form.action = `{{ path("quinque_merito_edit", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId);
+                    form.action = `{{ path("intranet_quinque_admin_merito_edit", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId);
                     document.getElementById('merito_id').value = meritoId;
                     
                     try {
-                        const response = await fetch(`{{ path("quinque_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
+                        const response = await fetch(`{{ path("intranet_quinque_admin_merito_edit_data", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId));
                         const data = await response.json();
                         
                         if (data.status === 'success') {
@@ -187,7 +187,7 @@
                     if (confirm('¿Está seguro de que desea eliminar este mérito?')) {
                         const meritoId = this.dataset.id;
                         try {
-                            const response = await fetch(`{{ path("quinque_merito_delete", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId), {
+                            const response = await fetch(`{{ path("intranet_quinque_admin_merito_delete", {"id": ":meritoId"}) }}`.replace(':meritoId', meritoId), {
                                 method: 'DELETE',
                                 headers: {
                                     'X-Requested-With': 'XMLHttpRequest'

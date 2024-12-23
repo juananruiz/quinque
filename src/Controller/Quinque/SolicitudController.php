@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/solicitud')]
+#[Route('intranet/quinque/admin/solicitud', name: 'intranet_quinque_admin_solicitud_')]
 /**
  * Controller for handling Solicitud related actions.
  */
@@ -63,7 +63,7 @@ final class SolicitudController extends AbstractController
      *
      * @return Response The response object
      */
-    #[Route('/{id}', name: 'quinque_solicitud_show')]
+    #[Route('/{id}', name: 'show')]
     public function show(Solicitud $solicitud): Response
     {
         $merito = new Merito();
@@ -91,7 +91,7 @@ final class SolicitudController extends AbstractController
      *
      * @return Response The response object
      */
-    #[Route('/new/{personaId}', name: 'quinque_solicitud_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{personaId}', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, int $personaId): Response
     {
         $persona = $this->_personaRepository->find($personaId);
@@ -136,7 +136,7 @@ final class SolicitudController extends AbstractController
      *
      * @return Response The response object
      */
-    #[Route('/edit/{id}', name: 'quinque_solicitud_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Solicitud $solicitud): Response
     {
         $form = $this->createForm(SolicitudType::class, $solicitud);
@@ -146,7 +146,7 @@ final class SolicitudController extends AbstractController
             $this->_entityManager->flush();
 
             return $this->redirectToRoute(
-                'quinque_solicitud_show',
+                'intranet_quinque_admin_solicitud_show',
                 ['id' => $solicitud->getId()]
             );
         }
@@ -160,7 +160,7 @@ final class SolicitudController extends AbstractController
         );
     }
 
-    #[Route('/{id}/delete', name: 'quinque_solicitud_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Solicitud $solicitud, EntityManagerInterface $entityManager): Response
     {
         // No permitir si la persona tienes solicitudes asociadas,
@@ -169,7 +169,7 @@ final class SolicitudController extends AbstractController
             $this->addFlash('error', 'No se puede eliminar una solicitud con meritos asociadas');
 
             return $this->redirectToRoute(
-                'quinque_solicitud_show', 
+                'intranet_quinque_admin_solicitud_show', 
                 ['id' => $solicitud->getId()], Response::HTTP_SEE_OTHER
             );
         }
@@ -184,7 +184,7 @@ final class SolicitudController extends AbstractController
         }
 
         return $this->redirectToRoute(
-            'quinque_persona_show',
+            'intranet_quinque_admin_persona_show',
             [
                 'id' => $solicitud->getPersona()->getId(),
             ], 
@@ -198,8 +198,8 @@ final class SolicitudController extends AbstractController
      *
      * @return Response The PDF response
      */
-    #[Route('/{id}/resolucion-pdf', name: 'quinque_solicitud_pdf')]
-    public function generateReconocePdf(Solicitud $solicitud): Response
+    #[Route('/{id}/resolucion-pdf', name: 'resolucion_pdf')]
+    public function generateResolucionPdf(Solicitud $solicitud): Response
     {
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();

@@ -1,6 +1,6 @@
 {# templates/intranet/quinque/admin/solicitud/_delete_form.html.twig #}
 
-<form method="post" action="{{ path('quinque_solicitud_delete', {'id': solicitud.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar esta solicitud?');">
+<form method="post" action="{{ path('intranet_quinque_admin_solicitud_delete', {'id': solicitud.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar esta solicitud?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ solicitud.id) }}">
     <button class="btn btn-danger mb-3">
         <i class="fas fa-trash"></i> Eliminar

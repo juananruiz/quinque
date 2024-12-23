@@ -11,7 +11,7 @@
         {{ include('intranet/quinque/admin/solicitud/_form.html.twig', {'button_label': 'Actualizar'}) }}
         
         <div class="text-end">
-            <a href="{{ path('quinque_persona_show', {'id': solicitud.persona.id}) }}" class="btn btn-secondary">
+            <a href="{{ path('intranet_quinque_admin_persona_show', {'id': solicitud.persona.id}) }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Volver
             </a>
         </div>

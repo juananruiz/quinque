@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/persona')]
+#[Route('intranet/quinque/admin/persona', name:'intranet_quinque_admin_persona_')]
 /**
  * Controller for managing Persona entities.
  */
@@ -27,7 +27,7 @@ final class PersonaController extends AbstractController
     /**
      * Displays a list of Persona entities.
      */
-    #[Route(name: 'quinque_persona_index', methods: ['GET'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(PersonaRepository $personaRepository): Response
     {
         return $this->render(
@@ -38,7 +38,7 @@ final class PersonaController extends AbstractController
         );
     }
 
-    #[Route('/new', name: 'quinque_persona_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $persona = new Persona();
@@ -50,7 +50,7 @@ final class PersonaController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute(
-                'quinque_persona_index',
+                'intranet_quinque_admin_persona_index',
                 [],
                 Response::HTTP_SEE_OTHER
             );
@@ -65,7 +65,7 @@ final class PersonaController extends AbstractController
         );
     }
 
-    #[Route('/{id}/show', name: 'quinque_persona_show', methods: ['GET'])]
+    #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(Persona $persona): Response
     {
         return $this->render('intranet/quinque/admin/persona/show.html.twig', [
@@ -74,7 +74,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'quinque_persona_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(PersonaType::class, $persona);
@@ -83,7 +83,7 @@ final class PersonaController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('quinque_persona_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('intranet/quinque/admin/persona/edit.html.twig', [
@@ -92,7 +92,7 @@ final class PersonaController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'quinque_persona_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
     {
         // No permitir si la persona tienes solicitudes asociadas,
@@ -100,7 +100,7 @@ final class PersonaController extends AbstractController
         if ($persona->getSolicitudes()->count() > 0) {
             $this->addFlash('error', 'No se puede eliminar una persona con solicitudes asociadas');
 
-            return $this->redirectToRoute('quinque_persona_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
         }
         if ($this->isCsrfTokenValid(
             'delete'.$persona->getId(),
@@ -112,7 +112,7 @@ final class PersonaController extends AbstractController
         }
 
         return $this->redirectToRoute(
-            'quinque_persona_show',
+            'intranet_quinque_admin_persona_show',
             ['id' => $persona->getId()],
             Response::HTTP_SEE_OTHER);
     }

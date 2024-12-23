@@ -15,8 +15,10 @@
 		</div>
 		<div class="col-md-6 text-end">
 		<div class="btn-group">
-			<a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Listar convocatorias</a>
-			<a href="{{ path('quinque_convocatoria_edit', {'id': convocatoria.id}) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Editar convocatoria</a>
+			<a href="{{ path('intranet_quinque_admin_convocatoria_index') }}" 
+                class="btn btn-secondary">Listar convocatorias</a>
+			<a href="{{ path('intranet_quinque_admin_convocatoria_edit', {'id': convocatoria.id}) }}" 
+                class="btn btn-warning"><i class="fas fa-edit"></i> Editar convocatoria</a>
 		</div>
 		</div>
 	</div>
@@ -61,7 +63,8 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ path('quinque_solicitud_show', {'id': solicitud.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
+                        <a href="{{ path('intranet_quinque_admin_solicitud_show', {'id': solicitud.id}) }}" 
+                            class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
                     </td>
                 </tr>
             {% endfor %}

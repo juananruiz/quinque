@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Controller for managing Merito entities.
  */
-#[Route('/merito')]
+#[Route('intranet/quinque/admin/merito', name: 'intranet_quinque_admin_merito_')]
 class MeritoController extends AbstractController
 {
     private $solicitudRepository;
@@ -50,7 +50,7 @@ class MeritoController extends AbstractController
         $this->meritoRepository = $meritoRepository;
     }
 
-    #[Route('/add', name: 'quinque_merito_add')]
+    #[Route('/add', name: 'add')]
     public function add(Request $request): Response
     {
         $merito = new Merito();
@@ -69,7 +69,7 @@ class MeritoController extends AbstractController
             $this->entityManager->flush();
 
             return $this->redirectToRoute(
-                'quinque_solicitud_show',
+                'inatranet_quinque_admin_solicitud_show',
                 ['id' => $merito->getSolicitud()->getId()]
             );
         }
@@ -80,7 +80,7 @@ class MeritoController extends AbstractController
         );
     }
 
-    #[Route('/save/{solicitudId}', name: 'quinque_merito_save', methods: ['POST'])]
+    #[Route('/save/{solicitudId}', name: 'save', methods: ['POST'])]
     public function save(Request $request, int $solicitudId): JsonResponse
     {
         $merito = new Merito();
@@ -113,7 +113,7 @@ class MeritoController extends AbstractController
                 $response = [
                     'status' => 'success',
                     'message' => 'Mérito guardado correctamente',
-                    'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $solicitudId])
+                    'redirect' => $this->generateUrl('intranet_quinque_admin_solicitud_show', ['id' => $solicitudId])
                 ];
 
                 if ($merito->getEstado()->getId() === 5) {
@@ -141,7 +141,7 @@ class MeritoController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'quinque_merito_edit', methods: ['POST'])]
+    #[Route('/edit/{id}', name: 'edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): JsonResponse
     {
         try {
@@ -161,7 +161,7 @@ class MeritoController extends AbstractController
                 $response = [
                     'status' => 'success',
                     'message' => 'Mérito actualizado correctamente',
-                    'redirect' => $this->generateUrl('quinque_solicitud_show', ['id' => $merito->getSolicitud()->getId()]),
+                    'redirect' => $this->generateUrl('intranet_quinque_admin_solicitud_show', ['id' => $merito->getSolicitud()->getId()]),
                 ];
 
                 if ($merito->getEstado()->getId() === 5) {
@@ -196,7 +196,7 @@ class MeritoController extends AbstractController
      *
      * @return JsonResponse the JSON response containing the Merito data
      */
-    #[Route('/{id}/edit', name: 'quinque_merito_edit_data', methods: ['GET'])]
+    #[Route('/{id}/edit', name: 'edit_data', methods: ['GET'])]
     public function getEditData(Merito $merito): JsonResponse
     {
         try {
@@ -224,7 +224,7 @@ class MeritoController extends AbstractController
     /**
      * Deletes a Merito entity by its ID.
      */
-    #[Route('/delete/{id}', name: 'quinque_merito_delete', methods: ['DELETE', 'POST'])]
+    #[Route('/delete/{id}', name: 'delete', methods: ['DELETE', 'POST'])]
     public function delete(Merito $merito): JsonResponse
     {
         try {
