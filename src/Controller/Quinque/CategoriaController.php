@@ -5,7 +5,7 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Categoria;
 use App\Form\Quinque\CategoriaType;
 use App\Repository\Quinque\CategoriaRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
