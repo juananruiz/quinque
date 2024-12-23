@@ -1,5 +1,5 @@
 {# templates/intranet/quinque/admin/persona/_delete_form.html.twig #}
-<form method="post" action="{{ path('quinque_persona_delete', {'id': persona.id}) }}"
+<form method="post" action="{{ path('intranet_quinque_admin_persona_delete', {'id': persona.id}) }}"
       onsubmit="return confirm('¿Estás seguro de querer eliminar a esta persona?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ persona.id) }}">
     <button class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>

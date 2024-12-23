@@ -14,7 +14,7 @@
         	<h1 class="mb-4"><i class="fas fa-building text-warning"></i> Departamentos</h1>
 		</div>
 		<div class="col-6 text-end">
-        	<a href="{{ path('quinque_departamento_new') }}" class="btn btn-primary mt-3">
+        	<a href="{{ path('intranet_quinque_admin_departamento_new') }}" class="btn btn-primary mt-3">
             <i class="fas fa-plus"></i> Agregar Departamento
         	</a>
 		</div>
@@ -36,7 +36,7 @@
                         <td>{{ departamento.codigoUxxi }}</td>
                         <td>{{ departamento.codigoRPT }}</td>
                         <td>
-                            <a href="{{ path('quinque_departamento_edit', {'id': departamento.id}) }}" class="btn btn-warning btn-sm">
+                            <a href="{{ path('intranet_quinque_admin_departamento_edit', {'id': departamento.id}) }}" class="btn btn-warning btn-sm">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
                         </td>

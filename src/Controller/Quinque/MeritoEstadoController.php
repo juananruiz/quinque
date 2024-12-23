@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/merito_estado')]
+#[Route('intranet/quinque/admin/merito_estado', name: 'intranet_quinque_admin_merito_estado_')]
 class MeritoEstadoController extends AbstractController
 {
-    #[Route('/', name: 'quinque_merito_estado_index', methods: ['GET'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(MeritoEstadoRepository $meritoEstadoRepository): Response
     {
         return $this->render('intranet/quinque/admin/merito_estado/index.html.twig', [
@@ -22,7 +22,7 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'quinque_merito_estado_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $meritoEstado = new MeritoEstado();
@@ -33,7 +33,7 @@ class MeritoEstadoController extends AbstractController
             $entityManager->persist($meritoEstado);
             $entityManager->flush();
 
-            return $this->redirectToRoute('quinque_merito_estado_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('intranet_quinque_admin_merito_estado_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('intranet/quinque/admin/merito_estado/new.html.twig', [
@@ -42,11 +42,11 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/show', name: 'quinque_merito_estado_show', methods: ['GET'])]
+    #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(MeritoEstado $meritoEstado): Response
     {
         $form = $this->createFormBuilder()
-            ->setAction($this->generateUrl('quinque_merito_estado_delete', ['id' => $meritoEstado->getId()]))
+            ->setAction($this->generateUrl('delete', ['id' => $meritoEstado->getId()]))
             ->setMethod('POST')
             ->getForm();
 
@@ -56,7 +56,7 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'quinque_merito_estado_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, MeritoEstado $meritoEstado, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MeritoEstadoType::class, $meritoEstado);
@@ -65,7 +65,7 @@ class MeritoEstadoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('quinque_merito_estado_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('intranet_quinque_admin_merito_estado_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('intranet/quinque/admin/merito_estado/edit.html.twig', [
@@ -74,7 +74,7 @@ class MeritoEstadoController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'quinque_merito_estado_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, MeritoEstado $meritoEstado, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$meritoEstado->getId(), $request->request->get('_token'))) {
@@ -82,6 +82,6 @@ class MeritoEstadoController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('quinque_merito_estado_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('intranet_quinque_admin_merito_estado_index', [], Response::HTTP_SEE_OTHER);
     }
 }

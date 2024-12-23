@@ -10,7 +10,7 @@
         <div class="row">
             <h2 class="col-6">Datos personales</h2>
             <div class="col-6 text-end">
-                    <a href="{{ path('quinque_persona_edit', {'id': persona.id}) }}" 
+                    <a href="{{ path('intranet_quinque_admin_persona_edit', {'id': persona.id}) }}" 
                     class="btn btn-warning mb-3"><i class="fas fa-edit"></i> Editar</a> 
             </div>
         </div>
@@ -57,16 +57,21 @@
                     <td>{{ solicitud.convocatoria.nombre }}</td>
                     <td>{{ solicitud.fechaEntrada|date('Y-m-d H:i') }}</td>
                     <td>
-                        <a href="{{ path('quinque_solicitud_show', {id: solicitud.id}) }}" class="btn btn-info">Ver Méritos</a>
-                        <a href="{{ path('quinque_solicitud_edit', {id: solicitud.id}) }}" class="btn btn-warning">Editar Solicitud</a>
+                        <a href="{{ path('intranet_quinque_admin_solicitud_show', {id: solicitud.id}) }}" 
+                            class="btn btn-info">Ver Méritos</a>
+                        <a href="{{ path('intranet_quinque_admin_solicitud_edit', {id: solicitud.id}) }}" 
+                            class="btn btn-warning">Editar Solicitud</a>
                     </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     <div class="mb-3">
-        <a href="{{ path('quinque_solicitud_new', {personaId: persona.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Nueva Solicitud</a>
-        <a href="{{ path('quinque_persona_index') }}" class="btn btn-secondary">Ver solicitantes</a>
-        <a href="{{ path('quinque_convocatoria_index') }}" class="btn btn-secondary">Ver convocatorias</a>
+        <a href="{{ path('intranet_quinque_admin_solicitud_new', {personaId: persona.id}) }}" 
+            class="btn btn-primary"><i class="fas fa-plus"></i> Agregar Nueva Solicitud</a>
+        <a href="{{ path('intranet_quinque_admin_persona_index') }}" 
+            class="btn btn-secondary">Ver solicitantes</a>
+        <a href="{{ path('intranet_quinque_admin_convocatoria_index') }}" 
+            class="btn btn-secondary">Ver convocatorias</a>
     </div>
 {% endblock %}

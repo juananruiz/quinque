@@ -13,7 +13,7 @@
         <div class="col-6"><h1 class=""><i class="fas fa-person text-warning"></i> Solicitantes</h1>
         </div>
         <div class="col-6 text-end">
-            <a href="{{ path('quinque_persona_new') }}" class="btn btn-primary mt-3"><i class="fas fa-plus"></i> Agregar Solicitante</a>
+            <a href="{{ path('intranet_quinque_admin_persona_new') }}" class="btn btn-primary mt-3"><i class="fas fa-plus"></i> Agregar Solicitante</a>
         </div>
     </div>
     <div class="container mb-3">
@@ -37,8 +37,8 @@
                 <td>{{ persona.email }}</td>
                 <td>{{ persona.departamento.nombre|slice(0, 40) }}{% if persona.departamento.nombre|length > 40 %}...{% endif %}</td>
                 <td>
-                    <a href="{{ path('quinque_persona_show', {'id': persona.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
-                    <a href="{{ path('quinque_persona_edit', {'id': persona.id}) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
+                    <a href="{{ path('intranet_quinque_admin_persona_show', {'id': persona.id}) }}" class="btn btn-info btn-sm"><i class="fas fa-search"></i> Ver</a>
+                    <a href="{{ path('intranet_quinque_admin_persona_edit', {'id': persona.id}) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Editar</a>
                 </td>
             </tr>
         {% else %}
