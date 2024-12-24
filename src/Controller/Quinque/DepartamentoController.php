@@ -5,7 +5,7 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Departamento;
 use App\Form\Quinque\DepartamentoType;
 use App\Repository\Quinque\DepartamentoRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,16 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('intranet/quinque/admin/departamento', name: 'intranet_quinque_admin_departamento_')]
 class DepartamentoController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-    private DepartamentoRepository $departamentoRepository;
-
+    
     public function __construct(
-        EntityManagerInterface $entityManager,
-        DepartamentoRepository $departamentoRepository,
-    ) {
-        $this->entityManager = $entityManager;
-        $this->departamentoRepository = $departamentoRepository;
-    }
+        private readonly MessageGenerator $generator,
+        private readonly DepartamentoRepository $departamentoRepository,
+    ) {}
 
     #[Route('/departamento', name: 'index', methods: ['GET'])]
     public function index(): Response
@@ -36,13 +31,16 @@ class DepartamentoController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $departamento = new Departamento();
         $form = $this->createForm(DepartamentoType::class, $departamento);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($departamento);
-            $this->entityManager->flush();
+            $this->departamentoRepository->save($departamento, true);
+            $this->generator->logAndFlash('info', 'Nuevo departamento creado', [
+                'id' => $departamento->getId(),
+            ]); 
 
             return $this->redirectToRoute('intranet_quinque_admin_departamento_index');
         }
@@ -56,11 +54,15 @@ class DepartamentoController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Departamento $departamento): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(DepartamentoType::class, $departamento);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
+            $this->departamentoRepository->save($departamento, true);
+            $this->generator->logAndFlash('info', 'Departamento editado', [
+                'id' => $departamento->getId(),
+            ]); 
 
             return $this->redirectToRoute('intranet_quinque_admin_departamento_index');
         }

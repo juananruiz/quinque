@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Controlador para las rutas de las solicitudes.
+ * Controlador para las Solicitudes de Quinquenios
  *
- * @path: Src/Controller/Quinque/SolicitudController.php.
- *
+ * @path: Src/Controller/Quinque/SolicitudController.php
  * @author: Juanan Ruiz <juanan@us.es>
  */
 
@@ -17,7 +16,9 @@ use App\Form\Quinque\SolicitudType;
 use App\Repository\Quinque\CategoriaRepository;
 use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\PersonaRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\Quinque\SolicitudRepository;
+use App\Repository\Quinque\SolicitudEstadoRepository;
+use App\Service\MessageGenerator;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,30 +32,15 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 final class SolicitudController extends AbstractController
 {
-    private CategoriaRepository $_categoriaRepository;
-    private MeritoEstadoRepository $_meritoEstadoRepository;
-    private PersonaRepository $_personaRepository;
-    private EntityManagerInterface $_entityManager;
-
-    /**
-     * Constructor for SolicitudController.
-     *
-     * @param CategoriaRepository    $categoriaRepository The categoria repository
-     * @param MeritoEstadoRepository $meritoEstadoRepository The merito estado repository
-     * @param PersonaRepository      $personaRepository   The persona repository
-     * @param EntityManagerInterface $entityManager       The entity manager
-     */
+    
     public function __construct(
-        CategoriaRepository $categoriaRepository,
-        MeritoEstadoRepository $meritoEstadoRepository,
-        PersonaRepository $personaRepository,
-        EntityManagerInterface $entityManager,
-    ) {
-        $this->_categoriaRepository = $categoriaRepository;
-        $this->_meritoEstadoRepository = $meritoEstadoRepository;
-        $this->_personaRepository = $personaRepository;
-        $this->_entityManager = $entityManager;
-    }
+        private readonly CategoriaRepository $categoriaRepository,
+        private readonly MeritoEstadoRepository $meritoEstadoRepository,
+        private readonly PersonaRepository $personaRepository,
+        private readonly SolicitudRepository $solicitudRepository,
+        private readonly SolicitudEstadoRepository $solicitudEstadoRepository,
+        private readonly MessageGenerator $generator
+    ) {}
 
     /**
      * Displays a Solicitud entity.
@@ -66,6 +52,7 @@ final class SolicitudController extends AbstractController
     #[Route('/{id}', name: 'show')]
     public function show(Solicitud $solicitud): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $merito = new Merito();
         $form = $this->createForm(MeritoType::class, $merito);
 
@@ -74,8 +61,8 @@ final class SolicitudController extends AbstractController
             [
                 'solicitud' => $solicitud,
                 'meritos' => $solicitud->getMeritos(),
-                'categorias' => $this->_categoriaRepository->findAll(),
-                'estados' => $this->_meritoEstadoRepository->findAll(),
+                'categorias' => $this->categoriaRepository->findAll(),
+                'estados' => $this->meritoEstadoRepository->findAll(),
                 'persona' => $solicitud->getPersona(),
                 'meritosComputados' => $solicitud->getMeritosComputados(),
                 'form' => $form->createView(),
@@ -94,7 +81,7 @@ final class SolicitudController extends AbstractController
     #[Route('/new/{personaId}', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request, int $personaId): Response
     {
-        $persona = $this->_personaRepository->find($personaId);
+        $persona = $this->personaRepository->find($personaId);
         if (!$persona) {
             throw $this->createNotFoundException('Persona no encontrada');
         }
@@ -103,15 +90,17 @@ final class SolicitudController extends AbstractController
         $solicitud->setPersona($persona);
         
         // Establecer el estado inicial (ID = 1)
-        $estadoInicial = $this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 1);
+        $estadoInicial = $this->solicitudEstadoRepository->findOneBy(['id' => 1]);
         $solicitud->setEstado($estadoInicial);
         
         $form = $this->createForm(SolicitudType::class, $solicitud);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->_entityManager->persist($solicitud);
-            $this->_entityManager->flush();
+            $this->solicitudRepository->save($solicitud, true);
+            $this->generator->logAndFlash('info', 'Nueva solicitud creada', [
+                'id' => $solicitud->getId(),
+            ]);
 
             return $this->redirectToRoute(
                 'intranet_quinque_admin_solicitud_show',
@@ -139,11 +128,15 @@ final class SolicitudController extends AbstractController
     #[Route('/edit/{id}', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Solicitud $solicitud): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(SolicitudType::class, $solicitud);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->_entityManager->flush();
+            $this->solicitudRepository->save($solicitud, true);
+            $this->generator->logAndFlash('info', 'Solicitud actualizada', [
+                'id' => $solicitud->getId(),
+            ]);
 
             return $this->redirectToRoute(
                 'intranet_quinque_admin_solicitud_show',
@@ -161,12 +154,13 @@ final class SolicitudController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Solicitud $solicitud, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Solicitud $solicitud): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         // No permitir si la persona tienes solicitudes asociadas,
         // primero habría que borrar aquellas
         if ($solicitud->getMeritos()->count() > 0) {
-            $this->addFlash('error', 'No se puede eliminar una solicitud con meritos asociadas');
+            $this->generator->logAndFlash('error', 'No se puede eliminar una solicitud con meritos asociadas');
 
             return $this->redirectToRoute(
                 'intranet_quinque_admin_solicitud_show', 
@@ -179,8 +173,8 @@ final class SolicitudController extends AbstractController
             $request->get('_token')
         )
         ) {
-            $entityManager->remove($solicitud);
-            $entityManager->flush();
+            $this->solicitudRepository->remove($solicitud, true);
+            $this->generator->logAndFlash('info', 'Solicitud eliminada');   
         }
 
         return $this->redirectToRoute(
@@ -201,6 +195,7 @@ final class SolicitudController extends AbstractController
     #[Route('/{id}/resolucion-pdf', name: 'resolucion_pdf')]
     public function generateResolucionPdf(Solicitud $solicitud): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -215,8 +210,8 @@ final class SolicitudController extends AbstractController
         $imageSrc = 'data:image/png;base64,' . $imageData;
         
         if ($solicitud->getMeritosComputados() >= 1825) { // TODO: Evitar número mágico
-            $solicitud->setEstado($this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 2));
-            $this->_entityManager->flush();
+            $solicitud->setEstado($this->solicitudEstadoRepository->findOneBy(['id' => 2]));
+            $this->solicitudRepository->save($solicitud, true);
             $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_estimado.html.twig', 
                 [
                 'solicitud' => $solicitud,
@@ -224,8 +219,8 @@ final class SolicitudController extends AbstractController
                 'selloBase64' => $imageSrc,
                 ]);
         } else {
-            $solicitud->setEstado($this->_entityManager->getReference('App\Entity\Quinque\SolicitudEstado', 3));
-            $this->_entityManager->flush();
+            $solicitud->setEstado($this->solicitudEstadoRepository->findOneBy(['id' => 3]));
+            $this->solicitudRepository->save($solicitud, true);
             $html = $this->renderView('intranet/quinque/admin/solicitud/pdf_desestimado.html.twig', 
                 [
                 'solicitud' => $solicitud,
