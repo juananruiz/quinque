@@ -17,8 +17,7 @@ class ConvocatoriaController extends AbstractController
     public function __construct(
         private readonly MessageGenerator $generator,
         private readonly ConvocatoriaRepository $convocatoriaRepository,
-    ) {
-    }
+    ) {}
 
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(): Response
@@ -92,9 +91,7 @@ class ConvocatoriaController extends AbstractController
         $id = $convocatoria->getId();
         if ($this->isCsrfTokenValid('delete'.$id, $request->request->getString('_token'))) {
             $this->convocatoriaRepository->remove($convocatoria, true);
-            $this->generator->logAndFlash('info', 'Convocatoria eliminada', [
-                'id' => $id,
-            ]);
+            $this->generator->logAndFlash('info', 'Convocatoria eliminada');
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_convocatoria_index');

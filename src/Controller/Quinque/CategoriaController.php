@@ -92,9 +92,7 @@ class CategoriaController extends AbstractController
         $id = $categoria->getId();
         if ($this->isCsrfTokenValid('delete'.$id, $request->request->getString('_token'))) {
             $this->categoriaRepository->remove($categoria, true);
-            $this->generator->logAndFlash('info', 'Categoría eliminada', [
-                'id' => $id,
-            ]);
+            $this->generator->logAndFlash('info', 'Categoría eliminada');
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_categoria_index');

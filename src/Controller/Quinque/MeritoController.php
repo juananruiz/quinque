@@ -4,20 +4,18 @@
  * Controller for managing Merito entities.
  *
  * path: src/Controller/Quinque/MeritoController.php
+ * auhor: Juanan Ruiz <juanan@us.es>
  **/
 
 namespace App\Controller\Quinque;
 
-use App\Entity\Quinque\Categoria;
 use App\Entity\Quinque\Merito;
-use App\Entity\Quinque\MeritoEstado;
 use App\Entity\Quinque\Solicitud;
 use App\Form\Quinque\MeritoType;
-use App\Repository\Quinque\CategoriaRepository;
-use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\MeritoRepository;
+use App\Repository\Quinque\MeritoEstadoRepository;
 use App\Repository\Quinque\SolicitudRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,29 +28,17 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('intranet/quinque/admin/merito', name: 'intranet_quinque_admin_merito_')]
 class MeritoController extends AbstractController
 {
-    private $solicitudRepository;
-    private $entityManager;
-    private MeritoEstadoRepository $meritoEstadoRepository;
-    private CategoriaRepository $categoriaRepository;
-    private MeritoRepository $meritoRepository;
-
     public function __construct(
-        EntityManagerInterface $entityManager,
-        SolicitudRepository $solicitudRepository,
-        MeritoEstadoRepository $meritoEstadoRepository,
-        CategoriaRepository $categoriaRepository,
-        MeritoRepository $meritoRepository,
-    ) {
-        $this->entityManager = $entityManager;
-        $this->solicitudRepository = $solicitudRepository;
-        $this->meritoEstadoRepository = $meritoEstadoRepository;
-        $this->categoriaRepository = $categoriaRepository;
-        $this->meritoRepository = $meritoRepository;
-    }
+        private readonly MeritoRepository $meritoRepository,
+        private readonly MeritoEstadoRepository $meritoEstadoRepository,
+        private readonly SolicitudRepository $solicitudRepository,
+        private readonly MessageGenerator $generator
+    ) {}
 
     #[Route('/add', name: 'add')]
     public function add(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $merito = new Merito();
         $form = $this->createForm(MeritoType::class, $merito);
         $form->handleRequest($request);
@@ -65,8 +51,10 @@ class MeritoController extends AbstractController
                 $merito->setSolicitud($solicitud);
             }
 
-            $this->entityManager->persist($merito);
-            $this->entityManager->flush();
+            $this->meritoRepository->save($merito);
+            $this->generator->logAndFlash('info', 'Nuevo mérito añadido', [
+                'id' => $merito->getId(),
+            ]);
 
             return $this->redirectToRoute(
                 'inatranet_quinque_admin_solicitud_show',
@@ -83,8 +71,9 @@ class MeritoController extends AbstractController
     #[Route('/save/{solicitudId}', name: 'save', methods: ['POST'])]
     public function save(Request $request, int $solicitudId): JsonResponse
     {
+        $this->denyAccessUnlessGranted('admin');
         $merito = new Merito();
-        $solicitud = $this->entityManager->getRepository(Solicitud::class)->find($solicitudId);
+        $solicitud = $this->solicitudRepository->find($solicitudId);
         
         if (!$solicitud) {
             return new JsonResponse([
@@ -107,8 +96,10 @@ class MeritoController extends AbstractController
                     $merito->setEstado($estado);
                 }
 
-                $this->entityManager->persist($merito);
-                $this->entityManager->flush();
+                $this->meritoRepository->save($merito, true);
+                $this->generator->logAndFlash('info', 'Nuevo mérito creado', [
+                    'id' => $merito->getId(),
+                ]);
 
                 $response = [
                     'status' => 'success',
@@ -144,6 +135,7 @@ class MeritoController extends AbstractController
     #[Route('/edit/{id}', name: 'edit', methods: ['POST'])]
     public function edit(Merito $merito, Request $request): JsonResponse
     {
+        $this->denyAccessUnlessGranted('admin');
         try {
             $form = $this->createForm(MeritoType::class, $merito);
             $form->handleRequest($request);
@@ -156,7 +148,10 @@ class MeritoController extends AbstractController
                     $merito->setEstado($estado);
                 }
 
-                $this->entityManager->flush();
+                $this->meritoRepository->save($merito, true);
+                $this->generator->logAndFlash('info', 'Mérito actualizado', [
+                    'id' => $merito->getId(),
+                ]);
 
                 $response = [
                     'status' => 'success',
@@ -199,6 +194,7 @@ class MeritoController extends AbstractController
     #[Route('/{id}/edit', name: 'edit_data', methods: ['GET'])]
     public function getEditData(Merito $merito): JsonResponse
     {
+        $this->denyAccessUnlessGranted('admin');
         try {
             return new JsonResponse([
                 'status' => 'success',
@@ -227,10 +223,10 @@ class MeritoController extends AbstractController
     #[Route('/delete/{id}', name: 'delete', methods: ['DELETE', 'POST'])]
     public function delete(Merito $merito): JsonResponse
     {
+        $this->denyAccessUnlessGranted('admin');
         try {
-            $solicitudId = $merito->getSolicitud()->getId();
-            $this->entityManager->remove($merito);
-            $this->entityManager->flush();
+            $this->meritoRepository->remove($merito, true);
+            $this->generator->logAndFlash('info', 'Mérito borrado');
 
             return new JsonResponse([
                 'status' => 'success',

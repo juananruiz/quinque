@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PersonaController.php.
  *
@@ -18,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('intranet/quinque/admin/persona', name:'intranet_quinque_admin_persona_')]
+#[Route('intranet/quinque/admin/persona', name: 'intranet_quinque_admin_persona_')]
 /**
  * Controller for managing Persona entities.
  */
@@ -27,8 +28,7 @@ final class PersonaController extends AbstractController
     public function __construct(
         private readonly MessageGenerator $generator,
         private readonly PersonaRepository $personaRepository,
-    ) {
-    }
+    ) {}
 
     /**
      * Displays a list of Persona entities.
@@ -36,6 +36,7 @@ final class PersonaController extends AbstractController
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(PersonaRepository $personaRepository): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         return $this->render(
             'intranet/quinque/admin/persona/index.html.twig',
             [
@@ -47,6 +48,7 @@ final class PersonaController extends AbstractController
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $persona = new Persona();
         $form = $this->createForm(PersonaType::class, $persona);
         $form->handleRequest($request);
@@ -76,6 +78,8 @@ final class PersonaController extends AbstractController
     #[Route('/{id}/show', name: 'show', methods: ['GET'])]
     public function show(Persona $persona): Response
     {
+        $this->denyAccessUnlessGranted('admin');
+
         return $this->render('intranet/quinque/admin/persona/show.html.twig', [
             'persona' => $persona,
             'solicitudes' => $persona->getSolicitudes(),
@@ -85,6 +89,7 @@ final class PersonaController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Persona $persona): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         $form = $this->createForm(PersonaType::class, $persona);
         $form->handleRequest($request);
 
@@ -106,6 +111,7 @@ final class PersonaController extends AbstractController
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(Request $request, Persona $persona): Response
     {
+        $this->denyAccessUnlessGranted('admin');
         // No permitir si la persona tienes solicitudes asociadas,
         // primero habría que borrar aquellas
         if ($persona->getSolicitudes()->count() > 0) {
@@ -115,9 +121,7 @@ final class PersonaController extends AbstractController
         }
         if ($this->isCsrfTokenValid('delete' . $persona->getId(), $request->request->get('_token'))) {
             $this->personaRepository->remove($persona);
-            $this->generator->logAndFlash('info', 'Persona eliminada', [
-                'id' => $persona->getId(),
-            ]);
+            $this->generator->logAndFlash('info', 'Persona eliminada');
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
