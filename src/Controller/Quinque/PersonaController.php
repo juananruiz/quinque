@@ -12,7 +12,7 @@ namespace App\Controller\Quinque;
 use App\Entity\Quinque\Persona;
 use App\Form\Quinque\PersonaType;
 use App\Repository\Quinque\PersonaRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +24,12 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 final class PersonaController extends AbstractController
 {
+    public function __construct(
+        private readonly MessageGenerator $generator,
+        private readonly PersonaRepository $personaRepository,
+    ) {
+    }
+
     /**
      * Displays a list of Persona entities.
      */
@@ -39,15 +45,17 @@ final class PersonaController extends AbstractController
     }
 
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $persona = new Persona();
         $form = $this->createForm(PersonaType::class, $persona);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($persona);
-            $entityManager->flush();
+            $this->personaRepository->save($persona, true);
+            $this->generator->logAndFlash('info', 'Nueva persona creada', [
+                'id' => $persona->getId(),
+            ]);
 
             return $this->redirectToRoute(
                 'intranet_quinque_admin_persona_index',
@@ -75,13 +83,16 @@ final class PersonaController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Persona $persona): Response
     {
         $form = $this->createForm(PersonaType::class, $persona);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->personaRepository->save($persona, true);
+            $this->generator->logAndFlash('info', 'Persona modificada', [
+                'id' => $persona->getId(),
+            ]);
 
             return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -93,7 +104,7 @@ final class PersonaController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
-    public function delete(Request $request, Persona $persona, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Persona $persona): Response
     {
         // No permitir si la persona tienes solicitudes asociadas,
         // primero habría que borrar aquellas
@@ -102,13 +113,11 @@ final class PersonaController extends AbstractController
 
             return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
         }
-        if ($this->isCsrfTokenValid(
-            'delete'.$persona->getId(),
-            $request->get('_token')
-        )
-        ) {
-            $entityManager->remove($persona);
-            $entityManager->flush();
+        if ($this->isCsrfTokenValid('delete' . $persona->getId(), $request->request->get('_token'))) {
+            $this->personaRepository->remove($persona);
+            $this->generator->logAndFlash('info', 'Persona eliminada', [
+                'id' => $persona->getId(),
+            ]);
         }
 
         return $this->redirectToRoute('intranet_quinque_admin_persona_index', [], Response::HTTP_SEE_OTHER);
